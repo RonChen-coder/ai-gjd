@@ -61,7 +61,22 @@ BEGIN
      WHERE owner = 'WSBS'
        AND table_name = 'RECRUIT_SITE_NOTICE';
     IF v_cnt = 0 THEN
-        EXECUTE IMMEDIATE 'CREATE TABLE wsbs.RECRUIT_SITE_NOTICE (notice_id NUMBER(12) NOT NULL, notice_title VARCHAR2(200) NOT NULL, notice_content CLOB NOT NULL, publish_date DATE DEFAULT NULL, update_date DATE DEFAULT NULL, operator_name VARCHAR2(100) DEFAULT NULL, operator_id VARCHAR2(64) NOT NULL, status VARCHAR2(32) DEFAULT ''草稿'' NOT NULL, PRIMARY KEY (notice_id))';
+        EXECUTE IMMEDIATE 'CREATE TABLE wsbs.RECRUIT_SITE_NOTICE (notice_id NUMBER(12) NOT NULL, notice_title VARCHAR2(200) NOT NULL, notice_content CLOB NOT NULL, publish_date DATE DEFAULT NULL, update_date DATE DEFAULT NULL, operator_name VARCHAR2(100) DEFAULT NULL, operator_id VARCHAR2(64) NOT NULL, district_code VARCHAR2(100) DEFAULT NULL, status VARCHAR2(32) DEFAULT ''草稿'' NOT NULL, PRIMARY KEY (notice_id))';
+    END IF;
+END;
+/
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_tab_columns
+     WHERE owner = 'WSBS'
+       AND table_name = 'RECRUIT_SITE_NOTICE'
+       AND column_name = 'DISTRICT_CODE';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'ALTER TABLE wsbs.RECRUIT_SITE_NOTICE ADD district_code VARCHAR2(100) DEFAULT NULL';
     END IF;
 END;
 /
@@ -102,4 +117,5 @@ COMMENT ON COLUMN wsbs.RECRUIT_SITE_NOTICE.publish_date IS '发布日期';
 COMMENT ON COLUMN wsbs.RECRUIT_SITE_NOTICE.update_date IS '修改日期';
 COMMENT ON COLUMN wsbs.RECRUIT_SITE_NOTICE.operator_name IS '操作人';
 COMMENT ON COLUMN wsbs.RECRUIT_SITE_NOTICE.operator_id IS '操作人编号';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_NOTICE.district_code IS '地区编码';
 COMMENT ON COLUMN wsbs.RECRUIT_SITE_NOTICE.status IS '公告状态，取值包括草稿、已发布、已下线';
