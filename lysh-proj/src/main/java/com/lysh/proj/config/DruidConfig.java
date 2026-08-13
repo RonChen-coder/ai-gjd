@@ -4,13 +4,12 @@ import com.alibaba.druid.pool.DruidDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 
 /**
  * Druid 数据源配置类。
- * 用于接入 OceanBase/MySQL 数据库，并提供 JdbcTemplate 供业务层使用。
+ * 用于接入 OceanBase/MySQL 数据库，并提供数据源供业务层使用。
  */
 @Configuration
 public class DruidConfig {
@@ -40,10 +39,5 @@ public class DruidConfig {
         dataSource.setMaxWait(60000);
         dataSource.setTestWhileIdle(true);
         return dataSource;
-    }
-
-    @Bean
-    public JdbcTemplate jdbcTemplate(DataSource dataSource) {
-        return new JdbcTemplate(dataSource);
     }
 }

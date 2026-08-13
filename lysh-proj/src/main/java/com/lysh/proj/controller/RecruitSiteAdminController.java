@@ -1,7 +1,7 @@
 package com.lysh.proj.controller;
 
 import com.lysh.proj.model.RecruitSiteInfo;
-import com.lysh.proj.service.RecruitSiteInfoServiceInterface;
+import com.lysh.proj.service.RecruitSiteInfoBPO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,9 +15,9 @@ import java.util.List;
 @RequestMapping("/admi/site-info")
 public class RecruitSiteAdminController {
 
-    private final RecruitSiteInfoServiceInterface siteInfoService;
+    private final RecruitSiteInfoBPO siteInfoService;
 
-    public RecruitSiteAdminController(RecruitSiteInfoServiceInterface siteInfoService) {
+    public RecruitSiteAdminController(RecruitSiteInfoBPO siteInfoService) {
         this.siteInfoService = siteInfoService;
     }
 

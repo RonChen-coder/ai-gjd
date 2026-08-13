@@ -5,10 +5,10 @@ import com.lysh.proj.model.RecruitSiteInfo;
 import java.util.List;
 
 /**
- * 基地基础信息服务接口。
+ * 基地基础信息业务处理接口。
  * 定义基地基础信息的业务能力，便于后续扩展与依赖注入。
  */
-public interface RecruitSiteInfoServiceInterface {
+public interface RecruitSiteInfoBPO {
 
     /**
      * 创建基地信息。

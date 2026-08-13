@@ -1,24 +1,19 @@
 package com.lysh.proj.service;
 
-import com.lysh.proj.dao.RecruitSiteInfoDao;
 import com.lysh.proj.model.RecruitSiteInfo;
+import com.wondersgroup.wdls.core.exception.BusinessException;
+import com.wondersgroup.wdls.data.commons.DBUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 基地基础信息业务服务层。
- * 负责实现 2.1 中的新增、修改、查询、审核等业务逻辑。
+ * 基地基础信息业务处理实现类。
+ * 使用内部框架 DBUtils 实现 2.1 中的新增、修改、查询、审核等业务逻辑。
  */
 @Service
-public class RecruitSiteInfoService implements RecruitSiteInfoServiceInterface {
-
-    private final RecruitSiteInfoDao recruitSiteInfoDao;
-
-    public RecruitSiteInfoService(RecruitSiteInfoDao recruitSiteInfoDao) {
-        this.recruitSiteInfoDao = recruitSiteInfoDao;
-    }
+public class RecruitSiteInfoBPOImpl implements RecruitSiteInfoBPO {
 
     /**
      * 创建基地信息。
@@ -40,7 +35,7 @@ public class RecruitSiteInfoService implements RecruitSiteInfoServiceInterface {
         if (recruitSiteInfo.getArchiveStatus() == null || recruitSiteInfo.getArchiveStatus().isBlank()) {
             recruitSiteInfo.setArchiveStatus("未归档");
         }
-        recruitSiteInfoDao.insert(recruitSiteInfo);
+        DBUtils.save(recruitSiteInfo);
         return recruitSiteInfo;
     }
 
@@ -53,7 +48,7 @@ public class RecruitSiteInfoService implements RecruitSiteInfoServiceInterface {
     @Override
     public RecruitSiteInfo update(RecruitSiteInfo recruitSiteInfo) {
         recruitSiteInfo.setUpdatedAt(LocalDateTime.now());
-        recruitSiteInfoDao.update(recruitSiteInfo);
+        DBUtils.save(recruitSiteInfo);
         return recruitSiteInfo;
     }
 
@@ -64,7 +59,7 @@ public class RecruitSiteInfoService implements RecruitSiteInfoServiceInterface {
      */
     @Override
     public void delete(Long siteId) {
-        recruitSiteInfoDao.delete(siteId);
+        DBUtils.execSql("DELETE FROM RECRUIT_SITE_INFO WHERE site_id = ?", siteId);
     }
 
     /**
@@ -75,7 +70,7 @@ public class RecruitSiteInfoService implements RecruitSiteInfoServiceInterface {
      */
     @Override
     public RecruitSiteInfo findById(Long siteId) {
-        return recruitSiteInfoDao.findById(siteId);
+        return DBUtils.get("SELECT * FROM RECRUIT_SITE_INFO WHERE site_id = ?", RecruitSiteInfo.class, siteId);
     }
 
     /**
@@ -86,7 +81,8 @@ public class RecruitSiteInfoService implements RecruitSiteInfoServiceInterface {
      */
     @Override
     public List<RecruitSiteInfo> listByDistrict(String districtName) {
-        return recruitSiteInfoDao.listByDistrict(districtName);
+        return DBUtils.query("SELECT * FROM RECRUIT_SITE_INFO WHERE district_name = ? ORDER BY site_id DESC",
+                RecruitSiteInfo.class, districtName);
     }
 
     /**
@@ -96,7 +92,7 @@ public class RecruitSiteInfoService implements RecruitSiteInfoServiceInterface {
      */
     @Override
     public List<RecruitSiteInfo> listAll() {
-        return recruitSiteInfoDao.listAll();
+        return DBUtils.query("SELECT * FROM RECRUIT_SITE_INFO ORDER BY site_id DESC", RecruitSiteInfo.class);
     }
 
     /**
@@ -110,13 +106,16 @@ public class RecruitSiteInfoService implements RecruitSiteInfoServiceInterface {
      */
     @Override
     public RecruitSiteInfo review(Long siteId, String reviewer, String reviewOpinion, String status) {
-        RecruitSiteInfo entity = recruitSiteInfoDao.findById(siteId);
+        RecruitSiteInfo entity = findById(siteId);
+        if (entity == null) {
+            throw new BusinessException("基地信息不存在: " + siteId);
+        }
         entity.setReviewer(reviewer);
         entity.setReviewOpinion(reviewOpinion);
         entity.setStatus(status);
         entity.setReviewTime(LocalDateTime.now());
         entity.setUpdatedAt(LocalDateTime.now());
-        recruitSiteInfoDao.update(entity);
+        DBUtils.save(entity);
         return entity;
     }
 }

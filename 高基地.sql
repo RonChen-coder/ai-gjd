@@ -27,3 +27,15 @@ CREATE TABLE IF NOT EXISTS RECRUIT_SITE_INFO (
     KEY idx_recruit_site_info_status (status),
     KEY idx_recruit_site_info_archive_status (archive_status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='高基地基础信息表，用于存储高技能人才培养基地基础信息';
+
+-- 高基地白名单表
+-- 说明：基于实体类 com.lysh.proj.entity.RecruitSiteWhitelistEntity 生成，
+-- 对应答疑文档 0.高基地白名单，存储企业统一社会信用码、企业名称和是否激活
+CREATE TABLE IF NOT EXISTS RECRUIT_SITE_WHITELIST (
+    whitelist_id BIGINT NOT NULL AUTO_INCREMENT COMMENT '白名单主键ID，系统生成',
+    tyshxym VARCHAR(18) NOT NULL COMMENT '企业统一社会信用码',
+    company_name VARCHAR(200) NOT NULL COMMENT '企业名称',
+    active TINYINT(1) NOT NULL DEFAULT 1 COMMENT '是否激活，1激活，0停用',
+    PRIMARY KEY (whitelist_id),
+    UNIQUE KEY uk_recruit_site_whitelist_tyshxym (tyshxym)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='高基地企业白名单表';
