@@ -1,41 +1,105 @@
--- 高基地基础信息表
--- 说明：基于 2.1 基地字段信息设计，表名统一使用 RECRUIT_ 前缀，适用于 OceanBase/MySQL 兼容数据库执行
-
-CREATE TABLE IF NOT EXISTS RECRUIT_SITE_INFO (
-    site_id BIGINT NOT NULL AUTO_INCREMENT COMMENT '基地ID，系统生成，唯一主键',
-    site_name VARCHAR(200) NOT NULL COMMENT '基地名称',
-    award_batch VARCHAR(100) NOT NULL COMMENT '授牌批次，如第几批',
-    longitude DECIMAL(10, 6) NOT NULL COMMENT '地理坐标-经度，基地所在位置经度',
-    latitude DECIMAL(10, 6) NOT NULL COMMENT '地理坐标-纬度，基地所在位置纬度',
-    industry VARCHAR(100) NOT NULL COMMENT '所属行业，行业分类',
-    department VARCHAR(100) NOT NULL COMMENT '主管部门，业务主管部门',
-    district_name VARCHAR(100) NOT NULL COMMENT '分管区县，基地归属区县，作为权限控制依据',
-    site_category VARCHAR(100) DEFAULT NULL COMMENT '基地分类，用于分类管理',
-    maintenance_unit VARCHAR(200) DEFAULT NULL COMMENT '维护单位，负责维护的区级单位',
-    reporting_unit VARCHAR(200) NOT NULL COMMENT '填报单位，基地信息填报单位',
-    status VARCHAR(32) NOT NULL COMMENT '状态，取值包括初始化、待完善、待审核、已通过、已驳回',
-    archive_status VARCHAR(32) DEFAULT '未归档' COMMENT '归档状态，取值包括未归档、已归档',
-    reviewer VARCHAR(100) DEFAULT NULL COMMENT '审核人，区级审核人',
-    review_time DATETIME DEFAULT NULL COMMENT '审核时间，区级审核时间',
-    review_opinion TEXT DEFAULT NULL COMMENT '审核意见，审核反馈意见',
-    created_by VARCHAR(100) NOT NULL COMMENT '创建人，首次创建信息的操作人',
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间，首次创建信息的时间',
-    updated_by VARCHAR(100) DEFAULT NULL COMMENT '修改人，最近修改信息的操作人',
-    updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间，最近修改信息的时间',
-    PRIMARY KEY (site_id),
-    KEY idx_recruit_site_info_district (district_name),
-    KEY idx_recruit_site_info_status (status),
-    KEY idx_recruit_site_info_archive_status (archive_status)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='高基地基础信息表，用于存储高技能人才培养基地基础信息';
 
 -- 高基地白名单表
--- 说明：基于实体类 com.lysh.proj.entity.RecruitSiteWhitelistEntity 生成，
--- 对应答疑文档 0.高基地白名单，存储企业统一社会信用码、企业名称和是否激活
-CREATE TABLE IF NOT EXISTS RECRUIT_SITE_WHITELIST (
-    whitelist_id BIGINT NOT NULL AUTO_INCREMENT COMMENT '白名单主键ID，系统生成',
-    tyshxym VARCHAR(18) NOT NULL COMMENT '企业统一社会信用码',
-    company_name VARCHAR(200) NOT NULL COMMENT '企业名称',
-    active TINYINT(1) NOT NULL DEFAULT 1 COMMENT '是否激活，1激活，0停用',
-    PRIMARY KEY (whitelist_id),
-    UNIQUE KEY uk_recruit_site_whitelist_tyshxym (tyshxym)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='高基地企业白名单表';
+-- 说明：对应答疑文档 0.高基地白名单，使用序列生成主键，注释独立维护
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_sequences
+     WHERE sequence_owner = 'WSBS'
+       AND sequence_name = 'SEQ_0073_RECRUIT_SITE_WHITELIST';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE SEQUENCE wsbs.SEQ_0073_RECRUIT_SITE_WHITELIST MINVALUE 1 MAXVALUE 999999999999 START WITH 1 INCREMENT BY 1 CACHE 20';
+    END IF;
+END;
+/
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_tables
+     WHERE owner = 'WSBS'
+       AND table_name = 'RECRUIT_SITE_WHITELIST';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE TABLE wsbs.RECRUIT_SITE_WHITELIST (whitelist_id NUMBER(12) NOT NULL, tyshxym VARCHAR(18) NOT NULL, company_name VARCHAR(200) NOT NULL, active NUMBER(1) NOT NULL DEFAULT 1, PRIMARY KEY (whitelist_id), UNIQUE (tyshxym))';
+    END IF;
+END;
+/
+
+COMMENT ON TABLE wsbs.RECRUIT_SITE_WHITELIST IS '高基地企业白名单表';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WHITELIST.whitelist_id IS '白名单主键ID，SEQ_0073_RECRUIT_SITE_WHITELIST';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WHITELIST.tyshxym IS '企业统一社会信用码';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WHITELIST.company_name IS '企业名称';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WHITELIST.active IS '是否激活，1激活，0停用';
+
+-- 高基地专区首页公告表
+-- 说明：对应答疑文档 1.失业人员全维度帮扶-高基地专区首页，
+-- 由市级管理员发布公告，白名单内企业可查看
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_sequences
+     WHERE sequence_owner = 'WSBS'
+       AND sequence_name = 'SEQ_0073_RECRUIT_SITE_NOTICE';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE SEQUENCE wsbs.SEQ_0073_RECRUIT_SITE_NOTICE MINVALUE 1 MAXVALUE 999999999999 START WITH 1 INCREMENT BY 1 CACHE 20';
+    END IF;
+END;
+/
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_tables
+     WHERE owner = 'WSBS'
+       AND table_name = 'RECRUIT_SITE_NOTICE';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE TABLE wsbs.RECRUIT_SITE_NOTICE (notice_id NUMBER(12) NOT NULL, notice_title VARCHAR2(200) NOT NULL, notice_content CLOB NOT NULL, publish_date DATE DEFAULT NULL, update_date DATE DEFAULT NULL, operator_name VARCHAR2(100) DEFAULT NULL, operator_id VARCHAR2(64) NOT NULL, status VARCHAR2(32) DEFAULT ''草稿'' NOT NULL, PRIMARY KEY (notice_id))';
+    END IF;
+END;
+/
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_indexes
+     WHERE owner = 'WSBS'
+       AND index_name = 'IDX_RECRUIT_SITE_NOTICE_STATUS';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE INDEX idx_recruit_site_notice_status ON wsbs.RECRUIT_SITE_NOTICE (status)';
+    END IF;
+END;
+/
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_indexes
+     WHERE owner = 'WSBS'
+       AND index_name = 'IDX_RECRUIT_SITE_NOTICE_PUBLISH_DATE';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE INDEX idx_recruit_site_notice_publish_date ON wsbs.RECRUIT_SITE_NOTICE (publish_date)';
+    END IF;
+END;
+/
+
+COMMENT ON TABLE wsbs.RECRUIT_SITE_NOTICE IS '高基地专区首页公告表，用于存储高基地首页公告信息';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_NOTICE.notice_id IS '公告ID，系统生成，唯一主键';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_NOTICE.notice_title IS '公告标题';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_NOTICE.notice_content IS '公告内容';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_NOTICE.publish_date IS '发布日期';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_NOTICE.update_date IS '修改日期';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_NOTICE.operator_name IS '操作人';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_NOTICE.operator_id IS '操作人编号';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_NOTICE.status IS '公告状态，取值包括草稿、已发布、已下线';
