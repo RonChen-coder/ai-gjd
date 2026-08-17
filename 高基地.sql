@@ -149,7 +149,7 @@ BEGIN
      WHERE owner = 'WSBS'
        AND table_name = 'RECRUIT_SITE_INFO';
     IF v_cnt = 0 THEN
-        EXECUTE IMMEDIATE 'CREATE TABLE wsbs.RECRUIT_SITE_INFO (site_id NUMBER(12) NOT NULL, tyshxym VARCHAR2(18) NOT NULL, company_name VARCHAR2(200) NOT NULL, site_name VARCHAR2(200) NOT NULL, listing_year VARCHAR2(20) NOT NULL, site_category VARCHAR2(100) NOT NULL, industry_category VARCHAR2(100) NOT NULL, district_name VARCHAR2(100) NOT NULL, district_code VARCHAR2(32), superior_department VARCHAR2(200) NOT NULL, site_address VARCHAR2(500) NOT NULL, site_intro VARCHAR2(1000) NOT NULL, status VARCHAR2(32) DEFAULT ''待完善'' NOT NULL, version NUMBER(6) DEFAULT 1 NOT NULL, reviewer VARCHAR2(100), review_time DATE, review_opinion VARCHAR2(1000), archive_status VARCHAR2(32) DEFAULT ''未归档'' NOT NULL, created_by VARCHAR2(100) NOT NULL, created_at DATE DEFAULT SYSDATE NOT NULL, updated_by VARCHAR2(100), updated_at DATE, PRIMARY KEY (site_id), CONSTRAINT UK_RECRUIT_SITE_INFO_TYSXYM UNIQUE (tyshxym))';
+        EXECUTE IMMEDIATE 'CREATE TABLE wsbs.RECRUIT_SITE_INFO (site_id NUMBER(12) NOT NULL, tyshxym VARCHAR2(18) NOT NULL, company_name VARCHAR2(200) NOT NULL, site_name VARCHAR2(200) NOT NULL, listing_year VARCHAR2(20) NOT NULL, site_category VARCHAR2(100) NOT NULL, industry_category VARCHAR2(100) NOT NULL, district_code VARCHAR2(32) NOT NULL, superior_department VARCHAR2(200) NOT NULL, site_address VARCHAR2(500) NOT NULL, site_intro VARCHAR2(1000) NOT NULL, status VARCHAR2(32) DEFAULT ''待完善'' NOT NULL, reviewer VARCHAR2(100), review_time DATE, review_opinion VARCHAR2(1000), archive_status VARCHAR2(32) DEFAULT ''未归档'' NOT NULL, created_by VARCHAR2(100) NOT NULL, created_at DATE DEFAULT SYSDATE NOT NULL, updated_by VARCHAR2(100), updated_at DATE, PRIMARY KEY (site_id), CONSTRAINT UK_RECRUIT_SITE_INFO_TYSXYM UNIQUE (tyshxym))';
     END IF;
 END;
 /
@@ -162,13 +162,11 @@ COMMENT ON COLUMN wsbs.RECRUIT_SITE_INFO.site_name IS '基地名称';
 COMMENT ON COLUMN wsbs.RECRUIT_SITE_INFO.listing_year IS '挂牌年份';
 COMMENT ON COLUMN wsbs.RECRUIT_SITE_INFO.site_category IS '基地类别，字典取值';
 COMMENT ON COLUMN wsbs.RECRUIT_SITE_INFO.industry_category IS '所属行业类别，字典取值';
-COMMENT ON COLUMN wsbs.RECRUIT_SITE_INFO.district_name IS '属地区';
-COMMENT ON COLUMN wsbs.RECRUIT_SITE_INFO.district_code IS '属地区编码，可选';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_INFO.district_code IS '属地区编码';
 COMMENT ON COLUMN wsbs.RECRUIT_SITE_INFO.superior_department IS '上级主管部门';
 COMMENT ON COLUMN wsbs.RECRUIT_SITE_INFO.site_address IS '基地地址';
 COMMENT ON COLUMN wsbs.RECRUIT_SITE_INFO.site_intro IS '基地简介，500字以内';
 COMMENT ON COLUMN wsbs.RECRUIT_SITE_INFO.status IS '状态，取值包括待完善、待审核、已通过、已驳回';
-COMMENT ON COLUMN wsbs.RECRUIT_SITE_INFO.version IS '版本号，每次有效变更递增';
 COMMENT ON COLUMN wsbs.RECRUIT_SITE_INFO.reviewer IS '审核人';
 COMMENT ON COLUMN wsbs.RECRUIT_SITE_INFO.review_time IS '审核时间';
 COMMENT ON COLUMN wsbs.RECRUIT_SITE_INFO.review_opinion IS '审核意见';
@@ -240,9 +238,9 @@ BEGIN
       INTO v_cnt
       FROM all_indexes
      WHERE owner = 'WSBS'
-       AND index_name = 'IDX_RECRUIT_SITE_INFO_DISTRICT';
+       AND index_name = 'IDX_RECRUIT_SITE_INFO_DISTRICT_CODE';
     IF v_cnt = 0 THEN
-        EXECUTE IMMEDIATE 'CREATE INDEX idx_recruit_site_info_district ON wsbs.RECRUIT_SITE_INFO (district_name)';
+        EXECUTE IMMEDIATE 'CREATE INDEX idx_recruit_site_info_district_code ON wsbs.RECRUIT_SITE_INFO (district_code)';
     END IF;
 END;
 /

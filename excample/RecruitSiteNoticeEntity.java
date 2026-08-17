@@ -1,4 +1,4 @@
-package com.lysh.proj.entity;
+package com.wondersgroup.shrs.corp.gjd.entity;
 
 import com.wondersgroup.wdls.core.domain.vo.ValueObject;
 

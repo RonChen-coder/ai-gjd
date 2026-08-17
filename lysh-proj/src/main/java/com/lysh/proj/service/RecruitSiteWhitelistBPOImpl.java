@@ -24,7 +24,7 @@ public class RecruitSiteWhitelistBPOImpl implements RecruitSiteWhitelistBPO {
     public List<RecruitSiteWhitelist> listAll() {
         List<RecruitSiteWhitelistEntity> entities = DBUtils.query(
                 "SELECT whitelist_id, tyshxym, company_name, active " +
-                "FROM RECRUIT_SITE_WHITELIST ORDER BY whitelist_id DESC", RecruitSiteWhitelistEntity.class);
+                "FROM wsbs.RECRUIT_SITE_WHITELIST ORDER BY whitelist_id DESC", RecruitSiteWhitelistEntity.class);
         List<RecruitSiteWhitelist> models = new ArrayList<>();
         for (RecruitSiteWhitelistEntity entity : entities) {
             models.add(toModel(entity));
@@ -42,7 +42,7 @@ public class RecruitSiteWhitelistBPOImpl implements RecruitSiteWhitelistBPO {
     public RecruitSiteWhitelist findById(Long siteWhitelistId) {
         RecruitSiteWhitelistEntity entity = DBUtils.get(
                 "SELECT whitelist_id, tyshxym, company_name, active " +
-                "FROM RECRUIT_SITE_WHITELIST WHERE whitelist_id = ?",
+                "FROM wsbs.RECRUIT_SITE_WHITELIST WHERE whitelist_id = ?",
                 RecruitSiteWhitelistEntity.class, siteWhitelistId);
         return toModel(entity);
     }
@@ -57,7 +57,7 @@ public class RecruitSiteWhitelistBPOImpl implements RecruitSiteWhitelistBPO {
     public RecruitSiteWhitelist findByTyshxym(String tyshxym) {
         RecruitSiteWhitelistEntity entity = DBUtils.get(
                 "SELECT whitelist_id, tyshxym, company_name, active " +
-                "FROM RECRUIT_SITE_WHITELIST WHERE tyshxym = ?",
+                "FROM wsbs.RECRUIT_SITE_WHITELIST WHERE tyshxym = ?",
                 RecruitSiteWhitelistEntity.class, tyshxym);
         return toModel(entity);
     }
@@ -70,7 +70,7 @@ public class RecruitSiteWhitelistBPOImpl implements RecruitSiteWhitelistBPO {
      */
     @Override
     public boolean existsByTyshxym(String tyshxym) {
-        return DBUtils.getInt("SELECT COUNT(1) FROM RECRUIT_SITE_WHITELIST WHERE tyshxym = ?",
+        return DBUtils.getInt("SELECT COUNT(1) FROM wsbs.RECRUIT_SITE_WHITELIST WHERE tyshxym = ? AND active = 1",
                 tyshxym) > 0;
     }
 

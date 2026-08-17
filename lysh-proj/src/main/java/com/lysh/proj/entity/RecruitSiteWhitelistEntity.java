@@ -1,13 +1,33 @@
 package com.lysh.proj.entity;
 
+import com.wondersgroup.wdls.core.domain.vo.ValueObject;
+
+import javax.persistence.*;
+
 /**
  * 高基地白名单实体类。
- * 对应表 RECRUIT_SITE_WHITELIST，字段与实体属性一一对应。
+ * 对应表 RECRUIT_SITE_WHITELIST。
  */
-public class RecruitSiteWhitelistEntity {
+@Entity
+@Table(name = "RECRUIT_SITE_WHITELIST", schema = "WSBS")
+public class RecruitSiteWhitelistEntity implements ValueObject {
+
+    @Id
+    @GeneratedValue(generator = "SEQ_0073_RECRUIT_SITE_WHITELIST")
+    @SequenceGenerator(name = "SEQ_0073_RECRUIT_SITE_WHITELIST", allocationSize = 1, sequenceName = "SEQ_0073_RECRUIT_SITE_WHITELIST")
+    @Column(name = "whitelist_id")
     private Long whitelistId;
+
+    @Basic
+    @Column(name = "tyshxym")
     private String tyshxym;
+
+    @Basic
+    @Column(name = "company_name")
     private String companyName;
+
+    @Basic
+    @Column(name = "active")
     private Boolean active;
 
     public Long getWhitelistId() {

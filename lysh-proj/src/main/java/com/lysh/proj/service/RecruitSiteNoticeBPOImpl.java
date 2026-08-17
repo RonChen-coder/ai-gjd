@@ -5,8 +5,8 @@ import com.lysh.proj.model.RecruitSiteNotice;
 import com.wondersgroup.wdls.data.commons.DBUtils;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,7 +26,7 @@ public class RecruitSiteNoticeBPOImpl implements RecruitSiteNoticeBPO {
         if (notice.getStatus() == null || notice.getStatus().isBlank()) {
             notice.setStatus(STATUS_DRAFT);
         }
-        LocalDateTime now = LocalDateTime.now();
+        Date now = new Date();
         if (notice.getUpdateDate() == null) {
             notice.setUpdateDate(now);
         }
@@ -51,7 +51,7 @@ public class RecruitSiteNoticeBPOImpl implements RecruitSiteNoticeBPO {
             RecruitSiteNotice old = findById(notice.getNoticeId());
             notice.setStatus(old != null ? old.getStatus() : STATUS_DRAFT);
         }
-        notice.setUpdateDate(LocalDateTime.now());
+        notice.setUpdateDate(new Date());
         DBUtils.execSql("UPDATE wsbs.RECRUIT_SITE_NOTICE SET " +
                 "notice_title = ?, notice_content = ?, update_date = ?, operator_name = ?, operator_id = ?, district_code = ?, status = ? " +
                 "WHERE notice_id = ?",
@@ -89,7 +89,7 @@ public class RecruitSiteNoticeBPOImpl implements RecruitSiteNoticeBPO {
 
     @Override
     public RecruitSiteNotice publish(Long noticeId, String operatorName, String operatorId) {
-        LocalDateTime now = LocalDateTime.now();
+        Date now = new Date();
         DBUtils.execSql("UPDATE wsbs.RECRUIT_SITE_NOTICE SET " +
                 "status = ?, publish_date = ?, update_date = ?, operator_name = ?, operator_id = ? " +
                 "WHERE notice_id = ?",
@@ -99,7 +99,7 @@ public class RecruitSiteNoticeBPOImpl implements RecruitSiteNoticeBPO {
 
     @Override
     public RecruitSiteNotice offline(Long noticeId, String operatorName, String operatorId) {
-        LocalDateTime now = LocalDateTime.now();
+        Date now = new Date();
         DBUtils.execSql("UPDATE wsbs.RECRUIT_SITE_NOTICE SET " +
                 "status = ?, update_date = ?, operator_name = ?, operator_id = ? " +
                 "WHERE notice_id = ?",

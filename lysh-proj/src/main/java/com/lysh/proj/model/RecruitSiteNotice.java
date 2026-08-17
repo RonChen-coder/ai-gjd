@@ -1,6 +1,6 @@
 package com.lysh.proj.model;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * 高基地专区首页公告模型。
@@ -10,8 +10,8 @@ public class RecruitSiteNotice {
     private Long noticeId;
     private String noticeTitle;
     private String noticeContent;
-    private LocalDateTime publishDate;
-    private LocalDateTime updateDate;
+    private Date publishDate;
+    private Date updateDate;
     private String operatorName;
     private String operatorId;
     private String districtCode;
@@ -41,19 +41,19 @@ public class RecruitSiteNotice {
         this.noticeContent = noticeContent;
     }
 
-    public LocalDateTime getPublishDate() {
+    public Date getPublishDate() {
         return publishDate;
     }
 
-    public void setPublishDate(LocalDateTime publishDate) {
+    public void setPublishDate(Date publishDate) {
         this.publishDate = publishDate;
     }
 
-    public LocalDateTime getUpdateDate() {
+    public Date getUpdateDate() {
         return updateDate;
     }
 
-    public void setUpdateDate(LocalDateTime updateDate) {
+    public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
     }
 
