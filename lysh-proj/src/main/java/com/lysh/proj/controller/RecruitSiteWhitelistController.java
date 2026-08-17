@@ -2,10 +2,8 @@ package com.lysh.proj.controller;
 
 import com.lysh.proj.model.RecruitSiteWhitelist;
 import com.lysh.proj.service.RecruitSiteWhitelistBPO;
-import org.springframework.http.ResponseEntity;
+import com.wondersgroup.wdls.web.AjaxResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 高基地白名单控制层。
@@ -27,8 +25,8 @@ public class RecruitSiteWhitelistController {
      * @return 白名单记录列表
      */
     @GetMapping
-    public ResponseEntity<List<RecruitSiteWhitelist>> listAll() {
-        return ResponseEntity.ok(siteWhitelistService.listAll());
+    public AjaxResult listAll() {
+        return AjaxResult.SUCCESS(siteWhitelistService.listAll());
     }
 
     /**
@@ -38,8 +36,8 @@ public class RecruitSiteWhitelistController {
      * @return 白名单记录
      */
     @GetMapping("/{siteWhitelistId}")
-    public ResponseEntity<RecruitSiteWhitelist> findById(@PathVariable Long siteWhitelistId) {
-        return ResponseEntity.ok(siteWhitelistService.findById(siteWhitelistId));
+    public AjaxResult findById(@PathVariable Long siteWhitelistId) {
+        return AjaxResult.SUCCESS(siteWhitelistService.findById(siteWhitelistId));
     }
 
     /**
@@ -49,8 +47,8 @@ public class RecruitSiteWhitelistController {
      * @return 白名单记录
      */
     @GetMapping("/tyshxym/{tyshxym}")
-    public ResponseEntity<RecruitSiteWhitelist> findByTyshxym(@PathVariable String tyshxym) {
-        return ResponseEntity.ok(siteWhitelistService.findByTyshxym(tyshxym));
+    public AjaxResult findByTyshxym(@PathVariable String tyshxym) {
+        return AjaxResult.SUCCESS(siteWhitelistService.findByTyshxym(tyshxym));
     }
 
     /**
@@ -60,7 +58,7 @@ public class RecruitSiteWhitelistController {
      * @return 存在返回 true，否则返回 false
      */
     @GetMapping("/exists")
-    public ResponseEntity<Boolean> exists(@RequestParam String tyshxym) {
-        return ResponseEntity.ok(siteWhitelistService.existsByTyshxym(tyshxym));
+    public AjaxResult exists(@RequestParam String tyshxym) {
+        return AjaxResult.SUCCESS(siteWhitelistService.existsByTyshxym(tyshxym));
     }
 }

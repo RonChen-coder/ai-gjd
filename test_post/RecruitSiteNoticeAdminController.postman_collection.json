@@ -1,0 +1,219 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-5e6f-4a7b-8c9d-0e1f2a3b4c5d",
+    "name": "高基地公告管理端 RecruitSiteNoticeAdminController",
+    "description": "市级管理员公告的创建、更新、删除、查询、发布与下线接口。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "创建公告",
+      "description": "市级管理员录入新的高基地公告草稿。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"noticeTitle\": \"2026年高基地培训项目申报通知\",\n  \"noticeContent\": \"各单位请于规定时间前完成项目申报。\",\n  \"publishDate\": \"2026-08-14T10:00:00\",\n  \"updateDate\": \"2026-08-14T10:00:00\",\n  \"operatorName\": \"市级管理员\",\n  \"operatorId\": \"1\",\n  \"districtCode\": \"310101\",\n  \"status\": \"草稿\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-notice",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-notice"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "更新公告",
+      "description": "市级管理员修改公告标题、正文等信息。",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"noticeId\": 1,\n  \"noticeTitle\": \"2026年高基地培训项目申报通知（更新）\",\n  \"noticeContent\": \"更新后的公告内容。\",\n  \"publishDate\": \"2026-08-14T10:00:00\",\n  \"updateDate\": \"2026-08-14T14:00:00\",\n  \"operatorName\": \"市级管理员\",\n  \"operatorId\": \"1\",\n  \"districtCode\": \"310101\",\n  \"status\": \"草稿\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-notice",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-notice"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "删除公告",
+      "description": "删除不再需要的公告记录，noticeId 使用集合变量。",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-notice/{{noticeId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-notice",
+            "{{noticeId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "查询全部公告",
+      "description": "查看草稿、已发布和已下线等全部状态的公告。",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-notice",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-notice"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "查询公告详情",
+      "description": "根据公告ID查询公告详情，noticeId 使用集合变量。",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-notice/{{noticeId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-notice",
+            "{{noticeId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "发布公告",
+      "description": "发布后企业端可见该公告，操作人和操作人编号使用集合变量。",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-notice/{{noticeId}}/publish?operatorName={{operatorName}}&operatorId={{operatorId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-notice",
+            "{{noticeId}}",
+            "publish"
+          ],
+          "query": [
+            {
+              "key": "operatorName",
+              "value": "{{operatorName}}"
+            },
+            {
+              "key": "operatorId",
+              "value": "{{operatorId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "下线公告",
+      "description": "下线后企业端不可见该公告，操作人和操作人编号使用集合变量。",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-notice/{{noticeId}}/offline?operatorName={{operatorName}}&operatorId={{operatorId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-notice",
+            "{{noticeId}}",
+            "offline"
+          ],
+          "query": [
+            {
+              "key": "operatorName",
+              "value": "{{operatorName}}"
+            },
+            {
+              "key": "operatorId",
+              "value": "{{operatorId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "noticeId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "operatorName",
+      "value": "市级管理员",
+      "type": "string"
+    },
+    {
+      "key": "operatorId",
+      "value": "1",
+      "type": "string"
+    }
+  ]
+}

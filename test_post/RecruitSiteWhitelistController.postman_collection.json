@@ -1,0 +1,113 @@
+{
+  "info": {
+    "_postman_id": "c3d4e5f6-7081-4b9c-ae0f-2a3b4c5d6e7f",
+    "name": "高基地白名单 RecruitSiteWhitelistController",
+    "description": "高基地白名单列表、单条查询和存在性校验接口。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "查询全部白名单",
+      "description": "查询全部白名单记录。",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-whitelist",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-whitelist"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "根据主键ID查询白名单",
+      "description": "根据白名单主键ID查询记录，siteWhitelistId 使用集合变量。",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-whitelist/{{siteWhitelistId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-whitelist",
+            "{{siteWhitelistId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "根据统一社会信用码查询白名单",
+      "description": "根据企业统一社会信用码查询记录，tyshxym 使用集合变量。",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-whitelist/tyshxym/{{tyshxym}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-whitelist",
+            "tyshxym",
+            "{{tyshxym}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "校验白名单是否存在",
+      "description": "根据企业统一社会信用码校验白名单记录是否存在，tyshxym 使用集合变量。",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-whitelist/exists?tyshxym={{tyshxym}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-whitelist",
+            "exists"
+          ],
+          "query": [
+            {
+              "key": "tyshxym",
+              "value": "{{tyshxym}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "siteWhitelistId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "tyshxym",
+      "value": "91310000MA1FL0LX06",
+      "type": "string"
+    }
+  ]
+}
