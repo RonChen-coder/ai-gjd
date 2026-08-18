@@ -5,6 +5,7 @@
 ### 1.2 controller层url命名规范
     - 如果是市区管理员使用，url前缀默认加上“/admin“
     - 如果是基地/单位使用 ，url前缀默认加上"/corp"
+    - url尽量只使用post get请求，参数不要用 PathVariabled的形式传参 
 ### 1.3 方法命名
     - 方法要求注释完整
     - 使用驼峰命名规则

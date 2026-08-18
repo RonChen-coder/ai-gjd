@@ -25,7 +25,7 @@ public class RecruitSiteNoticeCorpController {
      *
      * @return 已发布公告列表
      */
-    @GetMapping
+    @GetMapping("/list")
     public AjaxResult listPublished() {
         return AjaxResult.SUCCESS(noticeService.listPublished());
     }
@@ -37,8 +37,8 @@ public class RecruitSiteNoticeCorpController {
      * @param noticeId 公告主键ID
      * @return 已发布公告详情
      */
-    @GetMapping("/{noticeId}")
-    public AjaxResult findPublishedById(@PathVariable Long noticeId) {
+    @GetMapping("/detail")
+    public AjaxResult findPublishedById(@RequestParam Long noticeId) {
         return AjaxResult.SUCCESS(noticeService.findPublishedById(noticeId));
     }
 }

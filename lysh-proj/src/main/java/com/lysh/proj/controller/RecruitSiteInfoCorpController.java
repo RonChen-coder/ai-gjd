@@ -25,7 +25,7 @@ public class RecruitSiteInfoCorpController {
      * @param siteInfo 高基地信息请求体，tyshxym 必填
      * @return 创建后的高基地信息
      */
-    @PostMapping
+    @PostMapping("/create")
     public AjaxResult create(@RequestBody RecruitSiteInfo siteInfo) {
         return AjaxResult.SUCCESS(siteInfoBPO.createByCorp(siteInfo));
     }
@@ -36,7 +36,7 @@ public class RecruitSiteInfoCorpController {
      * @param siteInfo 待更新的高基地信息，siteId 和 tyshxym 必填
      * @return 更新后的高基地信息
      */
-    @PutMapping
+    @PostMapping("/update")
     public AjaxResult update(@RequestBody RecruitSiteInfo siteInfo) {
         return AjaxResult.SUCCESS(siteInfoBPO.updateByCorp(siteInfo));
     }

@@ -1,6 +1,7 @@
 package com.lysh.proj.controller;
 
 import com.lysh.proj.model.RecruitSiteInfo;
+import com.lysh.proj.model.RecruitSiteInfoReviewReq;
 import com.lysh.proj.service.RecruitSiteInfoBPO;
 import com.wondersgroup.wdls.web.AjaxResult;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class RecruitSiteInfoAdminController {
      * @param siteInfo 高基地信息请求体
      * @return 创建后的高基地信息
      */
-    @PostMapping
+    @PostMapping("/create")
     public AjaxResult create(@RequestBody RecruitSiteInfo siteInfo) {
         return AjaxResult.SUCCESS(siteInfoBPO.createByAdmin(siteInfo));
     }
@@ -36,7 +37,7 @@ public class RecruitSiteInfoAdminController {
      * @param siteInfo 待更新的高基地信息
      * @return 更新后的高基地信息
      */
-    @PutMapping
+    @PostMapping("/update")
     public AjaxResult update(@RequestBody RecruitSiteInfo siteInfo) {
         return AjaxResult.SUCCESS(siteInfoBPO.updateByAdmin(siteInfo));
     }
@@ -47,8 +48,8 @@ public class RecruitSiteInfoAdminController {
      * @param siteId 基地主键ID
      * @return 无内容响应
      */
-    @DeleteMapping("/{siteId}")
-    public AjaxResult delete(@PathVariable Long siteId) {
+    @PostMapping("/delete")
+    public AjaxResult delete(@RequestParam Long siteId) {
         siteInfoBPO.delete(siteId);
         return AjaxResult.SUCCESS();
     }
@@ -61,7 +62,7 @@ public class RecruitSiteInfoAdminController {
      * @param status 状态，可选
      * @return 高基地信息列表
      */
-    @GetMapping
+    @GetMapping("/list")
     public AjaxResult list(@RequestParam(required = false) String districtCode,
                            @RequestParam(required = false) String status) {
         if (districtCode != null && !districtCode.isBlank()) {
@@ -79,8 +80,8 @@ public class RecruitSiteInfoAdminController {
      * @param siteId 基地主键ID
      * @return 高基地信息详情
      */
-    @GetMapping("/{siteId}")
-    public AjaxResult findById(@PathVariable Long siteId) {
+    @GetMapping("/detail")
+    public AjaxResult findById(@RequestParam Long siteId) {
         return AjaxResult.SUCCESS(siteInfoBPO.findById(siteId));
     }
 
@@ -93,11 +94,8 @@ public class RecruitSiteInfoAdminController {
      * @param status 审核结果，已通过或已驳回
      * @return 审核后的高基地信息
      */
-    @PostMapping("/{siteId}/review")
-    public AjaxResult review(@PathVariable Long siteId,
-                             @RequestParam String reviewer,
-                             @RequestParam String reviewOpinion,
-                             @RequestParam String status) {
-        return AjaxResult.SUCCESS(siteInfoBPO.review(siteId, reviewer, reviewOpinion, status));
+    @PostMapping("/review")
+    public AjaxResult review(@RequestBody RecruitSiteInfoReviewReq req) {
+        return AjaxResult.SUCCESS(siteInfoBPO.review(req.getSiteId(), req.getReviewer(), req.getReviewOpinion(), req.getStatus()));
     }
 }

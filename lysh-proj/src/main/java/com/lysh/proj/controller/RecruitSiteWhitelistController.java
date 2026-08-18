@@ -24,7 +24,7 @@ public class RecruitSiteWhitelistController {
      *
      * @return 白名单记录列表
      */
-    @GetMapping
+    @GetMapping("/list")
     public AjaxResult listAll() {
         return AjaxResult.SUCCESS(siteWhitelistService.listAll());
     }
@@ -35,8 +35,8 @@ public class RecruitSiteWhitelistController {
      * @param siteWhitelistId 白名单主键ID
      * @return 白名单记录
      */
-    @GetMapping("/{siteWhitelistId}")
-    public AjaxResult findById(@PathVariable Long siteWhitelistId) {
+    @GetMapping("/detail")
+    public AjaxResult findById(@RequestParam Long siteWhitelistId) {
         return AjaxResult.SUCCESS(siteWhitelistService.findById(siteWhitelistId));
     }
 
@@ -46,8 +46,8 @@ public class RecruitSiteWhitelistController {
      * @param tyshxym 企业统一社会信用码
      * @return 白名单记录
      */
-    @GetMapping("/tyshxym/{tyshxym}")
-    public AjaxResult findByTyshxym(@PathVariable String tyshxym) {
+    @GetMapping("/detail-by-tyshxym")
+    public AjaxResult findByTyshxym(@RequestParam String tyshxym) {
         return AjaxResult.SUCCESS(siteWhitelistService.findByTyshxym(tyshxym));
     }
 

@@ -32,7 +32,7 @@ public class RecruitSiteApplyMaterialCorpController {
      * @param tyshxym 企业统一社会信用代码
      * @return 创建后的申请材料
      */
-    @PostMapping
+    @PostMapping("/create")
     public AjaxResult create(@RequestBody RecruitSiteApplyMaterial material,
                              @RequestParam String tyshxym) {
         checkSiteOwner(material.getSiteId(), tyshxym);
@@ -46,7 +46,7 @@ public class RecruitSiteApplyMaterialCorpController {
      * @param tyshxym 企业统一社会信用代码
      * @return 更新后的申请材料
      */
-    @PutMapping
+    @PostMapping("/update")
     public AjaxResult update(@RequestBody RecruitSiteApplyMaterial material,
                              @RequestParam String tyshxym) {
         if (material.getMaterialId() == null) {
@@ -68,8 +68,8 @@ public class RecruitSiteApplyMaterialCorpController {
      * @param tyshxym 企业统一社会信用代码
      * @return 无内容响应
      */
-    @DeleteMapping("/{materialId}")
-    public AjaxResult delete(@PathVariable Long materialId,
+    @PostMapping("/delete")
+    public AjaxResult delete(@RequestParam Long materialId,
                              @RequestParam String tyshxym) {
         RecruitSiteApplyMaterial old = applyMaterialBPO.findById(materialId);
         if (old == null) {
@@ -87,8 +87,8 @@ public class RecruitSiteApplyMaterialCorpController {
      * @param tyshxym 企业统一社会信用代码
      * @return 申请材料列表
      */
-    @GetMapping("/site/{siteId}")
-    public AjaxResult listBySiteId(@PathVariable Long siteId,
+    @GetMapping("/list")
+    public AjaxResult listBySiteId(@RequestParam Long siteId,
                                    @RequestParam String tyshxym) {
         checkSiteOwner(siteId, tyshxym);
         return AjaxResult.SUCCESS(applyMaterialBPO.listBySiteId(siteId));
@@ -101,8 +101,8 @@ public class RecruitSiteApplyMaterialCorpController {
      * @param tyshxym 企业统一社会信用代码
      * @return 申请材料详情
      */
-    @GetMapping("/{materialId}")
-    public AjaxResult findById(@PathVariable Long materialId,
+    @GetMapping("/detail")
+    public AjaxResult findById(@RequestParam Long materialId,
                                @RequestParam String tyshxym) {
         RecruitSiteApplyMaterial old = applyMaterialBPO.findById(materialId);
         if (old == null) {

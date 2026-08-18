@@ -24,8 +24,8 @@ public class RecruitSiteApplyMaterialAdminController {
      * @param siteId 基地主键ID
      * @return 申请材料列表
      */
-    @GetMapping("/site/{siteId}")
-    public AjaxResult listBySiteId(@PathVariable Long siteId) {
+    @GetMapping("/list")
+    public AjaxResult listBySiteId(@RequestParam Long siteId) {
         return AjaxResult.SUCCESS(applyMaterialBPO.listBySiteId(siteId));
     }
 
@@ -35,8 +35,8 @@ public class RecruitSiteApplyMaterialAdminController {
      * @param materialId 材料主键ID
      * @return 申请材料详情
      */
-    @GetMapping("/{materialId}")
-    public AjaxResult findById(@PathVariable Long materialId) {
+    @GetMapping("/detail")
+    public AjaxResult findById(@RequestParam Long materialId) {
         return AjaxResult.SUCCESS(applyMaterialBPO.findById(materialId));
     }
 
@@ -46,8 +46,8 @@ public class RecruitSiteApplyMaterialAdminController {
      * @param materialId 材料主键ID
      * @return 无内容响应
      */
-    @DeleteMapping("/{materialId}")
-    public AjaxResult delete(@PathVariable Long materialId) {
+    @PostMapping("/delete")
+    public AjaxResult delete(@RequestParam Long materialId) {
         applyMaterialBPO.delete(materialId);
         return AjaxResult.SUCCESS();
     }

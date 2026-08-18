@@ -1,6 +1,8 @@
 package com.lysh.proj.controller;
 
 import com.lysh.proj.model.RecruitSiteNotice;
+import com.lysh.proj.model.RecruitSiteNoticeOfflineReq;
+import com.lysh.proj.model.RecruitSiteNoticePublishReq;
 import com.lysh.proj.service.RecruitSiteNoticeBPO;
 import com.wondersgroup.wdls.web.AjaxResult;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +28,7 @@ public class RecruitSiteNoticeAdminController {
      * @param notice 公告信息请求体
      * @return 创建后的公告信息
      */
-    @PostMapping
+    @PostMapping("/create")
     public AjaxResult create(@RequestBody RecruitSiteNotice notice) {
         return AjaxResult.SUCCESS(noticeService.create(notice));
     }
@@ -38,7 +40,7 @@ public class RecruitSiteNoticeAdminController {
      * @param notice 待更新的公告信息
      * @return 更新后的公告信息
      */
-    @PutMapping
+    @PostMapping("/update")
     public AjaxResult update(@RequestBody RecruitSiteNotice notice) {
         return AjaxResult.SUCCESS(noticeService.update(notice));
     }
@@ -50,8 +52,8 @@ public class RecruitSiteNoticeAdminController {
      * @param noticeId 公告主键ID
      * @return 无内容响应
      */
-    @DeleteMapping("/{noticeId}")
-    public AjaxResult delete(@PathVariable Long noticeId) {
+    @PostMapping("/delete")
+    public AjaxResult delete(@RequestParam Long noticeId) {
         noticeService.delete(noticeId);
         return AjaxResult.SUCCESS();
     }
@@ -62,7 +64,7 @@ public class RecruitSiteNoticeAdminController {
      *
      * @return 公告信息列表
      */
-    @GetMapping
+    @GetMapping("/list")
     public AjaxResult listAll() {
         return AjaxResult.SUCCESS(noticeService.listAll());
     }
@@ -73,8 +75,8 @@ public class RecruitSiteNoticeAdminController {
      * @param noticeId 公告主键ID
      * @return 公告详细信息
      */
-    @GetMapping("/{noticeId}")
-    public AjaxResult findById(@PathVariable Long noticeId) {
+    @GetMapping("/detail")
+    public AjaxResult findById(@RequestParam Long noticeId) {
         return AjaxResult.SUCCESS(noticeService.findById(noticeId));
     }
 
@@ -87,11 +89,9 @@ public class RecruitSiteNoticeAdminController {
      * @param operatorId 操作人编号
      * @return 发布后的公告信息
      */
-    @PostMapping("/{noticeId}/publish")
-    public AjaxResult publish(@PathVariable Long noticeId,
-                              @RequestParam String operatorName,
-                              @RequestParam String operatorId) {
-        return AjaxResult.SUCCESS(noticeService.publish(noticeId, operatorName, operatorId));
+    @PostMapping("/publish")
+    public AjaxResult publish(@RequestBody RecruitSiteNoticePublishReq req) {
+        return AjaxResult.SUCCESS(noticeService.publish(req.getNoticeId(), req.getOperatorName(), req.getOperatorId()));
     }
 
     /**
@@ -103,10 +103,8 @@ public class RecruitSiteNoticeAdminController {
      * @param operatorId 操作人编号
      * @return 下线后的公告信息
      */
-    @PostMapping("/{noticeId}/offline")
-    public AjaxResult offline(@PathVariable Long noticeId,
-                              @RequestParam String operatorName,
-                              @RequestParam String operatorId) {
-        return AjaxResult.SUCCESS(noticeService.offline(noticeId, operatorName, operatorId));
+    @PostMapping("/offline")
+    public AjaxResult offline(@RequestBody RecruitSiteNoticeOfflineReq req) {
+        return AjaxResult.SUCCESS(noticeService.offline(req.getNoticeId(), req.getOperatorName(), req.getOperatorId()));
     }
 }
