@@ -4,8 +4,11 @@ package com.lysh.proj.model;
  * 高基地公告下线请求模型。
  */
 public class RecruitSiteNoticeOfflineReq {
+    /** 公告ID */
     private Long noticeId;
+    /** 操作人 */
     private String operatorName;
+    /** 操作人编号 */
     private String operatorId;
 
     public Long getNoticeId() {

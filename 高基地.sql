@@ -466,6 +466,77 @@ BEGIN
 END;
 /
 
+-- 基地项目文件表
+-- 说明：对应答疑文档 3.失业人员全维度帮扶-项目信息管理，
+-- 一个项目可挂多个过程文件，文件通过项目状态绑定到对应进度阶段
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_sequences
+     WHERE sequence_owner = 'WSBS'
+       AND sequence_name = 'SEQ_0073_RECRUIT_SITE_PROJECT_FILE';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE SEQUENCE wsbs.SEQ_0073_RECRUIT_SITE_PROJECT_FILE MINVALUE 1 MAXVALUE 999999999999 START WITH 1 INCREMENT BY 1 CACHE 20';
+    END IF;
+END;
+/
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_tables
+     WHERE owner = 'WSBS'
+       AND table_name = 'RECRUIT_SITE_PROJECT_FILE';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE TABLE wsbs.RECRUIT_SITE_PROJECT_FILE (file_id NUMBER(12) NOT NULL, project_id NUMBER(12) NOT NULL, project_status VARCHAR2(32) NOT NULL, file_name VARCHAR2(200) NOT NULL, file_desc VARCHAR2(1000), file_storage_key VARCHAR2(500) NOT NULL, uploader_name VARCHAR2(100), uploader_id VARCHAR2(64), created_at DATE DEFAULT SYSDATE NOT NULL, updated_at DATE, PRIMARY KEY (file_id))';
+    END IF;
+END;
+/
+
+COMMENT ON TABLE wsbs.RECRUIT_SITE_PROJECT_FILE IS '高基地项目文件表，一个项目可挂多个过程文件';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_PROJECT_FILE.file_id IS '文件ID，SEQ_0073_RECRUIT_SITE_PROJECT_FILE';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_PROJECT_FILE.project_id IS '关联项目ID，对应RECRUIT_SITE_PROJECT.project_id';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_PROJECT_FILE.project_status IS '项目状态，字典RECRUIT_SITE_PROJECT_STATUS，文件挂接到对应项目进度阶段';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_PROJECT_FILE.file_name IS '文件名称';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_PROJECT_FILE.file_desc IS '文件说明';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_PROJECT_FILE.file_storage_key IS '文件存储key';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_PROJECT_FILE.uploader_name IS '上传人';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_PROJECT_FILE.uploader_id IS '上传人编号';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_PROJECT_FILE.created_at IS '创建时间';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_PROJECT_FILE.updated_at IS '修改时间';
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_indexes
+     WHERE owner = 'WSBS'
+       AND index_name = 'IDX_RECRUIT_SITE_PROJECT_FILE_PROJECT';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE INDEX idx_recruit_site_project_file_project ON wsbs.RECRUIT_SITE_PROJECT_FILE (project_id)';
+    END IF;
+END;
+/
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_indexes
+     WHERE owner = 'WSBS'
+       AND index_name = 'IDX_RECRUIT_SITE_PROJECT_FILE_PROJECT_STATUS';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE INDEX idx_recruit_site_project_file_project_status ON wsbs.RECRUIT_SITE_PROJECT_FILE (project_status)';
+    END IF;
+END;
+/
+
 
 
 --------------高基地类别字典

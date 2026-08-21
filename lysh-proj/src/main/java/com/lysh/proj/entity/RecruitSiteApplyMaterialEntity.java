@@ -17,46 +17,57 @@ public class RecruitSiteApplyMaterialEntity implements ValueObject {
     @GeneratedValue(generator = "SEQ_0073_RECRUIT_SITE_APPLY_MATERIAL")
     @SequenceGenerator(name = "SEQ_0073_RECRUIT_SITE_APPLY_MATERIAL", allocationSize = 1, sequenceName = "SEQ_0073_RECRUIT_SITE_APPLY_MATERIAL")
     @Column(name = "material_id")
+    /** 材料ID */
     private Long materialId;
 
     @Basic
     @Column(name = "site_id")
+    /** 关联基地ID */
     private Long siteId;
 
     @Basic
     @Column(name = "material_name")
+    /** 材料名称 */
     private String materialName;
 
     @Basic
     @Column(name = "material_desc")
+    /** 材料说明 */
     private String materialDesc;
 
     @Basic
     @Column(name = "file_name")
+    /** 文件名称 */
     private String fileName;
 
     @Basic
     @Column(name = "file_storage_key")
+    /** 文件存储key */
     private String fileStorageKey;
 
     @Basic
     @Column(name = "status")
+    /** 材料状态，有效/作废/已归档 */
     private String status;
 
     @Basic
     @Column(name = "uploader_name")
+    /** 上传人 */
     private String uploaderName;
 
     @Basic
     @Column(name = "uploader_id")
+    /** 上传人编号 */
     private String uploaderId;
 
     @Basic
     @Column(name = "created_at")
+    /** 创建时间 */
     private Date createdAt;
 
     @Basic
     @Column(name = "updated_at")
+    /** 修改时间 */
     private Date updatedAt;
 
     public Long getMaterialId() {

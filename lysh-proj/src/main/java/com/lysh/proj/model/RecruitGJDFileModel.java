@@ -5,8 +5,11 @@ package com.lysh.proj.model;
  * 用于承载文件系统返回的文件名称、内容和类型。
  */
 public class RecruitGJDFileModel {
+    /** 文件名称 */
     private String name;
+    /** 文件字节内容 */
     private byte[] bytes;
+    /** 文件类型 */
     private String contentType;
 
     public RecruitGJDFileModel() {

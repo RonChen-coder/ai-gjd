@@ -7,16 +7,27 @@ import java.util.Date;
  * 对应表 RECRUIT_SITE_APPLY_MATERIAL，字段与实体类保持一致。
  */
 public class RecruitSiteApplyMaterial {
+    /** 材料ID */
     private Long materialId;
+    /** 关联基地ID */
     private Long siteId;
+    /** 材料名称 */
     private String materialName;
+    /** 材料说明 */
     private String materialDesc;
+    /** 文件名称 */
     private String fileName;
+    /** 文件存储key */
     private String fileStorageKey;
+    /** 材料状态，有效/作废/已归档 */
     private String status;
+    /** 上传人 */
     private String uploaderName;
+    /** 上传人编号 */
     private String uploaderId;
+    /** 创建时间 */
     private Date createdAt;
+    /** 修改时间 */
     private Date updatedAt;
 
     public Long getMaterialId() {

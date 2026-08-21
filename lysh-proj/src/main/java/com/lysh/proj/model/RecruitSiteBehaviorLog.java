@@ -7,17 +7,29 @@ import java.util.Date;
  * 记录谁在什么时间修改了哪个业务对象的哪个字段。
  */
 public class RecruitSiteBehaviorLog {
+    /** 日志ID */
     private Long logId;
+    /** 业务对象类型编码，1基地/2项目/3资产 */
     private Integer bizType;
+    /** 业务对象主键 */
     private Long bizId;
+    /** 操作人姓名 */
     private String operatorName;
+    /** 操作人编号 */
     private String operatorId;
+    /** 操作角色，市级管理员/区级管理员/基地申报单位 */
     private String operatorRole;
+    /** 操作类型，修改/审核/上传/删除 */
     private String operationType;
+    /** 变更字段名称 */
     private String fieldName;
+    /** 变更前内容 */
     private String oldValue;
+    /** 变更后内容 */
     private String newValue;
+    /** 中文行为日志描述 */
     private String logContent;
+    /** 日志生成时间 */
     private Date createdAt;
 
     public Long getLogId() {

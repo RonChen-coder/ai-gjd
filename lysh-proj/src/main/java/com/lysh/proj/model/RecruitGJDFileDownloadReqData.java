@@ -5,6 +5,7 @@ package com.lysh.proj.model;
  * 通过文件存储key下载文件。
  */
 public class RecruitGJDFileDownloadReqData {
+    /** 文件存储key */
     private String fileId;
 
     public String getFileId() {

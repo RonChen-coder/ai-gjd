@@ -17,82 +17,102 @@ public class RecruitSiteInfoEntity implements ValueObject {
     @GeneratedValue(generator = "SEQ_0073_RECRUIT_SITE_INFO")
     @SequenceGenerator(name = "SEQ_0073_RECRUIT_SITE_INFO", allocationSize = 1, sequenceName = "SEQ_0073_RECRUIT_SITE_INFO")
     @Column(name = "site_id")
+    /** 基地ID */
     private Long siteId;
 
     @Basic
     @Column(name = "tyshxym")
+    /** 企业统一社会信用代码 */
     private String tyshxym;
 
     @Basic
     @Column(name = "company_name")
+    /** 单位名称 */
     private String companyName;
 
     @Basic
     @Column(name = "site_name")
+    /** 基地名称 */
     private String siteName;
 
     @Basic
     @Column(name = "listing_year")
+    /** 挂牌年份 */
     private String listingYear;
 
     @Basic
     @Column(name = "site_category")
+    /** 基地类别，字典取值 */
     private String siteCategory;
 
     @Basic
     @Column(name = "industry_category")
+    /** 所属行业类别，字典取值 */
     private String industryCategory;
 
     @Basic
     @Column(name = "district_code")
+    /** 属地区编码 */
     private String districtCode;
 
     @Basic
     @Column(name = "superior_department")
+    /** 上级主管部门 */
     private String superiorDepartment;
 
     @Basic
     @Column(name = "site_address")
+    /** 基地地址 */
     private String siteAddress;
 
     @Basic
     @Column(name = "site_intro")
+    /** 基地简介 */
     private String siteIntro;
 
     @Basic
     @Column(name = "status")
+    /** 状态，待完善/待审核/已通过/已驳回 */
     private String status;
 
     @Basic
     @Column(name = "reviewer")
+    /** 审核人 */
     private String reviewer;
 
     @Basic
     @Column(name = "review_time")
+    /** 审核时间 */
     private Date reviewTime;
 
     @Basic
     @Column(name = "review_opinion")
+    /** 审核意见 */
     private String reviewOpinion;
 
     @Basic
     @Column(name = "archive_status")
+    /** 归档状态，未归档/已归档 */
     private String archiveStatus;
 
     @Basic
     @Column(name = "created_by")
+    /** 创建人 */
     private String createdBy;
 
     @Basic
     @Column(name = "created_at")
+    /** 创建时间 */
     private Date createdAt;
 
     @Basic
     @Column(name = "updated_by")
+    /** 修改人 */
     private String updatedBy;
 
     @Basic
     @Column(name = "updated_at")
+    /** 修改时间 */
     private Date updatedAt;
 
     public Long getSiteId() {

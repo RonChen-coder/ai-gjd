@@ -7,7 +7,6 @@ import com.wondersgroup.wdls.core.exception.BusinessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -35,11 +34,11 @@ public class RecruitFileUploadBPOImpl implements RecruitFileUploadBPO {
     }
 
     @Override
-    public String upload(MultipartFile file) {
-        if (file == null || file.isEmpty()) {
+    public String upload(RecruitGJDFileModel file) {
+        if (file == null || file.getBytes() == null || file.getBytes().length == 0) {
             throw new BusinessException("上传文件为空");
         }
-        String originalName = file.getOriginalFilename();
+        String originalName = file.getName();
         if (originalName == null || !originalName.contains(".")) {
             throw new BusinessException("文件名不合法");
         }
@@ -76,6 +75,19 @@ public class RecruitFileUploadBPOImpl implements RecruitFileUploadBPO {
         } catch (Exception e) {
             logger.error("从FSManager获取文件失败", e);
             return null;
+        }
+    }
+
+    @Override
+    public void deleteFileModel(String fileId) {
+        if (fileId == null || fileId.isBlank()) {
+            throw new BusinessException("文件存储key不能为空");
+        }
+        try {
+            fsManager.deleteObject(BUCKET_NAME, fileId);
+        } catch (Exception e) {
+            logger.error("从FSManager删除文件失败", e);
+            throw new BusinessException("删除文件失败");
         }
     }
 }

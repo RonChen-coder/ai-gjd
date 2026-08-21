@@ -17,38 +17,47 @@ public class RecruitSiteNoticeEntity implements ValueObject {
     @GeneratedValue(generator = "SEQ_0073_RECRUIT_SITE_NOTICE")
     @SequenceGenerator(name = "SEQ_0073_RECRUIT_SITE_NOTICE", allocationSize = 1, sequenceName = "SEQ_0073_RECRUIT_SITE_NOTICE")
     @Column(name = "notice_id")
+    /** 公告ID */
     private Long noticeId;
 
     @Basic
     @Column(name = "notice_title")
+    /** 公告标题 */
     private String noticeTitle;
 
     @Basic
     @Column(name = "notice_content")
+    /** 公告内容 */
     private String noticeContent;
 
     @Basic
     @Column(name = "publish_date")
+    /** 发布日期 */
     private Date publishDate;
 
     @Basic
     @Column(name = "update_date")
+    /** 修改日期 */
     private Date updateDate;
 
     @Basic
     @Column(name = "operator_name")
+    /** 操作人 */
     private String operatorName;
 
     @Basic
     @Column(name = "operator_id")
+    /** 操作人编号 */
     private String operatorId;
 
     @Basic
     @Column(name = "district_code")
+    /** 地区编码 */
     private String districtCode;
 
     @Basic
     @Column(name = "status")
+    /** 公告状态，草稿/已发布/已下线 */
     private String status;
 
     public Long getNoticeId() {

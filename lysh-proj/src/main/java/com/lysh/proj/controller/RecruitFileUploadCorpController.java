@@ -10,6 +10,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 /**
  * 文件上传企业端控制层。
  * 面向白名单内单位，提供文件上传和下载接口。
@@ -35,7 +37,13 @@ public class RecruitFileUploadCorpController {
         if (file == null || file.isEmpty()) {
             throw new BusinessException("上传文件为空");
         }
-        return AjaxResult.SUCCESS(fileUploadBPO.upload(file));
+        try {
+            RecruitGJDFileModel fileModel = new RecruitGJDFileModel(
+                    file.getOriginalFilename(), file.getBytes(), file.getContentType());
+            return AjaxResult.SUCCESS(fileUploadBPO.upload(fileModel));
+        } catch (IOException e) {
+            throw new BusinessException("上传文件失败");
+        }
     }
 
     /**

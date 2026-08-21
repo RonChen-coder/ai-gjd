@@ -16,18 +16,22 @@ public class RecruitSiteWhitelistEntity implements ValueObject {
     @GeneratedValue(generator = "SEQ_0073_RECRUIT_SITE_WHITELIST")
     @SequenceGenerator(name = "SEQ_0073_RECRUIT_SITE_WHITELIST", allocationSize = 1, sequenceName = "SEQ_0073_RECRUIT_SITE_WHITELIST")
     @Column(name = "whitelist_id")
+    /** 白名单主键ID */
     private Long whitelistId;
 
     @Basic
     @Column(name = "tyshxym")
+    /** 企业统一社会信用码 */
     private String tyshxym;
 
     @Basic
     @Column(name = "company_name")
+    /** 企业名称 */
     private String companyName;
 
     @Basic
     @Column(name = "active")
+    /** 是否激活，1激活，0停用 */
     private Boolean active;
 
     public Long getWhitelistId() {

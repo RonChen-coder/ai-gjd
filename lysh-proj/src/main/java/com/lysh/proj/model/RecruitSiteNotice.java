@@ -7,14 +7,23 @@ import java.util.Date;
  * 与实体类 RecruitSiteNoticeEntity 字段保持一致。
  */
 public class RecruitSiteNotice {
+    /** 公告ID */
     private Long noticeId;
+    /** 公告标题 */
     private String noticeTitle;
+    /** 公告内容 */
     private String noticeContent;
+    /** 发布日期 */
     private Date publishDate;
+    /** 修改日期 */
     private Date updateDate;
+    /** 操作人 */
     private String operatorName;
+    /** 操作人编号 */
     private String operatorId;
+    /** 地区编码 */
     private String districtCode;
+    /** 公告状态，草稿/已发布/已下线 */
     private String status;
 
     public Long getNoticeId() {

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqls>
+<sqls namespace="/gjd">
+
+    <sql id="querySiteProjectList" name="查询基地项目信息列表">
+        <![CDATA[
+        SELECT
+            a.project_id, a.site_id, a.district_code,
+            a.project_name, a.apply_direction, a.apply_direction_project_name,
+            a.project_location, a.implement_unit, a.project_intro, a.project_status,
+            a.approval_time, a.approval_amount, a.approval_grant_time, a.approval_grant_amount,
+            a.acceptance_time, a.acceptance_grant_time, a.acceptance_grant_amount,
+            a.performance_grant_time_1, a.performance_grant_amount_1,
+            a.performance_grant_time_2, a.performance_grant_amount_2,
+            a.performance_grant_time_3, a.performance_grant_amount_3,
+            a.total_grant_amount, a.status, a.reviewer, a.review_time, a.review_opinion,
+            a.created_by, a.created_at, a.updated_by, a.updated_at,
+            s.site_name, s.company_name, s.tyshxym
+        FROM wsbs.RECRUIT_SITE_PROJECT a
+        INNER JOIN wsbs.RECRUIT_SITE_INFO s ON s.site_id = a.site_id
+        WHERE 1=1
+        @siteId{and a.site_id = :siteId}
+        @tyshxym{and s.tyshxym = :tyshxym}
+        @districtCode{and a.district_code = :districtCode}
+        @projectName{and a.project_name like '%' || :projectName || '%'}
+        @applyDirection{and a.apply_direction = :applyDirection}
+        @projectStatus{and a.project_status = :projectStatus}
+        @status{and a.status = :status}
+        @keyword{and (a.project_name like '%' || :keyword || '%'
+            or a.apply_direction_project_name like '%' || :keyword || '%'
+            or a.project_location like '%' || :keyword || '%'
+            or a.implement_unit like '%' || :keyword || '%'
+            or a.project_intro like '%' || :keyword || '%')}
+        ORDER BY a.updated_at DESC, a.project_id DESC
+        ]]>
+    </sql>
+</sqls>

@@ -1,32 +1,24 @@
 package com.lysh.proj.model;
 
+import com.wondersgroup.wdls.core.domain.vo.ValueObject;
+
 /**
- * 高基地信息审核请求模型。
+ * 高基地项目信息审核请求模型。
  */
-public class RecruitSiteInfoReviewReq {
-    /** 基地ID */
-    private Long siteId;
-    /** 审核人 */
-    private String reviewer;
+public class RecruitSiteProjectReviewReq implements ValueObject {
+    /** 项目ID */
+    private Long projectId;
     /** 审核意见 */
     private String reviewOpinion;
     /** 审核结果，已通过或已驳回 */
     private String status;
 
-    public Long getSiteId() {
-        return siteId;
+    public Long getProjectId() {
+        return projectId;
     }
 
-    public void setSiteId(Long siteId) {
-        this.siteId = siteId;
-    }
-
-    public String getReviewer() {
-        return reviewer;
-    }
-
-    public void setReviewer(String reviewer) {
-        this.reviewer = reviewer;
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
     }
 
     public String getReviewOpinion() {

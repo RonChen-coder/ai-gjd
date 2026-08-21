@@ -7,25 +7,45 @@ import java.util.Date;
  * 对应表 RECRUIT_SITE_INFO，字段与实体类保持一致。
  */
 public class RecruitSiteInfo {
+    /** 基地ID */
     private Long siteId;
+    /** 企业统一社会信用代码 */
     private String tyshxym;
+    /** 单位名称 */
     private String companyName;
+    /** 基地名称 */
     private String siteName;
+    /** 挂牌年份 */
     private String listingYear;
+    /** 基地类别，字典取值 */
     private String siteCategory;
+    /** 所属行业类别，字典取值 */
     private String industryCategory;
+    /** 属地区编码 */
     private String districtCode;
+    /** 上级主管部门 */
     private String superiorDepartment;
+    /** 基地地址 */
     private String siteAddress;
+    /** 基地简介 */
     private String siteIntro;
+    /** 状态，待完善/待审核/已通过/已驳回 */
     private String status;
+    /** 审核人 */
     private String reviewer;
+    /** 审核时间 */
     private Date reviewTime;
+    /** 审核意见 */
     private String reviewOpinion;
+    /** 归档状态，未归档/已归档 */
     private String archiveStatus;
+    /** 创建人 */
     private String createdBy;
+    /** 创建时间 */
     private Date createdAt;
+    /** 修改人 */
     private String updatedBy;
+    /** 修改时间 */
     private Date updatedAt;
 
     public Long getSiteId() {
