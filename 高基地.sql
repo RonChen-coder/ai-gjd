@@ -371,7 +371,7 @@ BEGIN
      WHERE owner = 'WSBS'
        AND table_name = 'RECRUIT_SITE_PROJECT';
     IF v_cnt = 0 THEN
-        EXECUTE IMMEDIATE 'CREATE TABLE wsbs.RECRUIT_SITE_PROJECT (project_id NUMBER(12) NOT NULL, site_id NUMBER(12) NOT NULL, district_code VARCHAR2(32) NOT NULL, project_name VARCHAR2(200) NOT NULL, apply_direction VARCHAR2(100) NOT NULL, apply_direction_project_name VARCHAR2(200) DEFAULT NULL, project_location VARCHAR2(500) DEFAULT NULL, implement_unit VARCHAR2(200) DEFAULT NULL, project_intro VARCHAR2(1000) DEFAULT NULL, project_status VARCHAR2(32) NOT NULL, approval_time DATE DEFAULT NULL, approval_amount NUMBER(14,2) DEFAULT NULL, approval_grant_time DATE DEFAULT NULL, approval_grant_amount NUMBER(14,2) DEFAULT NULL, acceptance_time DATE DEFAULT NULL, acceptance_grant_time DATE DEFAULT NULL, acceptance_grant_amount NUMBER(14,2) DEFAULT NULL, performance_grant_time_1 DATE DEFAULT NULL, performance_grant_amount_1 NUMBER(14,2) DEFAULT NULL, performance_grant_time_2 DATE DEFAULT NULL, performance_grant_amount_2 NUMBER(14,2) DEFAULT NULL, performance_grant_time_3 DATE DEFAULT NULL, performance_grant_amount_3 NUMBER(14,2) DEFAULT NULL, total_grant_amount NUMBER(14,2) DEFAULT NULL, status VARCHAR2(32) DEFAULT ''草稿'' NOT NULL, reviewer VARCHAR2(100) DEFAULT NULL, review_time DATE DEFAULT NULL, review_opinion VARCHAR2(1000) DEFAULT NULL, archive_status VARCHAR2(32) DEFAULT ''未归档'' NOT NULL, version NUMBER(10) DEFAULT 1 NOT NULL, created_by VARCHAR2(100) NOT NULL, created_at DATE DEFAULT SYSDATE NOT NULL, updated_by VARCHAR2(100) DEFAULT NULL, updated_at DATE DEFAULT NULL, PRIMARY KEY (project_id))';
+        EXECUTE IMMEDIATE 'CREATE TABLE wsbs.RECRUIT_SITE_PROJECT (project_id NUMBER(12) NOT NULL, site_id NUMBER(12) NOT NULL, district_code VARCHAR2(32) NOT NULL, project_name VARCHAR2(200) NOT NULL, apply_direction VARCHAR2(100) NOT NULL, apply_direction_project_name VARCHAR2(200) DEFAULT NULL, project_location VARCHAR2(500) DEFAULT NULL, implement_unit VARCHAR2(200) DEFAULT NULL, project_intro VARCHAR2(1000) DEFAULT NULL, project_status VARCHAR2(32) NOT NULL, approval_time DATE DEFAULT NULL, approval_amount NUMBER(14,2) DEFAULT NULL, approval_grant_time DATE DEFAULT NULL, approval_grant_amount NUMBER(14,2) DEFAULT NULL, acceptance_time DATE DEFAULT NULL, acceptance_grant_time DATE DEFAULT NULL, acceptance_grant_amount NUMBER(14,2) DEFAULT NULL, performance_grant_time_1 DATE DEFAULT NULL, performance_grant_amount_1 NUMBER(14,2) DEFAULT NULL, performance_grant_time_2 DATE DEFAULT NULL, performance_grant_amount_2 NUMBER(14,2) DEFAULT NULL, performance_grant_time_3 DATE DEFAULT NULL, performance_grant_amount_3 NUMBER(14,2) DEFAULT NULL, total_grant_amount NUMBER(14,2) DEFAULT NULL, status VARCHAR2(32) DEFAULT ''待审核'' NOT NULL, reviewer VARCHAR2(100) DEFAULT NULL, review_time DATE DEFAULT NULL, review_opinion VARCHAR2(1000) DEFAULT NULL, created_by VARCHAR2(100) NOT NULL, created_at DATE DEFAULT SYSDATE NOT NULL, updated_by VARCHAR2(100) DEFAULT NULL, updated_at DATE DEFAULT NULL, PRIMARY KEY (project_id))';
     END IF;
 END;
 /
@@ -401,12 +401,10 @@ COMMENT ON COLUMN wsbs.RECRUIT_SITE_PROJECT.performance_grant_amount_2 IS '绩�
 COMMENT ON COLUMN wsbs.RECRUIT_SITE_PROJECT.performance_grant_time_3 IS '绩效评估(第三年)拨付资助金资金时间';
 COMMENT ON COLUMN wsbs.RECRUIT_SITE_PROJECT.performance_grant_amount_3 IS '绩效评估(第三年)拨付资助金资金(万元)';
 COMMENT ON COLUMN wsbs.RECRUIT_SITE_PROJECT.total_grant_amount IS '合计拨付资助资金(万元)，立项拨付+验收拨付+三年绩效拨付之和';
-COMMENT ON COLUMN wsbs.RECRUIT_SITE_PROJECT.status IS '审核状态，草稿/待审核/已通过/已驳回/已归档';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_PROJECT.status IS '审核状态，待审核/已通过/已驳回';
 COMMENT ON COLUMN wsbs.RECRUIT_SITE_PROJECT.reviewer IS '审核人';
 COMMENT ON COLUMN wsbs.RECRUIT_SITE_PROJECT.review_time IS '审核时间';
 COMMENT ON COLUMN wsbs.RECRUIT_SITE_PROJECT.review_opinion IS '审核意见';
-COMMENT ON COLUMN wsbs.RECRUIT_SITE_PROJECT.archive_status IS '归档状态，未归档/已归档';
-COMMENT ON COLUMN wsbs.RECRUIT_SITE_PROJECT.version IS '版本号，每次有效变更+1，用于日志追踪';
 COMMENT ON COLUMN wsbs.RECRUIT_SITE_PROJECT.created_by IS '创建人';
 COMMENT ON COLUMN wsbs.RECRUIT_SITE_PROJECT.created_at IS '创建时间';
 COMMENT ON COLUMN wsbs.RECRUIT_SITE_PROJECT.updated_by IS '修改人';
