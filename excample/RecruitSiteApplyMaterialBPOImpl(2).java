@@ -1,14 +1,25 @@
-package com.lysh.proj.service;
+package com.wondersgroup.shrs.corp.gjd.bpo.impl;
 
-import com.lysh.proj.entity.RecruitSiteApplyMaterialEntity;
-import com.lysh.proj.model.RecruitSiteApplyMaterial;
+
+import com.wondersgroup.shrs.admin.block.model.QueryRecruitCorpInfoListData;
+import com.wondersgroup.shrs.common.ShrsContextUtils;
+import com.wondersgroup.shrs.corp.gjd.bpo.RecruitGJDFileUploadBPO;
+import com.wondersgroup.shrs.corp.gjd.bpo.RecruitSiteApplyMaterialBPO;
+import com.wondersgroup.shrs.corp.gjd.bpo.RecruitSiteInfoBPO;
+import com.wondersgroup.shrs.corp.gjd.entity.RecruitSiteApplyMaterialEntity;
+import com.wondersgroup.shrs.corp.gjd.model.RecruitSiteApplyMaterial;
+import com.wondersgroup.shrs.corp.gjd.model.RecruitSiteInfo;
 import com.wondersgroup.wdls.core.exception.BusinessException;
+import com.wondersgroup.wdls.core.util.StringUtils;
 import com.wondersgroup.wdls.data.commons.DBUtils;
+import com.wondersgroup.wdls.data.sqlquery.QueryBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 高基地申请材料业务处理实现类。
@@ -17,18 +28,38 @@ import java.util.List;
 @Service
 public class RecruitSiteApplyMaterialBPOImpl implements RecruitSiteApplyMaterialBPO {
 
-    private static final String STATUS_VALID = "有效";
+    private static final String STATUS_VALID = "1";
     private static final String COLUMNS = "material_id, site_id, material_name, material_desc, file_name, " +
             "file_storage_key, status, uploader_name, uploader_id, created_at, updated_at";
 
-    private final BehaviorLogRecorder behaviorLogRecorder;
+    @Autowired
+    private  BehaviorLogRecorder behaviorLogRecorder;
 
-    public RecruitSiteApplyMaterialBPOImpl(BehaviorLogRecorder behaviorLogRecorder) {
-        this.behaviorLogRecorder = behaviorLogRecorder;
+    @Autowired
+    private RecruitGJDFileUploadBPO recruitGJDFileUploadBPO;
+
+    @Autowired
+    private RecruitSiteInfoBPO siteInfoBPO;
+    private void checkSiteOwner(Long siteId) {
+        String cid = ShrsContextUtils.getOrganId();
+        QueryBuilder queryBuilder = new QueryBuilder("/admin/block/operate/getCorpDetail");
+        queryBuilder.parseFilter("cid", cid);
+        QueryRecruitCorpInfoListData cResult = queryBuilder.getResult(QueryRecruitCorpInfoListData.class);
+        if(Objects.isNull(cResult)){
+            throw new BusinessException("企业不存在");
+        }
+
+
+
+        RecruitSiteInfo siteInfo = siteInfoBPO.findByTyshxym(cResult.getTyshxym());
+        if (siteInfo == null || !siteId.equals(siteInfo.getSiteId())) {
+            throw new BusinessException("无权操作该基地的申请材料");
+        }
     }
 
     @Override
     public RecruitSiteApplyMaterial create(RecruitSiteApplyMaterial material) {
+
         if (material.getSiteId() == null) {
             throw new BusinessException("基地ID不能为空");
         }
@@ -38,6 +69,7 @@ public class RecruitSiteApplyMaterialBPOImpl implements RecruitSiteApplyMaterial
         if (isBlank(material.getFileStorageKey())) {
             throw new BusinessException("文件存储key不能为空");
         }
+        RecruitSiteInfo siteInfo = siteInfoBPO.findByCid(ShrsContextUtils.getOrganId());
         Date now = new Date();
         material.setStatus(isBlank(material.getStatus()) ? STATUS_VALID : material.getStatus());
         material.setCreatedAt(now);
@@ -46,14 +78,14 @@ public class RecruitSiteApplyMaterialBPOImpl implements RecruitSiteApplyMaterial
                 "(material_id, site_id, material_name, material_desc, file_name, file_storage_key, status, " +
                 "uploader_name, uploader_id, created_at, updated_at) " +
                 "VALUES (wsbs.SEQ_0073_RECRUIT_SITE_APPLY_MATERIAL.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                material.getSiteId(),
+                siteInfo.getSiteId(),
                 material.getMaterialName(),
                 material.getMaterialDesc(),
                 material.getFileName(),
                 material.getFileStorageKey(),
                 material.getStatus(),
-                material.getUploaderName(),
-                material.getUploaderId(),
+                ShrsContextUtils.getOrganName(),
+                ShrsContextUtils.getOrganId(),
                 material.getCreatedAt(),
                 material.getUpdatedAt());
         material.setMaterialId(Long.valueOf(DBUtils.getString("SELECT wsbs.SEQ_0073_RECRUIT_SITE_APPLY_MATERIAL.CURRVAL FROM DUAL")));
@@ -62,12 +94,19 @@ public class RecruitSiteApplyMaterialBPOImpl implements RecruitSiteApplyMaterial
 
     @Override
     public RecruitSiteApplyMaterial update(RecruitSiteApplyMaterial material) {
+
         if (material.getMaterialId() == null) {
             throw new BusinessException("材料ID不能为空");
         }
         RecruitSiteApplyMaterial old = findById(material.getMaterialId());
         if (old == null) {
             throw new BusinessException("申请材料不存在: " + material.getMaterialId());
+        }
+
+        RecruitSiteInfo siteInfo = siteInfoBPO.findByCid(ShrsContextUtils.getOrganId());
+
+        if (!StringUtils.equals(material.getSiteId().toString(), siteInfo.getSiteId().toString())){
+            throw new BusinessException("数据越权");
         }
         if (material.getSiteId() == null) {
             material.setSiteId(old.getSiteId());
@@ -82,20 +121,20 @@ public class RecruitSiteApplyMaterialBPOImpl implements RecruitSiteApplyMaterial
             material.setStatus(old.getStatus());
         }
         material.setUpdatedAt(new Date());
-        behaviorLogRecorder.recordMaterialChanges(material.getSiteId(), old, material,
-                isBlank(material.getUploaderName()) ? "单位用户" : material.getUploaderName(),
-                material.getUploaderId(), "基地申报单位");
+        behaviorLogRecorder.recordMaterialChanges(siteInfo.getSiteId(), old, material,
+                isBlank(ShrsContextUtils.getOrganName()) ? "单位用户" : ShrsContextUtils.getOrganName(),
+                ShrsContextUtils.getOrganId(), "基地申报单位");
         DBUtils.execSql("UPDATE wsbs.RECRUIT_SITE_APPLY_MATERIAL SET " +
                 "site_id = ?, material_name = ?, material_desc = ?, file_name = ?, file_storage_key = ?, " +
                 "status = ?, uploader_name = ?, uploader_id = ?, updated_at = ? WHERE material_id = ?",
-                material.getSiteId(),
+                siteInfo.getSiteId(),
                 material.getMaterialName(),
                 material.getMaterialDesc(),
                 material.getFileName(),
                 material.getFileStorageKey(),
                 material.getStatus(),
-                material.getUploaderName(),
-                material.getUploaderId(),
+                ShrsContextUtils.getOrganName(),
+                ShrsContextUtils.getOrganId(),
                 material.getUpdatedAt(),
                 material.getMaterialId());
         return material;
@@ -103,7 +142,17 @@ public class RecruitSiteApplyMaterialBPOImpl implements RecruitSiteApplyMaterial
 
     @Override
     public void delete(Long materialId) {
+        RecruitSiteApplyMaterial material = this.findById(materialId);
+
+        RecruitSiteInfo siteInfo = siteInfoBPO.findByCid(ShrsContextUtils.getOrganId());
+
+        if (!StringUtils.equals(material.getSiteId().toString(), siteInfo.getSiteId().toString())){
+            throw new BusinessException("数据越权");
+        }
+
+        recruitGJDFileUploadBPO.deleteFileModel(material.getFileStorageKey());
         DBUtils.execSql("DELETE FROM wsbs.RECRUIT_SITE_APPLY_MATERIAL WHERE material_id = ?", materialId);
+
     }
 
     @Override
@@ -150,6 +199,6 @@ public class RecruitSiteApplyMaterialBPOImpl implements RecruitSiteApplyMaterial
     }
 
     private boolean isBlank(String value) {
-        return value == null || value.isBlank();
+       return StringUtils.isEmpty(value);
     }
 }

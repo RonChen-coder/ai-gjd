@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqls>
+<sqls namespace="/gjd">
+
+    <sql id="queryNoticeList" name="查询公告列表">
+        <![CDATA[
+     SELECT   a.notice_id, a.notice_title, a.notice_content, a.publish_date, a.update_date,
+      a.operator_name, a.operator_id, a.district_code, a.status
+       FROM wsbs.RECRUIT_SITE_NOTICE a WHERE
+       1=1
+       @status{and  a.status = :status}
+       @noticeTitle{ and a.notice_title like '%' || :noticeTitle || '%'}
+       @noticeContent{ and a.notice_content like '%' || :noticeContent || '%'}
+       ORDER BY a.publish_date DESC, a.notice_id DESC
+        ]]>
+    </sql>
+
+
+    <sql id="querySiteInfoList" name="查询基地信息列表">
+        <![CDATA[
+       SELECT a.site_id, a.tyshxym, a.company_name, a.site_name, a.listing_year, a.site_category,
+            a.industry_category,
+             a.district_code, a.superior_department,
+              a.site_address, a.site_intro, a.status,
+            a.reviewer,
+             a.review_time, a.review_opinion, a.archive_status, a.created_by,
+              a.created_at, a.updated_by, a.updated_at FROM
+               wsbs.RECRUIT_SITE_INFO a
+           where 1=1
+             @status{and  a.status = :status}
+       @tyshxym{ and a.tyshxym= :tyshxym}
+       @siteName{ and a.site_name like '%' || :siteName || '%'}
+       @listing_year{ and  a.listing_year = :listing_year}
+       @siteCategory{ and a.site_category= :siteCategory}
+       @industryCategory{ and a.industry_category= :industryCategory}
+       @districtCode{ and  a.district_code = :districtCode}
+        ORDER BY site_id DESC
+
+
+        ]]>
+    </sql>
+</sqls>

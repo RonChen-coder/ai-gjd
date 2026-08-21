@@ -61,3 +61,10 @@ mvn spring-boot:run
 - POST /corp/file-upload/download 企业端按文件存储key下载
 
 文件统一上传到 `GJDbucket`。
+
+### 行为日志
+
+- GET /admin/behavior-log/list?bizType=&bizId= 管理端查看行为日志列表
+- GET /corp/behavior-log/list?bizType=&bizId= 企业端查看行为日志列表
+
+行为日志仅支持生成和查询，不支持修改和删除；`bizType` 取值为 1基地、2项目、3资产，`bizId` 为操作对象主键。基地信息和申请材料修改时会自动写入字段级中文日志。

@@ -1,0 +1,86 @@
+{
+  "info": {
+    "_postman_id": "c4f5f4cd-48dd-503a-ab86-6dc3efeb5adf",
+    "name": "文件上传管理端 RecruitFileUploadAdminController",
+    "description": "市级、区级管理员文件上传与下载接口。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "管理端上传文件",
+      "description": "上传文件到 GJDbucket，返回文件存储key。",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/file-upload/upload",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "file-upload",
+            "upload"
+          ]
+        },
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": []
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "管理端下载文件",
+      "description": "按文件存储key下载文件，fileId 使用集合变量。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/file-upload/download",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "file-upload",
+            "download"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fileId\": \"{{fileId}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "fileId",
+      "value": "file-storage-key",
+      "type": "string"
+    }
+  ]
+}

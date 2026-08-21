@@ -1,0 +1,86 @@
+{
+  "info": {
+    "_postman_id": "888525b5-4f93-5866-a4f2-83041e234568",
+    "name": "文件上传企业端 RecruitFileUploadCorpController",
+    "description": "白名单内单位文件上传与下载接口。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "企业端上传文件",
+      "description": "上传文件到 GJDbucket，返回文件存储key。",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/corp/file-upload/upload",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "corp",
+            "file-upload",
+            "upload"
+          ]
+        },
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": []
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "企业端下载文件",
+      "description": "按文件存储key下载文件，fileId 使用集合变量。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/corp/file-upload/download",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "corp",
+            "file-upload",
+            "download"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fileId\": \"{{fileId}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "fileId",
+      "value": "file-storage-key",
+      "type": "string"
+    }
+  ]
+}

@@ -1,0 +1,202 @@
+{
+  "info": {
+    "_postman_id": "8d689ecc-dd80-524b-897a-165963af50e7",
+    "name": "高基地申请材料企业端 RecruitSiteApplyMaterialCorpController",
+    "description": "白名单内单位上传、修改、删除和查询申请材料接口。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "企业端上传申请材料",
+      "description": "单位上传申请材料，tyshxym 使用集合变量。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/corp/site-apply-material/create?tyshxym={{tyshxym}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "corp",
+            "site-apply-material",
+            "create"
+          ],
+          "query": [
+            {
+              "key": "tyshxym",
+              "value": "{{tyshxym}}"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"siteId\": \"{{siteId}}\",\n  \"materialName\": \"营业执照\",\n  \"materialDesc\": \"单位营业执照扫描件\",\n  \"fileName\": \"营业执照.pdf\",\n  \"fileStorageKey\": \"file-storage-key\",\n  \"status\": \"有效\",\n  \"uploaderName\": \"申报单位\",\n  \"uploaderId\": \"1\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "企业端修改申请材料",
+      "description": "单位修改申请材料，materialId 和 tyshxym 必填。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/corp/site-apply-material/update?tyshxym={{tyshxym}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "corp",
+            "site-apply-material",
+            "update"
+          ],
+          "query": [
+            {
+              "key": "tyshxym",
+              "value": "{{tyshxym}}"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"materialId\": \"{{materialId}}\",\n  \"siteId\": \"{{siteId}}\",\n  \"materialName\": \"营业执照（更新）\",\n  \"materialDesc\": \"更新后的营业执照扫描件\",\n  \"fileName\": \"营业执照.pdf\",\n  \"fileStorageKey\": \"file-storage-key\",\n  \"status\": \"有效\",\n  \"uploaderName\": \"申报单位\",\n  \"uploaderId\": \"1\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "企业端删除申请材料",
+      "description": "单位删除申请材料，materialId 和 tyshxym 必填。",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/corp/site-apply-material/delete?materialId={{materialId}}&tyshxym={{tyshxym}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "corp",
+            "site-apply-material",
+            "delete"
+          ],
+          "query": [
+            {
+              "key": "materialId",
+              "value": "{{materialId}}"
+            },
+            {
+              "key": "tyshxym",
+              "value": "{{tyshxym}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "企业端查询申请材料列表",
+      "description": "查询本单位某个基地的申请材料列表。",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/corp/site-apply-material/list?siteId={{siteId}}&tyshxym={{tyshxym}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "corp",
+            "site-apply-material",
+            "list"
+          ],
+          "query": [
+            {
+              "key": "siteId",
+              "value": "{{siteId}}"
+            },
+            {
+              "key": "tyshxym",
+              "value": "{{tyshxym}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "企业端查询申请材料详情",
+      "description": "查询本单位申请材料详情。",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/corp/site-apply-material/detail?materialId={{materialId}}&tyshxym={{tyshxym}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "corp",
+            "site-apply-material",
+            "detail"
+          ],
+          "query": [
+            {
+              "key": "materialId",
+              "value": "{{materialId}}"
+            },
+            {
+              "key": "tyshxym",
+              "value": "{{tyshxym}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "siteId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "materialId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "tyshxym",
+      "value": "91310000MA1FL0LX06",
+      "type": "string"
+    }
+  ]
+}

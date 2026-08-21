@@ -286,3 +286,61 @@ BEGIN
     END IF;
 END;
 /
+
+-- 高基地行为日志表
+-- 说明：记录基地/项目/资产对象的字段变更，日志只允许生成和查询，不允许修改删除
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_sequences
+     WHERE sequence_owner = 'WSBS'
+       AND sequence_name = 'SEQ_0073_RECRUIT_SITE_BEHAVIOR_LOG';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE SEQUENCE wsbs.SEQ_0073_RECRUIT_SITE_BEHAVIOR_LOG MINVALUE 1 MAXVALUE 999999999999 START WITH 1 INCREMENT BY 1 CACHE 20';
+    END IF;
+END;
+/
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_tables
+     WHERE owner = 'WSBS'
+       AND table_name = 'RECRUIT_SITE_BEHAVIOR_LOG';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE TABLE wsbs.RECRUIT_SITE_BEHAVIOR_LOG (log_id NUMBER(12) NOT NULL, biz_type NUMBER(2) NOT NULL, biz_id NUMBER(12) NOT NULL, operator_name VARCHAR2(100) NOT NULL, operator_id VARCHAR2(64), operator_role VARCHAR2(32), operation_type VARCHAR2(32) NOT NULL, field_name VARCHAR2(100) NOT NULL, old_value VARCHAR2(2000), new_value VARCHAR2(2000), log_content VARCHAR2(4000) NOT NULL, created_at DATE DEFAULT SYSDATE NOT NULL, PRIMARY KEY (log_id))';
+    END IF;
+END;
+/
+
+COMMENT ON TABLE wsbs.RECRUIT_SITE_BEHAVIOR_LOG IS '高基地行为日志表，记录业务对象字段变更';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_BEHAVIOR_LOG.log_id IS '日志ID，SEQ_0073_RECRUIT_SITE_BEHAVIOR_LOG';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_BEHAVIOR_LOG.biz_type IS '业务对象类型编码，1基地/2项目/3资产';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_BEHAVIOR_LOG.biz_id IS '业务对象主键';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_BEHAVIOR_LOG.operator_name IS '操作人姓名';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_BEHAVIOR_LOG.operator_id IS '操作人编号';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_BEHAVIOR_LOG.operator_role IS '操作角色，市级管理员/区级管理员/基地申报单位';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_BEHAVIOR_LOG.operation_type IS '操作类型，修改/审核';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_BEHAVIOR_LOG.field_name IS '变更字段名称';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_BEHAVIOR_LOG.old_value IS '变更前内容';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_BEHAVIOR_LOG.new_value IS '变更后内容';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_BEHAVIOR_LOG.log_content IS '中文行为日志描述';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_BEHAVIOR_LOG.created_at IS '日志生成时间';
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_indexes
+     WHERE owner = 'WSBS'
+       AND index_name = 'IDX_RECRUIT_SITE_BEHAVIOR_LOG_BIZ';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE INDEX idx_recruit_site_behavior_log_biz ON wsbs.RECRUIT_SITE_BEHAVIOR_LOG (biz_type, biz_id, created_at)';
+    END IF;
+END;
+/

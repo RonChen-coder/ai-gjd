@@ -1,16 +1,29 @@
-package com.lysh.proj.service;
+package com.wondersgroup.shrs.corp.gjd.bpo.impl;
 
-import com.lysh.proj.common.BehaviorBizType;
-import com.lysh.proj.entity.RecruitSiteInfoEntity;
-import com.lysh.proj.model.RecruitSiteInfo;
-import com.lysh.proj.model.RecruitSiteWhitelist;
+
+import com.wondersgroup.shrs.admin.block.model.QueryRecruitCorpInfoListData;
+import com.wondersgroup.shrs.common.ShrsContextUtils;
+import com.wondersgroup.shrs.corp.corpinfo.model.CorporationData;
+import com.wondersgroup.shrs.corp.gjd.bpo.RecruitSiteInfoBPO;
+import com.wondersgroup.shrs.corp.gjd.bpo.RecruitSiteWhitelistBPO;
+import com.wondersgroup.shrs.corp.gjd.entity.RecruitSiteInfoEntity;
+import com.wondersgroup.shrs.corp.gjd.model.BehaviorBizType;
+import com.wondersgroup.shrs.corp.gjd.model.RecruitSiteInfo;
+import com.wondersgroup.shrs.corp.gjd.model.RecruitSiteInfoQueryReq;
+import com.wondersgroup.shrs.corp.gjd.model.RecruitSiteWhitelist;
 import com.wondersgroup.wdls.core.exception.BusinessException;
+import com.wondersgroup.wdls.core.util.StringUtils;
 import com.wondersgroup.wdls.data.commons.DBUtils;
+import com.wondersgroup.wdls.data.commons.PageParam;
+import com.wondersgroup.wdls.data.commons.PageResult;
+import com.wondersgroup.wdls.data.sqlquery.QueryBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 高基地信息业务处理实现类。
@@ -19,22 +32,20 @@ import java.util.List;
 @Service
 public class RecruitSiteInfoBPOImpl implements RecruitSiteInfoBPO {
 
-    private static final String STATUS_PENDING = "待审核";
-    private static final String STATUS_PASSED = "已通过";
-    private static final String STATUS_REJECTED = "已驳回";
-    private static final String STATUS_UNARCHIVED = "未归档";
+    private static final String STATUS_PENDING = "0";
+    private static final String STATUS_PASSED = "1";
+    private static final String STATUS_REJECTED = "2";
+    private static final String STATUS_UNARCHIVED = "0";
     private static final String COLUMNS = "site_id, tyshxym, company_name, site_name, listing_year, site_category, " +
             "industry_category, district_code, superior_department, site_address, site_intro, status, " +
             "reviewer, review_time, review_opinion, archive_status, created_by, created_at, updated_by, updated_at";
 
-    private final RecruitSiteWhitelistBPO siteWhitelistBPO;
-    private final BehaviorLogRecorder behaviorLogRecorder;
+    @Autowired
+    private RecruitSiteWhitelistBPO siteWhitelistBPO;
+    @Autowired
+    private  BehaviorLogRecorder behaviorLogRecorder;
 
-    public RecruitSiteInfoBPOImpl(RecruitSiteWhitelistBPO siteWhitelistBPO,
-                                  BehaviorLogRecorder behaviorLogRecorder) {
-        this.siteWhitelistBPO = siteWhitelistBPO;
-        this.behaviorLogRecorder = behaviorLogRecorder;
-    }
+
 
     @Override
     public RecruitSiteInfo createByCorp(RecruitSiteInfo siteInfo) {
@@ -47,7 +58,11 @@ public class RecruitSiteInfoBPOImpl implements RecruitSiteInfoBPO {
             throw new BusinessException("属地区编码不能为空");
         }
         siteInfo.setStatus(STATUS_PENDING);
-        siteInfo.setArchiveStatus(STATUS_UNARCHIVED);
+     //   siteInfo.setArchiveStatus(STATUS_UNARCHIVED);
+        siteInfo.setDistrictCode("00");
+        siteInfo.setCreatedBy("企业自主创建");
+        siteInfo.setCreatedAt(new Date());
+        siteInfo.setUpdatedAt(new Date());
         insert(siteInfo);
         return siteInfo;
     }
@@ -59,6 +74,9 @@ public class RecruitSiteInfoBPOImpl implements RecruitSiteInfoBPO {
         }
         if (isBlank(siteInfo.getSiteName())) {
             throw new BusinessException("基地名称不能为空");
+        }
+        if (findByTyshxym(siteInfo.getTyshxym()) != null) {
+            throw new BusinessException("该单位已存在高基地信息: " + siteInfo.getTyshxym());
         }
         if (isBlank(siteInfo.getCompanyName())) {
             RecruitSiteWhitelist whitelist = siteWhitelistBPO.findByTyshxym(siteInfo.getTyshxym());
@@ -73,12 +91,21 @@ public class RecruitSiteInfoBPOImpl implements RecruitSiteInfoBPO {
             throw new BusinessException("属地区编码不能为空");
         }
         siteInfo.setStatus(STATUS_PASSED);
-        siteInfo.setArchiveStatus(STATUS_UNARCHIVED);
+   //     siteInfo.setArchiveStatus(STATUS_UNARCHIVED);
         Date now = new Date();
         if (siteInfo.getCreatedAt() == null) {
             siteInfo.setCreatedAt(now);
         }
+
+        if (StringUtils.equals("00",ShrsContextUtils.getDistrictCode())){
+            siteInfo.setDistrictCode(siteInfo.getDistrictCode());
+        }else {
+            siteInfo.setDistrictCode(ShrsContextUtils.getDistrictCode());
+        }
+
         siteInfo.setUpdatedAt(now);
+        siteInfo.setCreatedBy(ShrsContextUtils.getUserId());
+        siteInfo.setCreatedAt(now);
         insert(siteInfo);
         return siteInfo;
     }
@@ -141,6 +168,13 @@ public class RecruitSiteInfoBPOImpl implements RecruitSiteInfoBPO {
 
     @Override
     public void delete(Long siteId) {
+        RecruitSiteInfo siteInfo = this.findById(siteId);
+
+        if (!StringUtils.equals("00", ShrsContextUtils.getDistrictCode())
+        && !StringUtils.equals(ShrsContextUtils.getDistrictCode(),siteInfo.getDistrictCode())) {
+
+                throw new BusinessException("数据越权");
+        }
         DBUtils.execSql("DELETE FROM wsbs.RECRUIT_SITE_INFO WHERE site_id = ?", siteId);
     }
 
@@ -161,31 +195,42 @@ public class RecruitSiteInfoBPOImpl implements RecruitSiteInfoBPO {
     }
 
     @Override
-    public List<RecruitSiteInfo> listAll() {
-        List<RecruitSiteInfoEntity> entities = DBUtils.query(
-                "SELECT " + COLUMNS + " FROM wsbs.RECRUIT_SITE_INFO ORDER BY site_id DESC",
-                RecruitSiteInfoEntity.class);
-        return toModels(entities);
+    public RecruitSiteInfo findByCid(String cid) {
+
+        QueryBuilder queryBuilder = new QueryBuilder("/admin/block/operate/getCorpDetail");
+        queryBuilder.parseFilter("cid", cid);
+        QueryRecruitCorpInfoListData cResult = queryBuilder.getResult(QueryRecruitCorpInfoListData.class);
+
+        if (Objects.isNull(cResult)){
+            throw new BusinessException("外网库未找到对应企业");
+        }
+        return this.findByTyshxym(cResult.getTyshxym());
     }
 
     @Override
-    public List<RecruitSiteInfo> listByDistrictCode(String districtCode) {
-        List<RecruitSiteInfoEntity> entities = DBUtils.query(
-                "SELECT " + COLUMNS + " FROM wsbs.RECRUIT_SITE_INFO WHERE district_code = ? ORDER BY site_id DESC",
-                RecruitSiteInfoEntity.class, districtCode);
-        return toModels(entities);
+    public PageResult<RecruitSiteInfo> listAll(RecruitSiteInfoQueryReq req) {
+//        List<RecruitSiteInfoEntity> entities = DBUtils.query(
+//                "SELECT " + COLUMNS + " FROM wsbs.RECRUIT_SITE_INFO ORDER BY site_id DESC",
+//                RecruitSiteInfoEntity.class);
+
+        QueryBuilder queryBuilder = new QueryBuilder("/gjd/querySiteInfoList");
+
+        queryBuilder.parseFilter("tyshxym", req.getTyshxym());
+        queryBuilder.parseFilter("siteName", req.getSiteName());
+        queryBuilder.parseFilter("siteCategory", req.getSiteCategory());
+        queryBuilder.parseFilter("industryCategory",req.getIndustryCategory());
+        queryBuilder.parseFilter("districtCode", req.getDistrictCode());
+        queryBuilder.parseFilter("listingYear", req.getListingYear());
+        queryBuilder.parseFilter("status", req.getStatus());
+
+        return queryBuilder.getPage(Objects.nonNull(req.getPageParam())?
+                req.getPageParam() : new PageParam(), RecruitSiteInfo.class);
     }
 
-    @Override
-    public List<RecruitSiteInfo> listByStatus(String status) {
-        List<RecruitSiteInfoEntity> entities = DBUtils.query(
-                "SELECT " + COLUMNS + " FROM wsbs.RECRUIT_SITE_INFO WHERE status = ? ORDER BY site_id DESC",
-                RecruitSiteInfoEntity.class, status);
-        return toModels(entities);
-    }
+
 
     @Override
-    public RecruitSiteInfo review(Long siteId, String reviewer, String reviewOpinion, String status) {
+    public RecruitSiteInfo saveReview(Long siteId, String reviewer, String reviewOpinion, String status) {
         if (!STATUS_PASSED.equals(status) && !STATUS_REJECTED.equals(status)) {
             throw new BusinessException("审核状态只能为已通过或已驳回");
         }
@@ -196,7 +241,7 @@ public class RecruitSiteInfoBPOImpl implements RecruitSiteInfoBPO {
         String oldStatus = siteInfo.getStatus();
         String oldReviewer = siteInfo.getReviewer();
         String oldReviewOpinion = siteInfo.getReviewOpinion();
-        siteInfo.setReviewer(reviewer);
+        siteInfo.setReviewer(ShrsContextUtils.getUserId());
         siteInfo.setReviewOpinion(reviewOpinion);
         siteInfo.setStatus(status);
         siteInfo.setReviewTime(new Date());
@@ -212,6 +257,11 @@ public class RecruitSiteInfoBPOImpl implements RecruitSiteInfoBPO {
     }
 
     private void checkCorpPermission(String tyshxym) {
+        CorporationData corporationData = DBUtils.get("/corp/keyPointCorpInfo/queryCorporationByTyshxym",CorporationData.class,tyshxym);
+        if (Objects.isNull(corporationData) || !StringUtils.equals(ShrsContextUtils.getOrganId(), corporationData.getCid())){
+            throw new BusinessException("统一社会信用码越权");
+        }
+
         if (isBlank(tyshxym)) {
             throw new BusinessException("企业统一社会信用代码不能为空");
         }
@@ -253,7 +303,7 @@ public class RecruitSiteInfoBPOImpl implements RecruitSiteInfoBPO {
                 siteInfo.getReviewer(),
                 siteInfo.getReviewTime(),
                 siteInfo.getReviewOpinion(),
-                siteInfo.getArchiveStatus(),
+                "0",
                 siteInfo.getCreatedBy(),
                 siteInfo.getCreatedAt(),
                 siteInfo.getUpdatedBy(),
@@ -323,6 +373,6 @@ public class RecruitSiteInfoBPOImpl implements RecruitSiteInfoBPO {
     }
 
     private boolean isBlank(String value) {
-        return value == null || value.isBlank();
+       return StringUtils.isEmpty(value);
     }
 }

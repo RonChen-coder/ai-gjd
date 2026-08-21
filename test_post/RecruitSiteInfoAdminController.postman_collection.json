@@ -1,0 +1,216 @@
+{
+  "info": {
+    "_postman_id": "07e159b6-ad11-5f6b-b843-308aa8a13780",
+    "name": "高基地信息管理端 RecruitSiteInfoAdminController",
+    "description": "市级、区级管理员维护高基地信息及区级审核接口。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "管理端新增高基地信息",
+      "description": "市区管理员新增高基地信息，免审核直接生效。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-info/create",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-info",
+            "create"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tyshxym\": \"91310000MA1FL0LX06\",\n  \"companyName\": \"中国商用飞机有限责任公司\",\n  \"siteName\": \"中国商用飞机高技能人才培养基地\",\n  \"listingYear\": \"2011年\",\n  \"siteCategory\": \"央企\",\n  \"industryCategory\": \"高端装备制造\",\n  \"districtCode\": \"310115\",\n  \"superiorDepartment\": \"在沪央企\",\n  \"siteAddress\": \"上海市浦东新区世博大道1919号\",\n  \"siteIntro\": \"基地简介\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "管理端修改高基地信息",
+      "description": "市区管理员修改高基地信息，免审核直接生效。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-info/update",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-info",
+            "update"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"siteId\": \"{{siteId}}\",\n  \"tyshxym\": \"91310000MA1FL0LX06\",\n  \"companyName\": \"中国商用飞机有限责任公司\",\n  \"siteName\": \"中国商用飞机高技能人才培养基地\",\n  \"listingYear\": \"2011年\",\n  \"siteCategory\": \"央企\",\n  \"industryCategory\": \"高端装备制造\",\n  \"districtCode\": \"310115\",\n  \"superiorDepartment\": \"在沪央企\",\n  \"siteAddress\": \"上海市浦东新区世博大道1919号\",\n  \"siteIntro\": \"更新后的基地简介\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "管理端删除高基地信息",
+      "description": "删除高基地信息，siteId 使用集合变量。",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-info/delete?siteId={{siteId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-info",
+            "delete"
+          ],
+          "query": [
+            {
+              "key": "siteId",
+              "value": "{{siteId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "管理端查询高基地信息列表",
+      "description": "支持按属地区编码或状态过滤，不传条件时查看全部。",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-info/list?districtCode={{districtCode}}&status={{status}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-info",
+            "list"
+          ],
+          "query": [
+            {
+              "key": "districtCode",
+              "value": "{{districtCode}}"
+            },
+            {
+              "key": "status",
+              "value": "{{status}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "管理端查询高基地信息详情",
+      "description": "根据基地ID查询详情，siteId 使用集合变量。",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-info/detail?siteId={{siteId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-info",
+            "detail"
+          ],
+          "query": [
+            {
+              "key": "siteId",
+              "value": "{{siteId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "区级管理员审核高基地信息",
+      "description": "审核结果只能为已通过或已驳回。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-info/review",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-info",
+            "review"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"siteId\": \"{{siteId}}\",\n  \"reviewer\": \"区级管理员\",\n  \"reviewOpinion\": \"同意\",\n  \"status\": \"已通过\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "siteId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "districtCode",
+      "value": "310115",
+      "type": "string"
+    },
+    {
+      "key": "status",
+      "value": "待审核",
+      "type": "string"
+    }
+  ]
+}

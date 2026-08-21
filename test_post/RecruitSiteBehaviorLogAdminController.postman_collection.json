@@ -1,0 +1,57 @@
+{
+  "info": {
+    "_postman_id": "4f5e6d7c-8b9a-4c1d-9e2f-3a4b5c6d7e8f",
+    "name": "行为日志管理端 RecruitSiteBehaviorLogAdminController",
+    "description": "市级、区级管理员查看行为日志列表接口。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "查询行为日志列表",
+      "description": "按业务对象类型和主键查询行为日志，bizType 取值为1基地、2项目、3资产。",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/behavior-log/list?bizType={{bizType}}&bizId={{bizId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "behavior-log",
+            "list"
+          ],
+          "query": [
+            {
+              "key": "bizType",
+              "value": "{{bizType}}"
+            },
+            {
+              "key": "bizId",
+              "value": "{{bizId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "bizType",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "bizId",
+      "value": "1",
+      "type": "string"
+    }
+  ]
+}

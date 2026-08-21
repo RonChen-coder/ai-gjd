@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "c3d4e5f6-7081-4b9c-ae0f-2a3b4c5d6e7f",
+    "_postman_id": "87ce8296-773b-512a-b81a-b8469e8ec4d1",
     "name": "高基地白名单 RecruitSiteWhitelistController",
     "description": "高基地白名单列表、单条查询和存在性校验接口。",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -13,13 +13,14 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/admin/site-whitelist",
+          "raw": "{{baseUrl}}/admin/site-whitelist/list",
           "host": [
             "{{baseUrl}}"
           ],
           "path": [
             "admin",
-            "site-whitelist"
+            "site-whitelist",
+            "list"
           ]
         }
       },
@@ -27,19 +28,25 @@
     },
     {
       "name": "根据主键ID查询白名单",
-      "description": "根据白名单主键ID查询记录，siteWhitelistId 使用集合变量。",
+      "description": "根据白名单主键ID查询记录。",
       "request": {
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/admin/site-whitelist/{{siteWhitelistId}}",
+          "raw": "{{baseUrl}}/admin/site-whitelist/detail?siteWhitelistId={{siteWhitelistId}}",
           "host": [
             "{{baseUrl}}"
           ],
           "path": [
             "admin",
             "site-whitelist",
-            "{{siteWhitelistId}}"
+            "detail"
+          ],
+          "query": [
+            {
+              "key": "siteWhitelistId",
+              "value": "{{siteWhitelistId}}"
+            }
           ]
         }
       },
@@ -47,20 +54,25 @@
     },
     {
       "name": "根据统一社会信用码查询白名单",
-      "description": "根据企业统一社会信用码查询记录，tyshxym 使用集合变量。",
+      "description": "根据企业统一社会信用码查询记录。",
       "request": {
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/admin/site-whitelist/tyshxym/{{tyshxym}}",
+          "raw": "{{baseUrl}}/admin/site-whitelist/detail-by-tyshxym?tyshxym={{tyshxym}}",
           "host": [
             "{{baseUrl}}"
           ],
           "path": [
             "admin",
             "site-whitelist",
-            "tyshxym",
-            "{{tyshxym}}"
+            "detail-by-tyshxym"
+          ],
+          "query": [
+            {
+              "key": "tyshxym",
+              "value": "{{tyshxym}}"
+            }
           ]
         }
       },
@@ -68,7 +80,7 @@
     },
     {
       "name": "校验白名单是否存在",
-      "description": "根据企业统一社会信用码校验白名单记录是否存在，tyshxym 使用集合变量。",
+      "description": "根据企业统一社会信用码校验白名单记录是否存在。",
       "request": {
         "method": "GET",
         "header": [],

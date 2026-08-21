@@ -1,0 +1,105 @@
+{
+  "info": {
+    "_postman_id": "82fbe74c-7e7d-5b67-bf38-515e977d82d2",
+    "name": "高基地申请材料管理端 RecruitSiteApplyMaterialAdminController",
+    "description": "管理端查看和删除高基地申请材料接口。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "管理端查询申请材料列表",
+      "description": "根据基地ID查询申请材料列表。",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-apply-material/list?siteId={{siteId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-apply-material",
+            "list"
+          ],
+          "query": [
+            {
+              "key": "siteId",
+              "value": "{{siteId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "管理端查询申请材料详情",
+      "description": "根据材料ID查询申请材料详情。",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-apply-material/detail?materialId={{materialId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-apply-material",
+            "detail"
+          ],
+          "query": [
+            {
+              "key": "materialId",
+              "value": "{{materialId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "管理端删除申请材料",
+      "description": "根据材料ID删除申请材料。",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-apply-material/delete?materialId={{materialId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-apply-material",
+            "delete"
+          ],
+          "query": [
+            {
+              "key": "materialId",
+              "value": "{{materialId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "siteId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "materialId",
+      "value": "1",
+      "type": "string"
+    }
+  ]
+}
