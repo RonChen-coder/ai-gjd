@@ -129,3 +129,11 @@ PageResult<RecruitSiteInfo> pageResult = queryBuilder.getPage(pageParam, Recruit
 - 控制器列表接口返回 `AjaxResult.PAGE(pageResult)`。
 - 列表 SQL 配置在 `gjd.sql.xml` 对应 namespace 下，动态条件使用 `@字段{and a.字段 = :字段}` 或 like 写法，并带 `ORDER BY ... DESC`。
         
+
+
+#### 6.url前缀
+企业端:
+  - localhost:8080/ggzp-zzjb-shrs
+
+管理端:
+  - localhost:8080/ggzp-ywjb-shrs
