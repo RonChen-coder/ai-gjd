@@ -16,7 +16,7 @@ public interface RecruitSiteProjectBPO {
      * @param project 项目信息对象
      * @return 创建后的项目信息对象
      */
-    RecruitSiteProject createByCorp(RecruitSiteProject project);
+    RecruitSiteProject saveProjectByCorp(RecruitSiteProject project);
 
     /**
      * 市区管理员新增项目信息，免审核直接生效。
@@ -24,7 +24,7 @@ public interface RecruitSiteProjectBPO {
      * @param project 项目信息对象
      * @return 创建后的项目信息对象
      */
-    RecruitSiteProject createByAdmin(RecruitSiteProject project);
+    RecruitSiteProject saveProjectByAdmin(RecruitSiteProject project);
 
     /**
      * 单位修改当前登录单位项目信息，修改后进入待审核。
@@ -32,7 +32,7 @@ public interface RecruitSiteProjectBPO {
      * @param project 待更新的项目信息对象
      * @return 更新后的项目信息对象
      */
-    RecruitSiteProject updateByCorp(RecruitSiteProject project);
+    RecruitSiteProject saveProjectChangesByCorp(RecruitSiteProject project);
 
     /**
      * 市区管理员修改项目信息，免审核直接生效。
@@ -40,7 +40,7 @@ public interface RecruitSiteProjectBPO {
      * @param project 待更新的项目信息对象
      * @return 更新后的项目信息对象
      */
-    RecruitSiteProject updateByAdmin(RecruitSiteProject project);
+    RecruitSiteProject saveProjectChangesByAdmin(RecruitSiteProject project);
 
     /**
      * 单位删除当前登录单位项目信息。
@@ -62,7 +62,7 @@ public interface RecruitSiteProjectBPO {
      * @param projectId 项目主键ID
      * @return 项目信息对象
      */
-    RecruitSiteProject findById(Long projectId);
+    RecruitSiteProject queryProjectById(Long projectId);
 
     /**
      * 企业端根据项目ID查询本单位项目信息。
@@ -70,7 +70,7 @@ public interface RecruitSiteProjectBPO {
      * @param projectId 项目主键ID
      * @return 项目信息对象
      */
-    RecruitSiteProject findCorpById(Long projectId);
+    RecruitSiteProject queryProjectCorpById(Long projectId);
 
     /**
      * 管理端分页查询项目信息，自动按当前管理员属地区限权。
@@ -78,7 +78,7 @@ public interface RecruitSiteProjectBPO {
      * @param req 查询条件
      * @return 项目信息分页结果
      */
-    PageResult<RecruitSiteProject> queryList(RecruitSiteProjectQueryReq req);
+    PageResult<RecruitSiteProject> queryProjectList(RecruitSiteProjectQueryReq req);
 
     /**
      * 企业端分页查询当前登录单位项目信息。
@@ -86,7 +86,7 @@ public interface RecruitSiteProjectBPO {
      * @param req 查询条件
      * @return 项目信息分页结果
      */
-    PageResult<RecruitSiteProject> queryCorpList(RecruitSiteProjectQueryReq req);
+    PageResult<RecruitSiteProject> queryProjectCorpList(RecruitSiteProjectQueryReq req);
 
     /**
      * 区级管理员审核项目信息。

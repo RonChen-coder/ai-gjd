@@ -1,0 +1,181 @@
+{
+  "info": {
+    "_postman_id": "b1e1f2a3-9c4d-4e5f-8a6b-7c8d9e0f1a2b",
+    "name": "高基地项目信息企业端 RecruitSiteProjectCorpController",
+    "description": "白名单单位上传、修改、删除和查询本单位高基地项目信息接口。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "企业端新增项目信息",
+      "description": "单位新增项目信息，提交后进入待审核，自动绑定当前登录单位的高基地。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/corp/site-project/create",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "corp",
+            "site-project",
+            "create"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"projectName\": \"高技能人才培训项目A\",\n  \"applyDirection\": \"1\",\n  \"applyDirectionProjectName\": \"工业机器人系统操作员\",\n  \"projectLocation\": \"上海市浦东新区世博大道1919号\",\n  \"implementUnit\": \"中国商用飞机有限责任公司\",\n  \"projectIntro\": \"项目简介\",\n  \"projectStatus\": \"1\",\n  \"approvalTime\": \"2026-01-01\",\n  \"approvalAmount\": 100,\n  \"approvalGrantTime\": \"2026-02-01\",\n  \"approvalGrantAmount\": 50,\n  \"acceptanceTime\": \"2026-12-01\",\n  \"acceptanceGrantTime\": \"2026-12-15\",\n  \"acceptanceGrantAmount\": 30,\n  \"performanceGrantTime1\": \"2027-01-01\",\n  \"performanceGrantAmount1\": 10,\n  \"performanceGrantTime2\": \"2028-01-01\",\n  \"performanceGrantAmount2\": 10,\n  \"performanceGrantTime3\": \"2029-01-01\",\n  \"performanceGrantAmount3\": 0,\n  \"totalGrantAmount\": 100\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "企业端修改项目信息",
+      "description": "单位修改当前登录单位项目信息，修改后进入待审核，关联基地不可变更。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/corp/site-project/update",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "corp",
+            "site-project",
+            "update"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"projectId\": \"{{projectId}}\",\n  \"projectName\": \"高技能人才培训项目A\",\n  \"applyDirection\": \"1\",\n  \"applyDirectionProjectName\": \"工业机器人系统操作员\",\n  \"projectLocation\": \"上海市浦东新区世博大道1919号\",\n  \"implementUnit\": \"中国商用飞机有限责任公司\",\n  \"projectIntro\": \"更新后的项目简介\",\n  \"projectStatus\": \"1\",\n  \"approvalTime\": \"2026-01-01\",\n  \"approvalAmount\": 100,\n  \"approvalGrantTime\": \"2026-02-01\",\n  \"approvalGrantAmount\": 50,\n  \"acceptanceTime\": \"2026-12-01\",\n  \"acceptanceGrantTime\": \"2026-12-15\",\n  \"acceptanceGrantAmount\": 30,\n  \"performanceGrantTime1\": \"2027-01-01\",\n  \"performanceGrantAmount1\": 10,\n  \"performanceGrantTime2\": \"2028-01-01\",\n  \"performanceGrantAmount2\": 10,\n  \"performanceGrantTime3\": \"2029-01-01\",\n  \"performanceGrantAmount3\": 0,\n  \"totalGrantAmount\": 100\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "企业端删除项目信息",
+      "description": "单位删除当前登录单位项目信息。",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/corp/site-project/delete?projectId={{projectId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "corp",
+            "site-project",
+            "delete"
+          ],
+          "query": [
+            {
+              "key": "projectId",
+              "value": "{{projectId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "企业端查询项目信息详情",
+      "description": "查询当前登录单位项目信息详情。",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/corp/site-project/detail?projectId={{projectId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "corp",
+            "site-project",
+            "detail"
+          ],
+          "query": [
+            {
+              "key": "projectId",
+              "value": "{{projectId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "企业端分页查询项目信息列表",
+      "description": "分页查询当前登录单位项目信息列表。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/corp/site-project/list",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "corp",
+            "site-project",
+            "list"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"siteId\": \"{{siteId}}\",\n  \"projectName\": \"\",\n  \"applyDirection\": \"\",\n  \"projectStatus\": \"\",\n  \"status\": \"\",\n  \"keyword\": \"\",\n  \"pageParam\": {\n    \"pageNum\": 1,\n    \"pageSize\": 10\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/ggzp-ywjb-shrs",
+      "type": "string"
+    },
+    {
+      "key": "siteId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "projectId",
+      "value": "1",
+      "type": "string"
+    }
+  ]
+}

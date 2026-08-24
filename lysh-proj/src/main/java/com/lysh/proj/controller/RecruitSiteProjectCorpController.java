@@ -32,7 +32,7 @@ public class RecruitSiteProjectCorpController {
         if (project == null) {
             throw new BusinessException("项目信息不能为空");
         }
-        return AjaxResult.SUCCESS(projectBPO.createByCorp(project));
+        return AjaxResult.SUCCESS(projectBPO.saveProjectByCorp(project));
     }
 
     /**
@@ -46,7 +46,7 @@ public class RecruitSiteProjectCorpController {
         if (project == null) {
             throw new BusinessException("项目信息不能为空");
         }
-        return AjaxResult.SUCCESS(projectBPO.updateByCorp(project));
+        return AjaxResult.SUCCESS(projectBPO.saveProjectChangesByCorp(project));
     }
 
     /**
@@ -69,7 +69,7 @@ public class RecruitSiteProjectCorpController {
      */
     @GetMapping("/detail")
     public AjaxResult findById(@RequestParam Long projectId) {
-        return AjaxResult.SUCCESS(projectBPO.findCorpById(projectId));
+        return AjaxResult.SUCCESS(projectBPO.queryProjectCorpById(projectId));
     }
 
     /**
@@ -80,6 +80,6 @@ public class RecruitSiteProjectCorpController {
      */
     @PostMapping("/list")
     public AjaxResult list(@RequestBody(required = false) RecruitSiteProjectQueryReq req) {
-        return AjaxResult.PAGE(projectBPO.queryCorpList(req));
+        return AjaxResult.PAGE(projectBPO.queryProjectCorpList(req));
     }
 }

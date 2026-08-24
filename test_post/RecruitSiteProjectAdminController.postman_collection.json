@@ -1,0 +1,215 @@
+{
+  "info": {
+    "_postman_id": "c2f3b4a5-6d7e-4f8a-9b0c-1d2e3f4a5b6c",
+    "name": "高基地项目信息管理端 RecruitSiteProjectAdminController",
+    "description": "市级、区级管理员维护高基地项目信息及区级审核接口。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "管理端新增项目信息",
+      "description": "市区管理员新增项目信息，免审核直接生效，siteId 必填。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-project/create",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-project",
+            "create"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"siteId\": \"{{siteId}}\",\n  \"projectName\": \"高技能人才培训项目A\",\n  \"applyDirection\": \"1\",\n  \"applyDirectionProjectName\": \"工业机器人系统操作员\",\n  \"projectLocation\": \"上海市浦东新区世博大道1919号\",\n  \"implementUnit\": \"中国商用飞机有限责任公司\",\n  \"projectIntro\": \"项目简介\",\n  \"projectStatus\": \"1\",\n  \"approvalTime\": \"2026-01-01\",\n  \"approvalAmount\": 100,\n  \"approvalGrantTime\": \"2026-02-01\",\n  \"approvalGrantAmount\": 50,\n  \"acceptanceTime\": \"2026-12-01\",\n  \"acceptanceGrantTime\": \"2026-12-15\",\n  \"acceptanceGrantAmount\": 30,\n  \"performanceGrantTime1\": \"2027-01-01\",\n  \"performanceGrantAmount1\": 10,\n  \"performanceGrantTime2\": \"2028-01-01\",\n  \"performanceGrantAmount2\": 10,\n  \"performanceGrantTime3\": \"2029-01-01\",\n  \"performanceGrantAmount3\": 0,\n  \"totalGrantAmount\": 100\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "管理端修改项目信息",
+      "description": "市区管理员修改项目信息，免审核直接生效，关联基地不可变更。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-project/update",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-project",
+            "update"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"projectId\": \"{{projectId}}\",\n  \"projectName\": \"高技能人才培训项目A\",\n  \"applyDirection\": \"1\",\n  \"applyDirectionProjectName\": \"工业机器人系统操作员\",\n  \"projectLocation\": \"上海市浦东新区世博大道1919号\",\n  \"implementUnit\": \"中国商用飞机有限责任公司\",\n  \"projectIntro\": \"更新后的项目简介\",\n  \"projectStatus\": \"1\",\n  \"approvalTime\": \"2026-01-01\",\n  \"approvalAmount\": 100,\n  \"approvalGrantTime\": \"2026-02-01\",\n  \"approvalGrantAmount\": 50,\n  \"acceptanceTime\": \"2026-12-01\",\n  \"acceptanceGrantTime\": \"2026-12-15\",\n  \"acceptanceGrantAmount\": 30,\n  \"performanceGrantTime1\": \"2027-01-01\",\n  \"performanceGrantAmount1\": 10,\n  \"performanceGrantTime2\": \"2028-01-01\",\n  \"performanceGrantAmount2\": 10,\n  \"performanceGrantTime3\": \"2029-01-01\",\n  \"performanceGrantAmount3\": 0,\n  \"totalGrantAmount\": 100\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "管理端删除项目信息",
+      "description": "市区管理员删除项目信息。",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-project/delete?projectId={{projectId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-project",
+            "delete"
+          ],
+          "query": [
+            {
+              "key": "projectId",
+              "value": "{{projectId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "管理端查询项目信息详情",
+      "description": "根据项目ID查询项目信息详情。",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-project/detail?projectId={{projectId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-project",
+            "detail"
+          ],
+          "query": [
+            {
+              "key": "projectId",
+              "value": "{{projectId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "管理端分页查询项目信息列表",
+      "description": "分页查询项目信息，支持基地、区县、项目名称、申报方向、项目状态、审核状态和关键字检索。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-project/list",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-project",
+            "list"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"siteId\": \"{{siteId}}\",\n  \"districtCode\": \"\",\n  \"projectName\": \"\",\n  \"applyDirection\": \"\",\n  \"projectStatus\": \"\",\n  \"status\": \"\",\n  \"keyword\": \"\",\n  \"pageParam\": {\n    \"pageNum\": 1,\n    \"pageSize\": 10\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "管理端审核项目信息",
+      "description": "区级管理员审核项目信息，状态传已通过或已驳回。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-project/review",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-project",
+            "review"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"projectId\": \"{{projectId}}\",\n  \"reviewOpinion\": \"材料齐全，审核通过\",\n  \"status\": \"已通过\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/ggzp-zzjb-shrs",
+      "type": "string"
+    },
+    {
+      "key": "siteId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "projectId",
+      "value": "1",
+      "type": "string"
+    }
+  ]
+}

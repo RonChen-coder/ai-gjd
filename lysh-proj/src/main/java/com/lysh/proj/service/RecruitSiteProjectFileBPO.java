@@ -16,7 +16,7 @@ public interface RecruitSiteProjectFileBPO {
      * @param file 项目文件请求体
      * @return 创建后的项目文件
      */
-    RecruitSiteProjectFile uploadByAdmin(RecruitSiteProjectFile file);
+    RecruitSiteProjectFile saveProjectFileByAdmin(RecruitSiteProjectFile file);
 
     /**
      * 企业端新增当前单位项目文件记录，fileStorageKey 由文件上传接口返回。
@@ -24,7 +24,7 @@ public interface RecruitSiteProjectFileBPO {
      * @param file 项目文件请求体
      * @return 创建后的项目文件
      */
-    RecruitSiteProjectFile uploadByCorp(RecruitSiteProjectFile file);
+    RecruitSiteProjectFile saveProjectFileByCorp(RecruitSiteProjectFile file);
 
     /**
      * 管理端修改项目文件。
@@ -32,7 +32,7 @@ public interface RecruitSiteProjectFileBPO {
      * @param file 待更新的项目文件
      * @return 更新后的项目文件
      */
-    RecruitSiteProjectFile updateByAdmin(RecruitSiteProjectFile file);
+    RecruitSiteProjectFile saveProjectFileChangesByAdmin(RecruitSiteProjectFile file);
 
     /**
      * 企业端修改当前单位项目文件。
@@ -40,7 +40,7 @@ public interface RecruitSiteProjectFileBPO {
      * @param file 待更新的项目文件
      * @return 更新后的项目文件
      */
-    RecruitSiteProjectFile updateByCorp(RecruitSiteProjectFile file);
+    RecruitSiteProjectFile saveProjectFileChangesByCorp(RecruitSiteProjectFile file);
 
     /**
      * 管理端根据文件ID查询项目文件。
@@ -48,7 +48,7 @@ public interface RecruitSiteProjectFileBPO {
      * @param fileId 文件主键ID
      * @return 项目文件
      */
-    RecruitSiteProjectFile findById(Long fileId);
+    RecruitSiteProjectFile queryProjectFileById(Long fileId);
 
     /**
      * 企业端根据文件ID查询当前单位项目文件。
@@ -56,7 +56,7 @@ public interface RecruitSiteProjectFileBPO {
      * @param fileId 文件主键ID
      * @return 项目文件
      */
-    RecruitSiteProjectFile findCorpById(Long fileId);
+    RecruitSiteProjectFile queryProjectFileCorpById(Long fileId);
 
     /**
      * 管理端查询项目文件列表。
@@ -64,7 +64,7 @@ public interface RecruitSiteProjectFileBPO {
      * @param projectId 项目主键ID
      * @return 项目文件列表
      */
-    List<RecruitSiteProjectFile> listByProjectId(Long projectId);
+    List<RecruitSiteProjectFile> queryProjectFilesByProjectId(Long projectId);
 
     /**
      * 企业端查询当前单位项目文件列表。
@@ -72,7 +72,7 @@ public interface RecruitSiteProjectFileBPO {
      * @param projectId 项目主键ID
      * @return 项目文件列表
      */
-    List<RecruitSiteProjectFile> listCorpByProjectId(Long projectId);
+    List<RecruitSiteProjectFile> queryProjectFilesCorpByProjectId(Long projectId);
 
     /**
      * 企业端删除项目文件，同时删除文件存储。

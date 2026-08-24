@@ -51,7 +51,7 @@ public class RecruitSiteProjectBPOImpl implements RecruitSiteProjectBPO {
     }
 
     @Override
-    public RecruitSiteProject createByCorp(RecruitSiteProject project) {
+    public RecruitSiteProject saveProjectByCorp(RecruitSiteProject project) {
         validateProject(project);
         RecruitSiteInfo siteInfo = findCorpSite();
         project.setSiteId(siteInfo.getSiteId());
@@ -73,7 +73,7 @@ public class RecruitSiteProjectBPOImpl implements RecruitSiteProjectBPO {
     }
 
     @Override
-    public RecruitSiteProject createByAdmin(RecruitSiteProject project) {
+    public RecruitSiteProject saveProjectByAdmin(RecruitSiteProject project) {
         validateProject(project);
         if (project.getSiteId() == null) {
             throw new BusinessException("基地ID不能为空");
@@ -101,11 +101,11 @@ public class RecruitSiteProjectBPOImpl implements RecruitSiteProjectBPO {
     }
 
     @Override
-    public RecruitSiteProject updateByCorp(RecruitSiteProject project) {
+    public RecruitSiteProject saveProjectChangesByCorp(RecruitSiteProject project) {
         if (project.getProjectId() == null) {
             throw new BusinessException("项目ID不能为空");
         }
-        RecruitSiteProject old = findById(project.getProjectId());
+        RecruitSiteProject old = queryProjectById(project.getProjectId());
         if (old == null) {
             throw new BusinessException("项目信息不存在: " + project.getProjectId());
         }
@@ -131,11 +131,11 @@ public class RecruitSiteProjectBPOImpl implements RecruitSiteProjectBPO {
     }
 
     @Override
-    public RecruitSiteProject updateByAdmin(RecruitSiteProject project) {
+    public RecruitSiteProject saveProjectChangesByAdmin(RecruitSiteProject project) {
         if (project.getProjectId() == null) {
             throw new BusinessException("项目ID不能为空");
         }
-        RecruitSiteProject old = findById(project.getProjectId());
+        RecruitSiteProject old = queryProjectById(project.getProjectId());
         if (old == null) {
             throw new BusinessException("项目信息不存在: " + project.getProjectId());
         }
@@ -162,7 +162,7 @@ public class RecruitSiteProjectBPOImpl implements RecruitSiteProjectBPO {
 
     @Override
     public void deleteByCorp(Long projectId) {
-        RecruitSiteProject old = findById(projectId);
+        RecruitSiteProject old = queryProjectById(projectId);
         if (old == null) {
             throw new BusinessException("项目信息不存在: " + projectId);
         }
@@ -175,7 +175,7 @@ public class RecruitSiteProjectBPOImpl implements RecruitSiteProjectBPO {
 
     @Override
     public void delete(Long projectId) {
-        RecruitSiteProject old = findById(projectId);
+        RecruitSiteProject old = queryProjectById(projectId);
         if (old == null) {
             throw new BusinessException("项目信息不存在: " + projectId);
         }
@@ -187,7 +187,7 @@ public class RecruitSiteProjectBPOImpl implements RecruitSiteProjectBPO {
     }
 
     @Override
-    public RecruitSiteProject findById(Long projectId) {
+    public RecruitSiteProject queryProjectById(Long projectId) {
         RecruitSiteProjectEntity entity = DBUtils.get(
                 "SELECT " + COLUMNS + " FROM wsbs.RECRUIT_SITE_PROJECT WHERE project_id = ?",
                 RecruitSiteProjectEntity.class, projectId);
@@ -195,8 +195,8 @@ public class RecruitSiteProjectBPOImpl implements RecruitSiteProjectBPO {
     }
 
     @Override
-    public RecruitSiteProject findCorpById(Long projectId) {
-        RecruitSiteProject project = findById(projectId);
+    public RecruitSiteProject queryProjectCorpById(Long projectId) {
+        RecruitSiteProject project = queryProjectById(projectId);
         if (project == null) {
             throw new BusinessException("项目信息不存在: " + projectId);
         }
@@ -205,7 +205,7 @@ public class RecruitSiteProjectBPOImpl implements RecruitSiteProjectBPO {
     }
 
     @Override
-    public PageResult<RecruitSiteProject> queryList(RecruitSiteProjectQueryReq req) {
+    public PageResult<RecruitSiteProject> queryProjectList(RecruitSiteProjectQueryReq req) {
         if (req == null) {
             req = new RecruitSiteProjectQueryReq();
         }
@@ -214,7 +214,7 @@ public class RecruitSiteProjectBPOImpl implements RecruitSiteProjectBPO {
     }
 
     @Override
-    public PageResult<RecruitSiteProject> queryCorpList(RecruitSiteProjectQueryReq req) {
+    public PageResult<RecruitSiteProject> queryProjectCorpList(RecruitSiteProjectQueryReq req) {
         RecruitSiteInfo siteInfo = findCorpSite();
         if (req == null) {
             req = new RecruitSiteProjectQueryReq();
@@ -228,7 +228,7 @@ public class RecruitSiteProjectBPOImpl implements RecruitSiteProjectBPO {
         if (!STATUS_PASSED.equals(status) && !STATUS_REJECTED.equals(status)) {
             throw new BusinessException("审核状态只能为已通过或已驳回");
         }
-        RecruitSiteProject project = findById(projectId);
+        RecruitSiteProject project = queryProjectById(projectId);
         if (project == null) {
             throw new BusinessException("项目信息不存在: " + projectId);
         }

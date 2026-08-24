@@ -37,9 +37,9 @@ public class RecruitSiteProjectFileBPOImpl implements RecruitSiteProjectFileBPO 
     }
 
     @Override
-    public RecruitSiteProjectFile uploadByAdmin(RecruitSiteProjectFile file) {
+    public RecruitSiteProjectFile saveProjectFileByAdmin(RecruitSiteProjectFile file) {
         validateCreateParams(file);
-        RecruitSiteProject project = projectBPO.findById(file.getProjectId());
+        RecruitSiteProject project = projectBPO.queryProjectById(file.getProjectId());
         if (project == null) {
             throw new BusinessException("项目信息不存在: " + file.getProjectId());
         }
@@ -57,9 +57,9 @@ public class RecruitSiteProjectFileBPOImpl implements RecruitSiteProjectFileBPO 
     }
 
     @Override
-    public RecruitSiteProjectFile uploadByCorp(RecruitSiteProjectFile file) {
+    public RecruitSiteProjectFile saveProjectFileByCorp(RecruitSiteProjectFile file) {
         validateCreateParams(file);
-        RecruitSiteProject project = projectBPO.findCorpById(file.getProjectId());
+        RecruitSiteProject project = projectBPO.queryProjectCorpById(file.getProjectId());
         if (project == null) {
             throw new BusinessException("项目信息不存在: " + file.getProjectId());
         }
@@ -77,16 +77,16 @@ public class RecruitSiteProjectFileBPOImpl implements RecruitSiteProjectFileBPO 
     }
 
     @Override
-    public RecruitSiteProjectFile updateByAdmin(RecruitSiteProjectFile file) {
+    public RecruitSiteProjectFile saveProjectFileChangesByAdmin(RecruitSiteProjectFile file) {
         if (file.getFileId() == null) {
             throw new BusinessException("项目文件ID不能为空");
         }
-        RecruitSiteProjectFile old = findFile(file.getFileId());
+        RecruitSiteProjectFile old = queryFile(file.getFileId());
         if (old == null) {
             throw new BusinessException("项目文件不存在: " + file.getFileId());
         }
         checkFileProjectBinding(old, file);
-        RecruitSiteProject project = projectBPO.findById(old.getProjectId());
+        RecruitSiteProject project = projectBPO.queryProjectById(old.getProjectId());
         if (project == null) {
             throw new BusinessException("项目信息不存在: " + old.getProjectId());
         }
@@ -103,11 +103,11 @@ public class RecruitSiteProjectFileBPOImpl implements RecruitSiteProjectFileBPO 
     }
 
     @Override
-    public RecruitSiteProjectFile updateByCorp(RecruitSiteProjectFile file) {
+    public RecruitSiteProjectFile saveProjectFileChangesByCorp(RecruitSiteProjectFile file) {
         if (file.getFileId() == null) {
             throw new BusinessException("项目文件ID不能为空");
         }
-        RecruitSiteProjectFile old = findFile(file.getFileId());
+        RecruitSiteProjectFile old = queryFile(file.getFileId());
         if (old == null) {
             throw new BusinessException("项目文件不存在: " + file.getFileId());
         }
@@ -126,8 +126,8 @@ public class RecruitSiteProjectFileBPOImpl implements RecruitSiteProjectFileBPO 
     }
 
     @Override
-    public RecruitSiteProjectFile findById(Long fileId) {
-        RecruitSiteProjectFile file = findFile(fileId);
+    public RecruitSiteProjectFile queryProjectFileById(Long fileId) {
+        RecruitSiteProjectFile file = queryFile(fileId);
         if (file != null) {
             checkAdminProject(file.getProjectId());
         }
@@ -135,8 +135,8 @@ public class RecruitSiteProjectFileBPOImpl implements RecruitSiteProjectFileBPO 
     }
 
     @Override
-    public RecruitSiteProjectFile findCorpById(Long fileId) {
-        RecruitSiteProjectFile file = findFile(fileId);
+    public RecruitSiteProjectFile queryProjectFileCorpById(Long fileId) {
+        RecruitSiteProjectFile file = queryFile(fileId);
         if (file != null) {
             checkCorpProject(file.getProjectId());
         }
@@ -144,20 +144,20 @@ public class RecruitSiteProjectFileBPOImpl implements RecruitSiteProjectFileBPO 
     }
 
     @Override
-    public List<RecruitSiteProjectFile> listByProjectId(Long projectId) {
+    public List<RecruitSiteProjectFile> queryProjectFilesByProjectId(Long projectId) {
         checkAdminProject(projectId);
-        return queryByProjectId(projectId);
+        return queryProjectFileList(projectId);
     }
 
     @Override
-    public List<RecruitSiteProjectFile> listCorpByProjectId(Long projectId) {
+    public List<RecruitSiteProjectFile> queryProjectFilesCorpByProjectId(Long projectId) {
         checkCorpProject(projectId);
-        return queryByProjectId(projectId);
+        return queryProjectFileList(projectId);
     }
 
     @Override
     public void deleteByCorp(Long fileId) {
-        RecruitSiteProjectFile file = findFile(fileId);
+        RecruitSiteProjectFile file = queryFile(fileId);
         if (file == null) {
             throw new BusinessException("项目文件不存在: " + fileId);
         }
@@ -245,14 +245,14 @@ public class RecruitSiteProjectFileBPOImpl implements RecruitSiteProjectFileBPO 
         }
     }
 
-    private RecruitSiteProjectFile findFile(Long fileId) {
+    private RecruitSiteProjectFile queryFile(Long fileId) {
         RecruitSiteProjectFileEntity entity = DBUtils.get(
                 "SELECT " + COLUMNS + " FROM wsbs.RECRUIT_SITE_PROJECT_FILE WHERE file_id = ?",
                 RecruitSiteProjectFileEntity.class, fileId);
         return toModel(entity);
     }
 
-    private List<RecruitSiteProjectFile> queryByProjectId(Long projectId) {
+    private List<RecruitSiteProjectFile> queryProjectFileList(Long projectId) {
         List<RecruitSiteProjectFileEntity> entities = DBUtils.query(
                 "SELECT " + COLUMNS + " FROM wsbs.RECRUIT_SITE_PROJECT_FILE " +
                         "WHERE project_id = ? ORDER BY created_at DESC, file_id DESC",
@@ -261,7 +261,7 @@ public class RecruitSiteProjectFileBPOImpl implements RecruitSiteProjectFileBPO 
     }
 
     private void checkAdminProject(Long projectId) {
-        RecruitSiteProject project = projectBPO.findById(projectId);
+        RecruitSiteProject project = projectBPO.queryProjectById(projectId);
         if (project == null) {
             throw new BusinessException("项目信息不存在: " + projectId);
         }
@@ -269,7 +269,7 @@ public class RecruitSiteProjectFileBPOImpl implements RecruitSiteProjectFileBPO 
     }
 
     private void checkCorpProject(Long projectId) {
-        RecruitSiteProject project = projectBPO.findCorpById(projectId);
+        RecruitSiteProject project = projectBPO.queryProjectCorpById(projectId);
         if (project == null) {
             throw new BusinessException("项目信息不存在: " + projectId);
         }

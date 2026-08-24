@@ -9,9 +9,6 @@ import com.wondersgroup.wdls.core.exception.BusinessException;
 import com.wondersgroup.wdls.web.AjaxResult;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 /**
  * 高基地项目文件企业端控制层。
@@ -31,28 +28,17 @@ public class RecruitSiteProjectFileCorpController {
     }
 
     /**
-     * 企业端上传当前单位项目文件。
+     * 企业端新增当前单位项目文件记录，fileStorageKey 由文件上传接口返回。
      *
-     * @param file 上传文件
-     * @param projectId 项目主键ID
-     * @param projectStatus 项目状态
-     * @param fileName 文件名称，可选
-     * @param fileDesc 文件说明，可选
+     * @param file 项目文件请求体
      * @return 创建后的项目文件
      */
     @PostMapping("/upload")
-    public AjaxResult upload(@RequestParam("file") MultipartFile file,
-                             @RequestParam Long projectId,
-                             @RequestParam String projectStatus,
-                             @RequestParam(required = false) String fileName,
-                             @RequestParam(required = false) String fileDesc) {
-        try {
-            RecruitGJDFileModel fileModel = new RecruitGJDFileModel(
-                    file.getOriginalFilename(), file.getBytes(), file.getContentType());
-            return AjaxResult.SUCCESS(projectFileBPO.uploadByCorp(fileModel, projectId, projectStatus, fileName, fileDesc));
-        } catch (IOException e) {
-            throw new BusinessException("上传文件失败");
+    public AjaxResult upload(@RequestBody RecruitSiteProjectFile file) {
+        if (file == null) {
+            throw new BusinessException("项目文件不能为空");
         }
+        return AjaxResult.SUCCESS(projectFileBPO.saveProjectFileByCorp(file));
     }
 
     /**
@@ -66,7 +52,7 @@ public class RecruitSiteProjectFileCorpController {
         if (file == null) {
             throw new BusinessException("项目文件不能为空");
         }
-        return AjaxResult.SUCCESS(projectFileBPO.updateByCorp(file));
+        return AjaxResult.SUCCESS(projectFileBPO.saveProjectFileChangesByCorp(file));
     }
 
     /**
@@ -89,7 +75,7 @@ public class RecruitSiteProjectFileCorpController {
      */
     @GetMapping("/detail")
     public AjaxResult detail(@RequestParam Long fileId) {
-        return AjaxResult.SUCCESS(projectFileBPO.findCorpById(fileId));
+        return AjaxResult.SUCCESS(projectFileBPO.queryProjectFileCorpById(fileId));
     }
 
     /**
@@ -100,7 +86,7 @@ public class RecruitSiteProjectFileCorpController {
      */
     @GetMapping("/list")
     public AjaxResult list(@RequestParam Long projectId) {
-        return AjaxResult.SUCCESS(projectFileBPO.listCorpByProjectId(projectId));
+        return AjaxResult.SUCCESS(projectFileBPO.queryProjectFilesCorpByProjectId(projectId));
     }
 
     /**
@@ -112,7 +98,7 @@ public class RecruitSiteProjectFileCorpController {
      */
     @GetMapping("/download")
     public AjaxResult download(@RequestParam Long fileId, HttpServletResponse response) {
-        RecruitSiteProjectFile projectFile = projectFileBPO.findCorpById(fileId);
+        RecruitSiteProjectFile projectFile = projectFileBPO.queryProjectFileCorpById(fileId);
         if (projectFile == null) {
             throw new BusinessException("项目文件不存在: " + fileId);
         }

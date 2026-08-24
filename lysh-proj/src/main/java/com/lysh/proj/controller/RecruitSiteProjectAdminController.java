@@ -33,7 +33,7 @@ public class RecruitSiteProjectAdminController {
         if (project == null) {
             throw new BusinessException("项目信息不能为空");
         }
-        return AjaxResult.SUCCESS(projectBPO.createByAdmin(project));
+        return AjaxResult.SUCCESS(projectBPO.saveProjectByAdmin(project));
     }
 
     /**
@@ -47,7 +47,7 @@ public class RecruitSiteProjectAdminController {
         if (project == null) {
             throw new BusinessException("项目信息不能为空");
         }
-        return AjaxResult.SUCCESS(projectBPO.updateByAdmin(project));
+        return AjaxResult.SUCCESS(projectBPO.saveProjectChangesByAdmin(project));
     }
 
     /**
@@ -70,7 +70,7 @@ public class RecruitSiteProjectAdminController {
      */
     @GetMapping("/detail")
     public AjaxResult findById(@RequestParam Long projectId) {
-        return AjaxResult.SUCCESS(projectBPO.findById(projectId));
+        return AjaxResult.SUCCESS(projectBPO.queryProjectById(projectId));
     }
 
     /**
@@ -82,7 +82,7 @@ public class RecruitSiteProjectAdminController {
      */
     @PostMapping("/list")
     public AjaxResult list(@RequestBody(required = false) RecruitSiteProjectQueryReq req) {
-        return AjaxResult.PAGE(projectBPO.queryList(req));
+        return AjaxResult.PAGE(projectBPO.queryProjectList(req));
     }
 
     /**

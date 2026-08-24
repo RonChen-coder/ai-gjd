@@ -1,0 +1,178 @@
+{
+  "info": {
+    "_postman_id": "e4f5d6c7-8a9b-4c0d-9e1f-2a3b4c5d6e7f",
+    "name": "高基地项目文档管理端 RecruitSiteProjectFileAdminController",
+    "description": "市级、区级管理员维护项目文档，支持新增、修改、查询和下载。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "管理端新增项目文档",
+      "description": "先调用文件上传接口获取 fileStorageKey，再创建项目文档记录。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-project-file/upload",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-project-file",
+            "upload"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"projectId\": \"{{projectId}}\",\n  \"projectStatus\": \"1\",\n  \"fileName\": \"项目立项批复.pdf\",\n  \"fileDesc\": \"立项批复文件\",\n  \"fileStorageKey\": \"{{fileStorageKey}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "管理端修改项目文档",
+      "description": "修改项目文档信息，可替换 fileStorageKey，旧文件存储会被删除。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-project-file/update",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-project-file",
+            "update"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fileId\": \"{{fileId}}\",\n  \"projectStatus\": \"1\",\n  \"fileName\": \"项目立项批复.pdf\",\n  \"fileDesc\": \"更新后的立项批复文件\",\n  \"fileStorageKey\": \"{{fileStorageKey}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "管理端查询项目文档详情",
+      "description": "根据文件ID查询项目文档详情。",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-project-file/detail?fileId={{fileId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-project-file",
+            "detail"
+          ],
+          "query": [
+            {
+              "key": "fileId",
+              "value": "{{fileId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "管理端查询项目文档列表",
+      "description": "查询指定项目的文档列表。",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-project-file/list?projectId={{projectId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-project-file",
+            "list"
+          ],
+          "query": [
+            {
+              "key": "projectId",
+              "value": "{{projectId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "管理端下载项目文档",
+      "description": "下载项目文档。",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-project-file/download?fileId={{fileId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-project-file",
+            "download"
+          ],
+          "query": [
+            {
+              "key": "fileId",
+              "value": "{{fileId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/ggzp-zzjb-shrs",
+      "type": "string"
+    },
+    {
+      "key": "projectId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "fileId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "fileStorageKey",
+      "value": "upload-file-key",
+      "type": "string"
+    }
+  ]
+}
