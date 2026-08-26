@@ -537,6 +537,113 @@ BEGIN
 END;
 /
 
+-- 基地项目资产表
+-- 说明：对应答疑文档 5.失业人员全维度帮扶-项目资产管理，
+-- 管理端维护项目资产清单，企业端维护资产表单，每次维护生成行为日志，
+-- 使用频次字段由企业端维护，字段参考《4.本市高技能人才培养基地资助项目资产信息.xlsx》
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_sequences
+     WHERE sequence_owner = 'WSBS'
+       AND sequence_name = 'SEQ_0073_RECRUIT_SITE_ASSET';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE SEQUENCE wsbs.SEQ_0073_RECRUIT_SITE_ASSET MINVALUE 1 MAXVALUE 999999999999 START WITH 1 INCREMENT BY 1 CACHE 20';
+    END IF;
+END;
+/
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_tables
+     WHERE owner = 'WSBS'
+       AND table_name = 'RECRUIT_SITE_ASSET';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE TABLE wsbs.RECRUIT_SITE_ASSET (asset_id NUMBER(12) NOT NULL, project_id NUMBER(12) NOT NULL, site_id NUMBER(12) NOT NULL, tyshxym VARCHAR2(18) NOT NULL, district_code VARCHAR2(32) NOT NULL, asset_name VARCHAR2(200) NOT NULL, quantity NUMBER(12) DEFAULT NULL, unit VARCHAR2(50) DEFAULT NULL, brand_model VARCHAR2(200) DEFAULT NULL, storage_location VARCHAR2(500) DEFAULT NULL, asset_status VARCHAR2(32) DEFAULT NULL, usage_frequency NUMBER(12) DEFAULT NULL, asset_photo VARCHAR2(500) DEFAULT NULL, created_by VARCHAR2(100) NOT NULL, created_at DATE DEFAULT SYSDATE NOT NULL, updated_by VARCHAR2(100) DEFAULT NULL, updated_at DATE DEFAULT NULL, PRIMARY KEY (asset_id))';
+    END IF;
+END;
+/
+
+COMMENT ON TABLE wsbs.RECRUIT_SITE_ASSET IS '高基地项目资产表，一个项目可挂多个资产，管理端定清单、企业端维护表单';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ASSET.asset_id IS '资产ID，SEQ_0073_RECRUIT_SITE_ASSET';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ASSET.project_id IS '关联项目ID，对应RECRUIT_SITE_PROJECT.project_id';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ASSET.site_id IS '关联基地ID，对应RECRUIT_SITE_INFO.site_id，冗余用于权限控制';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ASSET.tyshxym IS '企业统一社会信用代码，继承所属基地，冗余用于统计和搜索';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ASSET.district_code IS '分管区县编码，继承所属基地属地区，用于权限控制';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ASSET.asset_name IS '资产名称';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ASSET.quantity IS '数量';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ASSET.unit IS '单位';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ASSET.brand_model IS '品牌型号';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ASSET.storage_location IS '存放地点';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ASSET.asset_status IS '资产状态，字典RECRUIT_SITE_ASSET_STATUS，1正常运行/2未运行/3报废';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ASSET.usage_frequency IS '使用频次，由企业端维护';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ASSET.asset_photo IS '资产照片，文件存储key';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ASSET.created_by IS '创建人';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ASSET.created_at IS '创建时间';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ASSET.updated_by IS '修改人';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ASSET.updated_at IS '修改时间';
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_indexes
+     WHERE owner = 'WSBS'
+       AND index_name = 'IDX_RECRUIT_SITE_ASSET_PROJECT';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE INDEX idx_recruit_site_asset_project ON wsbs.RECRUIT_SITE_ASSET (project_id)';
+    END IF;
+END;
+/
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_indexes
+     WHERE owner = 'WSBS'
+       AND index_name = 'IDX_RECRUIT_SITE_ASSET_SITE';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE INDEX idx_recruit_site_asset_site ON wsbs.RECRUIT_SITE_ASSET (site_id)';
+    END IF;
+END;
+/
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_indexes
+     WHERE owner = 'WSBS'
+       AND index_name = 'IDX_RECRUIT_SITE_ASSET_DISTRICT';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE INDEX idx_recruit_site_asset_district ON wsbs.RECRUIT_SITE_ASSET (district_code)';
+    END IF;
+END;
+/
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_indexes
+     WHERE owner = 'WSBS'
+       AND index_name = 'IDX_RECRUIT_SITE_ASSET_TYSXYM';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE INDEX idx_recruit_site_asset_tyshxym ON wsbs.RECRUIT_SITE_ASSET (tyshxym)';
+    END IF;
+END;
+/
+
 
 
 --------------高基地类别字典
@@ -569,3 +676,10 @@ INSERT INTO SBDEV.AFFAIR_DIC_DATA VALUES(SBDEV.SEQ_AFFAIR_DIC_ID.NEXTVAL, 'RECRU
 INSERT INTO SBDEV.AFFAIR_DIC_DATA VALUES(SBDEV.SEQ_AFFAIR_DIC_ID.NEXTVAL, 'RECRUIT_SITE_PROJECT_STATUS', '4', '已完成第二年绩效评估', NULL, '1', '1', '1');
 INSERT INTO SBDEV.AFFAIR_DIC_DATA VALUES(SBDEV.SEQ_AFFAIR_DIC_ID.NEXTVAL, 'RECRUIT_SITE_PROJECT_STATUS', '5', '已完成第三年绩效评估', NULL, '1', '1', '1');
 INSERT INTO SBDEV.AFFAIR_DIC_DATA VALUES(SBDEV.SEQ_AFFAIR_DIC_ID.NEXTVAL, 'RECRUIT_SITE_PROJECT_STATUS', '6', '已结项', NULL, '1', '1', '1');
+
+--------------高基地项目资产状态字典
+INSERT INTO SBDEV.AFFAIR_DIC_TYPE VALUES(SBDEV.SEQ_AFFAIR_DIC_ID.NEXTVAL, 'RECRUIT_SITE_ASSET_STATUS', '公共招聘高基地项目资产状态', 1, NULL, '0073');
+
+INSERT INTO SBDEV.AFFAIR_DIC_DATA VALUES(SBDEV.SEQ_AFFAIR_DIC_ID.NEXTVAL, 'RECRUIT_SITE_ASSET_STATUS', '1', '正常运行', NULL, '1', '1', '1');
+INSERT INTO SBDEV.AFFAIR_DIC_DATA VALUES(SBDEV.SEQ_AFFAIR_DIC_ID.NEXTVAL, 'RECRUIT_SITE_ASSET_STATUS', '2', '未运行', NULL, '1', '1', '1');
+INSERT INTO SBDEV.AFFAIR_DIC_DATA VALUES(SBDEV.SEQ_AFFAIR_DIC_ID.NEXTVAL, 'RECRUIT_SITE_ASSET_STATUS', '3', '报废', NULL, '1', '1', '1');

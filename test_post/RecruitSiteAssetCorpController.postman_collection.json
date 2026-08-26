@@ -1,0 +1,186 @@
+{
+  "info": {
+    "_postman_id": "e5f6a7b8-9c0d-4e1f-8a2b-3c4d5e6f7a8b",
+    "name": "高基地项目资产企业端 RecruitSiteAssetCorpController",
+    "description": "白名单单位维护本单位项目资产表单，资产照片存文件key，使用频次字段由企业端维护。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "企业端新增项目资产",
+      "description": "单位新增项目资产，填写使用频次，资产照片先通过通用上传接口获取key。字段说明：\n- projectId：关联项目ID，必填\n- assetName：资产名称，必填\n- quantity：数量\n- unit：单位\n- brandModel：品牌型号\n- storageLocation：存放地点\n- assetStatus：资产状态，字典RECRUIT_SITE_ASSET_STATUS，1正常运行/2未运行/3报废\n- usageFrequency：使用频次，由企业端维护\n- assetPhoto：资产照片，文件存储key\n- tyshxym：企业统一社会信用代码，由系统按关联基地自动写入",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/corp/site-asset/create",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "corp",
+            "site-asset",
+            "create"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"projectId\": \"{{projectId}}\",\n  \"assetName\": \"工业机器人实训设备\",\n  \"quantity\": 10,\n  \"unit\": \"台\",\n  \"brandModel\": \"ABB-IRB6700\",\n  \"storageLocation\": \"实训中心1楼\",\n  \"assetStatus\": \"1\",\n  \"usageFrequency\": 120,\n  \"assetPhoto\": \"{{assetPhoto}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "企业端修改项目资产",
+      "description": "单位修改本单位项目资产，可维护使用频次。字段说明：\n- assetId：资产ID，必填\n- assetName：资产名称\n- quantity：数量\n- unit：单位\n- brandModel：品牌型号\n- storageLocation：存放地点\n- assetStatus：资产状态，字典RECRUIT_SITE_ASSET_STATUS，1正常运行/2未运行/3报废\n- usageFrequency：使用频次，由企业端维护\n- assetPhoto：资产照片，文件存储key\n- tyshxym：企业统一社会信用代码，随关联基地自动绑定",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/corp/site-asset/update",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "corp",
+            "site-asset",
+            "update"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"assetId\": \"{{assetId}}\",\n  \"assetName\": \"工业机器人实训设备\",\n  \"quantity\": 12,\n  \"unit\": \"台\",\n  \"brandModel\": \"ABB-IRB6700\",\n  \"storageLocation\": \"实训中心1楼\",\n  \"assetStatus\": \"1\",\n  \"usageFrequency\": 150,\n  \"assetPhoto\": \"{{assetPhoto}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "企业端删除项目资产",
+      "description": "删除本单位项目资产。字段说明：\n- assetId：资产ID，必填",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/corp/site-asset/delete?assetId={{assetId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "corp",
+            "site-asset",
+            "delete"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"assetId\": \"{{assetId}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "企业端查询项目资产详情",
+      "description": "查询本单位项目资产详情。字段说明：\n- assetId：资产ID，必填",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/corp/site-asset/detail?assetId={{assetId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "corp",
+            "site-asset",
+            "detail"
+          ],
+          "query": [
+            {
+              "key": "assetId",
+              "value": "{{assetId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "企业端查询项目资产列表",
+      "description": "按项目查询本单位资产清单，不分页。字段说明：\n- projectId：关联项目ID，必填",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/corp/site-asset/list?projectId={{projectId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "corp",
+            "site-asset",
+            "list"
+          ],
+          "query": [
+            {
+              "key": "projectId",
+              "value": "{{projectId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/ggzp-zzjb-shrs",
+      "type": "string"
+    },
+    {
+      "key": "projectId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "assetId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "assetPhoto",
+      "value": "upload-file-key",
+      "type": "string"
+    }
+  ]
+}

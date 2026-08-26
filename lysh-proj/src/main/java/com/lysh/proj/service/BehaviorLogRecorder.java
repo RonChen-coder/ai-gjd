@@ -2,6 +2,7 @@ package com.lysh.proj.service;
 
 import com.lysh.proj.common.BehaviorBizType;
 import com.lysh.proj.model.RecruitSiteApplyMaterial;
+import com.lysh.proj.model.RecruitSiteAsset;
 import com.lysh.proj.model.RecruitSiteBehaviorLog;
 import com.lysh.proj.model.RecruitSiteInfo;
 import com.lysh.proj.model.RecruitSiteProject;
@@ -197,6 +198,59 @@ public class BehaviorLogRecorder {
                 operationType, "审核意见",
                 oldProject == null ? null : oldProject.getReviewOpinion(),
                 newProject == null ? null : newProject.getReviewOpinion());
+    }
+
+    /**
+     * 记录项目资产的字段变化。
+     * 新增时 oldAsset 传 null，删除时 newAsset 传 null。
+     */
+    public void recordAssetChanges(Long assetId, RecruitSiteAsset oldAsset, RecruitSiteAsset newAsset,
+                                   String operatorName, String operatorId, String operatorRole,
+                                   String operationType) {
+        recordChange(BehaviorBizType.ASSET.getCode(), assetId, operatorName, operatorId, operatorRole,
+                operationType, "关联项目ID",
+                oldAsset == null ? null : oldAsset.getProjectId(),
+                newAsset == null ? null : newAsset.getProjectId());
+        recordChange(BehaviorBizType.ASSET.getCode(), assetId, operatorName, operatorId, operatorRole,
+                operationType, "关联基地ID",
+                oldAsset == null ? null : oldAsset.getSiteId(),
+                newAsset == null ? null : newAsset.getSiteId());
+        recordChange(BehaviorBizType.ASSET.getCode(), assetId, operatorName, operatorId, operatorRole,
+                operationType, "属地区编码",
+                oldAsset == null ? null : oldAsset.getDistrictCode(),
+                newAsset == null ? null : newAsset.getDistrictCode());
+        recordChange(BehaviorBizType.ASSET.getCode(), assetId, operatorName, operatorId, operatorRole,
+                operationType, "资产名称",
+                oldAsset == null ? null : oldAsset.getAssetName(),
+                newAsset == null ? null : newAsset.getAssetName());
+        recordChange(BehaviorBizType.ASSET.getCode(), assetId, operatorName, operatorId, operatorRole,
+                operationType, "数量",
+                oldAsset == null ? null : oldAsset.getQuantity(),
+                newAsset == null ? null : newAsset.getQuantity());
+        recordChange(BehaviorBizType.ASSET.getCode(), assetId, operatorName, operatorId, operatorRole,
+                operationType, "单位",
+                oldAsset == null ? null : oldAsset.getUnit(),
+                newAsset == null ? null : newAsset.getUnit());
+        recordChange(BehaviorBizType.ASSET.getCode(), assetId, operatorName, operatorId, operatorRole,
+                operationType, "品牌型号",
+                oldAsset == null ? null : oldAsset.getBrandModel(),
+                newAsset == null ? null : newAsset.getBrandModel());
+        recordChange(BehaviorBizType.ASSET.getCode(), assetId, operatorName, operatorId, operatorRole,
+                operationType, "存放地点",
+                oldAsset == null ? null : oldAsset.getStorageLocation(),
+                newAsset == null ? null : newAsset.getStorageLocation());
+        recordChange(BehaviorBizType.ASSET.getCode(), assetId, operatorName, operatorId, operatorRole,
+                operationType, "资产状态",
+                oldAsset == null ? null : oldAsset.getAssetStatus(),
+                newAsset == null ? null : newAsset.getAssetStatus());
+        recordChange(BehaviorBizType.ASSET.getCode(), assetId, operatorName, operatorId, operatorRole,
+                operationType, "使用频次",
+                oldAsset == null ? null : oldAsset.getUsageFrequency(),
+                newAsset == null ? null : newAsset.getUsageFrequency());
+        recordChange(BehaviorBizType.ASSET.getCode(), assetId, operatorName, operatorId, operatorRole,
+                operationType, "资产照片",
+                oldAsset == null ? null : oldAsset.getAssetPhoto(),
+                newAsset == null ? null : newAsset.getAssetPhoto());
     }
 
     /**
