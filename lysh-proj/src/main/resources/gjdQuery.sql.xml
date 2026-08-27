@@ -34,4 +34,35 @@
         ORDER BY a.updated_at DESC, a.project_id DESC
         ]]>
     </sql>
+
+    <sql id="querySiteWarningList" name="查询高基地预警列表">
+        <![CDATA[
+        SELECT
+            a.warning_id, a.rule_id, a.rule_code, a.rule_name, a.target_type, a.target_id,
+            a.site_id, a.project_id, a.asset_id, a.tyshxym, a.district_code,
+            a.warning_level, a.warning_status, a.warning_content, a.metric_value, a.threshold_value,
+            a.first_trigger_time, a.last_trigger_time, a.trigger_count,
+            a.handle_by, a.handle_time, a.handle_remark, a.created_at, a.updated_at,
+            s.site_name, p.project_name, ast.asset_name
+        FROM wsbs.RECRUIT_SITE_WARNING a
+        LEFT JOIN wsbs.RECRUIT_SITE_INFO s ON s.site_id = a.site_id
+        LEFT JOIN wsbs.RECRUIT_SITE_PROJECT p ON p.project_id = a.project_id
+        LEFT JOIN wsbs.RECRUIT_SITE_ASSET ast ON ast.asset_id = a.asset_id
+        WHERE 1=1
+        @warningId{and a.warning_id = :warningId}
+        @siteId{and a.site_id = :siteId}
+        @projectId{and a.project_id = :projectId}
+        @assetId{and a.asset_id = :assetId}
+        @targetType{and a.target_type = :targetType}
+        @warningLevel{and a.warning_level = :warningLevel}
+        @warningStatus{and a.warning_status = :warningStatus}
+        @districtCode{and a.district_code = :districtCode}
+        @keyword{and (a.rule_name like '%' || :keyword || '%'
+            or a.warning_content like '%' || :keyword || '%'
+            or s.site_name like '%' || :keyword || '%'
+            or p.project_name like '%' || :keyword || '%'
+            or ast.asset_name like '%' || :keyword || '%')}
+        ORDER BY a.last_trigger_time DESC, a.warning_id DESC
+        ]]>
+    </sql>
 </sqls>

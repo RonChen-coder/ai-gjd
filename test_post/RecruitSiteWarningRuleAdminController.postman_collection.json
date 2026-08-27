@@ -1,0 +1,940 @@
+{
+  "info": {
+    "_postman_id": "c7d9e0f1-2a3b-4c5d-6e7f-8a9b0c1d2e3f",
+    "name": "高基地预警规则配置管理端 RecruitSiteWarningRuleAdminController",
+    "description": "市级、区级管理员维护预警规则，conditionConfig 存 JSON 参数，支持启停规则。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "新增规则-BASE_01 基地信息长期未审核",
+      "description": "数据来源：审核状态为待审核的基地；触发条件：创建时间距今超过 days 天。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning-rule/create",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning-rule",
+            "create"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ruleCode\": \"BASE_01\",\n  \"ruleName\": \"基地信息长期未审核\",\n  \"targetType\": 1,\n  \"warningLevel\": \"严重\",\n  \"conditionConfig\": \"{\\\"days\\\": 30}\",\n  \"contentTemplate\": \"基地【{siteName}】创建超过{metric}仍未通过审核，阈值{threshold}\",\n  \"description\": \"基地长期处于待审核状态\",\n  \"enabled\": true,\n  \"sortNo\": 1\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "新增规则-BASE_02 基地信息长期未维护",
+      "description": "数据来源：全部基地；触发条件：最近维护时间距今超过 days 天。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning-rule/create",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning-rule",
+            "create"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ruleCode\": \"BASE_02\",\n  \"ruleName\": \"基地信息长期未维护\",\n  \"targetType\": 1,\n  \"warningLevel\": \"一般\",\n  \"conditionConfig\": \"{\\\"days\\\": 365}\",\n  \"contentTemplate\": \"基地【{siteName}】超过{metric}未维护，阈值{threshold}\",\n  \"description\": \"基地信息长期未更新\",\n  \"enabled\": true,\n  \"sortNo\": 2\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "新增规则-BASE_03 有项目却无资产",
+      "description": "数据来源：全部基地；触发条件：存在未结项项目、无资产且项目立项超过 days 天。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning-rule/create",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning-rule",
+            "create"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ruleCode\": \"BASE_03\",\n  \"ruleName\": \"有项目却无资产\",\n  \"targetType\": 1,\n  \"warningLevel\": \"严重\",\n  \"conditionConfig\": \"{\\\"days\\\": 90}\",\n  \"contentTemplate\": \"基地【{siteName}】存在未结项项目但无资产，实际{metric}，阈值{threshold}\",\n  \"description\": \"基地有项目但资产清单为空\",\n  \"enabled\": true,\n  \"sortNo\": 3\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "新增规则-BASE_04 资产健康度偏低",
+      "description": "数据来源：全部基地；触发条件：正常运行资产占比低于 normalRatio。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning-rule/create",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning-rule",
+            "create"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ruleCode\": \"BASE_04\",\n  \"ruleName\": \"资产健康度偏低\",\n  \"targetType\": 1,\n  \"warningLevel\": \"严重\",\n  \"conditionConfig\": \"{\\\"normalRatio\\\": 0.6}\",\n  \"contentTemplate\": \"基地【{siteName}】正常运行资产占比{metric}，低于阈值{threshold}\",\n  \"description\": \"正常运行资产占比低于阈值\",\n  \"enabled\": true,\n  \"sortNo\": 4\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "新增规则-BASE_05 挂牌后长期无项目",
+      "description": "数据来源：全部基地；触发条件：挂牌超过 years 年且无任何项目。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning-rule/create",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning-rule",
+            "create"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ruleCode\": \"BASE_05\",\n  \"ruleName\": \"挂牌后长期无项目\",\n  \"targetType\": 1,\n  \"warningLevel\": \"一般\",\n  \"conditionConfig\": \"{\\\"years\\\": 2}\",\n  \"contentTemplate\": \"基地【{siteName}】挂牌超过{metric}仍无项目，阈值{threshold}\",\n  \"description\": \"基地挂牌后长期无项目\",\n  \"enabled\": true,\n  \"sortNo\": 5\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "新增规则-PROJ_01 建设超期未验收",
+      "description": "数据来源：建设中项目；触发条件：立项批复超过 days 天未验收。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning-rule/create",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning-rule",
+            "create"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ruleCode\": \"PROJ_01\",\n  \"ruleName\": \"建设超期未验收\",\n  \"targetType\": 2,\n  \"warningLevel\": \"严重\",\n  \"conditionConfig\": \"{\\\"days\\\": 730}\",\n  \"contentTemplate\": \"项目【{projectName}】立项批复超过{metric}仍未验收，当前状态{projectStatus}\",\n  \"description\": \"项目建设周期超期未验收\",\n  \"enabled\": true,\n  \"sortNo\": 1\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "新增规则-PROJ_02 批复资金未按期拨付",
+      "description": "数据来源：已立项批复但未填写立项拨付时间的项目；触发条件：超过 days 天。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning-rule/create",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning-rule",
+            "create"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ruleCode\": \"PROJ_02\",\n  \"ruleName\": \"批复资金未按期拨付\",\n  \"targetType\": 2,\n  \"warningLevel\": \"严重\",\n  \"conditionConfig\": \"{\\\"days\\\": 90}\",\n  \"contentTemplate\": \"项目【{projectName}】立项批复超过{metric}未拨付\",\n  \"description\": \"立项批复资金长期未拨付\",\n  \"enabled\": true,\n  \"sortNo\": 2\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "新增规则-PROJ_03 验收资金未按期拨付",
+      "description": "数据来源：已验收但未填写验收拨付时间的项目；触发条件：超过 days 天。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning-rule/create",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning-rule",
+            "create"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ruleCode\": \"PROJ_03\",\n  \"ruleName\": \"验收资金未按期拨付\",\n  \"targetType\": 2,\n  \"warningLevel\": \"严重\",\n  \"conditionConfig\": \"{\\\"days\\\": 90}\",\n  \"contentTemplate\": \"项目【{projectName}】验收批复超过{metric}未拨付\",\n  \"description\": \"验收资金长期未拨付\",\n  \"enabled\": true,\n  \"sortNo\": 3\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "新增规则-PROJ_04 绩效拨付缺失/超期",
+      "description": "数据来源：全部项目；触发条件：对应年度绩效拨付时间缺失且起点超过 days 天。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning-rule/create",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning-rule",
+            "create"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ruleCode\": \"PROJ_04\",\n  \"ruleName\": \"绩效拨付缺失/超期\",\n  \"targetType\": 2,\n  \"warningLevel\": \"严重\",\n  \"conditionConfig\": \"{\\\"days\\\": 365}\",\n  \"contentTemplate\": \"项目【{projectName}】{metric}\",\n  \"description\": \"绩效评估拨付资金缺失或超期\",\n  \"enabled\": true,\n  \"sortNo\": 4\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "新增规则-PROJ_05 项目状态与资金进度不一致",
+      "description": "数据来源：全部项目；触发条件：项目状态与资金字段不一致，无需参数。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning-rule/create",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning-rule",
+            "create"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ruleCode\": \"PROJ_05\",\n  \"ruleName\": \"项目状态与资金进度不一致\",\n  \"targetType\": 2,\n  \"warningLevel\": \"严重\",\n  \"conditionConfig\": \"{}\",\n  \"contentTemplate\": \"项目【{projectName}】{reason}\",\n  \"description\": \"项目状态与资金进度不一致\",\n  \"enabled\": true,\n  \"sortNo\": 5\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "新增规则-PROJ_06 合计金额与明细不一致",
+      "description": "数据来源：合计拨付金额非空项目；触发条件：合计与各阶段之和偏差超过 amountDiff。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning-rule/create",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning-rule",
+            "create"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ruleCode\": \"PROJ_06\",\n  \"ruleName\": \"合计金额与明细不一致\",\n  \"targetType\": 2,\n  \"warningLevel\": \"严重\",\n  \"conditionConfig\": \"{\\\"amountDiff\\\": 0.01}\",\n  \"contentTemplate\": \"项目【{projectName}】拨付金额不一致，{metric}\",\n  \"description\": \"合计拨付金额与各阶段明细不一致\",\n  \"enabled\": true,\n  \"sortNo\": 6\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "新增规则-PROJ_07 项目长期无资产",
+      "description": "数据来源：未结项项目；触发条件：无资产且创建超过 days 天。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning-rule/create",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning-rule",
+            "create"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ruleCode\": \"PROJ_07\",\n  \"ruleName\": \"项目长期无资产\",\n  \"targetType\": 2,\n  \"warningLevel\": \"一般\",\n  \"conditionConfig\": \"{\\\"days\\\": 90}\",\n  \"contentTemplate\": \"项目【{projectName}】创建超过{metric}仍无资产\",\n  \"description\": \"项目长期未关联资产\",\n  \"enabled\": true,\n  \"sortNo\": 7\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "新增规则-PROJ_08 项目信息长期未维护",
+      "description": "数据来源：未结项项目；触发条件：最近更新超过 days 天。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning-rule/create",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning-rule",
+            "create"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ruleCode\": \"PROJ_08\",\n  \"ruleName\": \"项目信息长期未维护\",\n  \"targetType\": 2,\n  \"warningLevel\": \"一般\",\n  \"conditionConfig\": \"{\\\"days\\\": 365}\",\n  \"contentTemplate\": \"项目【{projectName}】超过{metric}未维护\",\n  \"description\": \"项目信息长期未更新\",\n  \"enabled\": true,\n  \"sortNo\": 8\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "新增规则-PROJ_09 审核超时",
+      "description": "数据来源：待审核项目；触发条件：最近提交超过 days 天。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning-rule/create",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning-rule",
+            "create"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ruleCode\": \"PROJ_09\",\n  \"ruleName\": \"审核超时\",\n  \"targetType\": 2,\n  \"warningLevel\": \"一般\",\n  \"conditionConfig\": \"{\\\"days\\\": 15}\",\n  \"contentTemplate\": \"项目【{projectName}】待审核超过{metric}\",\n  \"description\": \"项目待审核时间过长\",\n  \"enabled\": true,\n  \"sortNo\": 9\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "新增规则-PROJ_10 材料缺失",
+      "description": "数据来源：全部项目；触发条件：未挂接任何项目文件，无需参数。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning-rule/create",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning-rule",
+            "create"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ruleCode\": \"PROJ_10\",\n  \"ruleName\": \"材料缺失\",\n  \"targetType\": 2,\n  \"warningLevel\": \"一般\",\n  \"conditionConfig\": \"{}\",\n  \"contentTemplate\": \"项目【{projectName}】缺少项目材料，当前{metric}\",\n  \"description\": \"项目未上传任何项目文件\",\n  \"enabled\": true,\n  \"sortNo\": 10\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "新增规则-ASSET_01 报废资产长期未处置",
+      "description": "数据来源：报废资产；触发条件：最近更新超过 days 天。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning-rule/create",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning-rule",
+            "create"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ruleCode\": \"ASSET_01\",\n  \"ruleName\": \"报废资产长期未处置\",\n  \"targetType\": 3,\n  \"warningLevel\": \"严重\",\n  \"conditionConfig\": \"{\\\"days\\\": 90}\",\n  \"contentTemplate\": \"设备【{assetName}】状态为报废，超过{metric}未处置\",\n  \"description\": \"报废资产长期未处置\",\n  \"enabled\": true,\n  \"sortNo\": 1\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "新增规则-ASSET_02 未运行资产长期未说明",
+      "description": "数据来源：未运行资产；触发条件：最近更新超过 days 天。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning-rule/create",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning-rule",
+            "create"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ruleCode\": \"ASSET_02\",\n  \"ruleName\": \"未运行资产长期未说明\",\n  \"targetType\": 3,\n  \"warningLevel\": \"严重\",\n  \"conditionConfig\": \"{\\\"days\\\": 90}\",\n  \"contentTemplate\": \"设备【{assetName}】状态为未运行，超过{metric}未说明\",\n  \"description\": \"未运行资产长期未说明情况\",\n  \"enabled\": true,\n  \"sortNo\": 2\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "新增规则-ASSET_03 使用频次缺失或为0",
+      "description": "数据来源：全部资产；触发条件：使用频次为空或0，无需参数。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning-rule/create",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning-rule",
+            "create"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ruleCode\": \"ASSET_03\",\n  \"ruleName\": \"使用频次缺失或为0\",\n  \"targetType\": 3,\n  \"warningLevel\": \"一般\",\n  \"conditionConfig\": \"{}\",\n  \"contentTemplate\": \"设备【{assetName}】使用频次为{metric}\",\n  \"description\": \"资产使用频次为空或为0\",\n  \"enabled\": true,\n  \"sortNo\": 3\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "新增规则-ASSET_04 使用频次明显偏低",
+      "description": "数据来源：使用频次非空资产；触发条件：使用频次低于 frequency。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning-rule/create",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning-rule",
+            "create"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ruleCode\": \"ASSET_04\",\n  \"ruleName\": \"使用频次明显偏低\",\n  \"targetType\": 3,\n  \"warningLevel\": \"一般\",\n  \"conditionConfig\": \"{\\\"frequency\\\": 1}\",\n  \"contentTemplate\": \"设备【{assetName}】使用频次为{metric}，低于阈值{threshold}\",\n  \"description\": \"资产使用频次低于配置阈值\",\n  \"enabled\": true,\n  \"sortNo\": 4\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "新增规则-ASSET_05 资产信息长期未维护",
+      "description": "数据来源：全部资产；触发条件：最近更新超过 days 天。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning-rule/create",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning-rule",
+            "create"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ruleCode\": \"ASSET_05\",\n  \"ruleName\": \"资产信息长期未维护\",\n  \"targetType\": 3,\n  \"warningLevel\": \"一般\",\n  \"conditionConfig\": \"{\\\"days\\\": 180}\",\n  \"contentTemplate\": \"设备【{assetName}】超过{metric}未维护\",\n  \"description\": \"资产信息长期未更新\",\n  \"enabled\": true,\n  \"sortNo\": 5\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "新增规则-ASSET_06 基础数据不完整",
+      "description": "数据来源：全部资产；触发条件：数量、名称、单位、存放地点、照片任一缺失，无需参数。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning-rule/create",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning-rule",
+            "create"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ruleCode\": \"ASSET_06\",\n  \"ruleName\": \"基础数据不完整\",\n  \"targetType\": 3,\n  \"warningLevel\": \"一般\",\n  \"conditionConfig\": \"{}\",\n  \"contentTemplate\": \"设备【{assetName}】{metric}\",\n  \"description\": \"资产基础字段缺失\",\n  \"enabled\": true,\n  \"sortNo\": 6\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "新增规则-ASSET_07 项目结项后资产未更新",
+      "description": "数据来源：关联项目已结项且仍正常运行的资产；触发条件：最近更新超过 days 天。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning-rule/create",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning-rule",
+            "create"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ruleCode\": \"ASSET_07\",\n  \"ruleName\": \"项目结项后资产未更新\",\n  \"targetType\": 3,\n  \"warningLevel\": \"一般\",\n  \"conditionConfig\": \"{\\\"days\\\": 30}\",\n  \"contentTemplate\": \"设备【{assetName}】项目已结项，超过{metric}未更新\",\n  \"description\": \"项目结项后资产状态未更新\",\n  \"enabled\": true,\n  \"sortNo\": 7\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "新增规则-ASSET_08 疑似重复登记",
+      "description": "数据来源：全部资产；触发条件：同一项目下同名同型号资产超过1条，无需参数。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning-rule/create",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning-rule",
+            "create"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ruleCode\": \"ASSET_08\",\n  \"ruleName\": \"疑似重复登记\",\n  \"targetType\": 3,\n  \"warningLevel\": \"一般\",\n  \"conditionConfig\": \"{}\",\n  \"contentTemplate\": \"设备【{assetName}】疑似重复登记，{metric}\",\n  \"description\": \"同一项目下同名同型号资产重复登记\",\n  \"enabled\": true,\n  \"sortNo\": 8\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "修改预警规则",
+      "description": "修改预警规则，ruleId 必填，未传字段保留原值。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning-rule/update",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning-rule",
+            "update"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ruleId\": \"{{ruleId}}\",\n  \"ruleName\": \"基地信息长期未审核\",\n  \"conditionConfig\": \"{\\\"days\\\": 45}\",\n  \"sortNo\": 2\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "删除预警规则",
+      "description": "删除预警规则，ruleId 必填。",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning-rule/delete?ruleId={{ruleId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning-rule",
+            "delete"
+          ],
+          "query": [
+            {
+              "key": "ruleId",
+              "value": "{{ruleId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "启用或停用预警规则",
+      "description": "启用或停用预警规则，enabled 传 true/false。",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning-rule/toggle?ruleId={{ruleId}}&enabled=false",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning-rule",
+            "toggle"
+          ],
+          "query": [
+            {
+              "key": "ruleId",
+              "value": "{{ruleId}}"
+            },
+            {
+              "key": "enabled",
+              "value": "false"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "查询全部预警规则",
+      "description": "查询全部预警规则，按对象类型和排序号返回。",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning-rule/list",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning-rule",
+            "list"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "查询预警规则详情",
+      "description": "按规则ID查询预警规则详情。",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning-rule/detail?ruleId={{ruleId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning-rule",
+            "detail"
+          ],
+          "query": [
+            {
+              "key": "ruleId",
+              "value": "{{ruleId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/ggzp-ywjb-shrs",
+      "type": "string"
+    },
+    {
+      "key": "ruleId",
+      "value": "1",
+      "type": "string"
+    }
+  ]
+}

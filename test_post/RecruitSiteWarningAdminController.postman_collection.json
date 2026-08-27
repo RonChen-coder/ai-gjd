@@ -1,0 +1,116 @@
+{
+  "info": {
+    "_postman_id": "4f5a6b7c-8d9e-0f1a-2b3c-4d5e6f7a8b9c",
+    "name": "高基地预警管理端 RecruitSiteWarningAdminController",
+    "description": "市级、区级管理员分页查询预警，支持详情和处理（已处理/已忽略）。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "分页查询预警列表",
+      "description": "分页查询预警列表。字段说明：\n- siteId：关联基地ID\n- projectId：关联项目ID\n- assetId：关联资产ID\n- targetType：预警对象类型，1基地/2项目/3资产\n- warningLevel：预警级别\n- warningStatus：预警状态，待处理/已处理/已忽略\n- keyword：关键字，检索规则名称、预警内容、基地/项目/资产名称",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning/list",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning",
+            "list"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"targetType\": 1,\n  \"warningStatus\": \"待处理\",\n  \"warningLevel\": \"严重\",\n  \"keyword\": \"基地\",\n  \"pageParam\": {\n    \"pageNum\": 1,\n    \"pageSize\": 10\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "查询预警详情",
+      "description": "按预警ID查询预警详情，含基地/项目/资产名称。",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning/detail?warningId={{warningId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning",
+            "detail"
+          ],
+          "query": [
+            {
+              "key": "warningId",
+              "value": "{{warningId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "处理预警",
+      "description": "处理预警，status 只能为已处理或已忽略，remark 为处理说明。",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-warning/handle",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-warning",
+            "handle"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"warningId\": \"{{warningId}}\",\n  \"status\": \"已处理\",\n  \"remark\": \"基地信息已完善并通过审核\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/ggzp-ywjb-shrs",
+      "type": "string"
+    },
+    {
+      "key": "warningId",
+      "value": "1",
+      "type": "string"
+    }
+  ]
+}

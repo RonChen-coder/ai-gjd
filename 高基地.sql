@@ -683,3 +683,176 @@ INSERT INTO SBDEV.AFFAIR_DIC_TYPE VALUES(SBDEV.SEQ_AFFAIR_DIC_ID.NEXTVAL, 'RECRU
 INSERT INTO SBDEV.AFFAIR_DIC_DATA VALUES(SBDEV.SEQ_AFFAIR_DIC_ID.NEXTVAL, 'RECRUIT_SITE_ASSET_STATUS', '1', '正常运行', NULL, '1', '1', '1');
 INSERT INTO SBDEV.AFFAIR_DIC_DATA VALUES(SBDEV.SEQ_AFFAIR_DIC_ID.NEXTVAL, 'RECRUIT_SITE_ASSET_STATUS', '2', '未运行', NULL, '1', '1', '1');
 INSERT INTO SBDEV.AFFAIR_DIC_DATA VALUES(SBDEV.SEQ_AFFAIR_DIC_ID.NEXTVAL, 'RECRUIT_SITE_ASSET_STATUS', '3', '报废', NULL, '1', '1', '1');
+
+-- 预警规则配置表
+-- 说明：对应答疑文档 6.失业人员全维度帮扶-项目资产报告及预警，
+-- 规则由后台页面维护，condition_config 存 JSON 参数
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_sequences
+     WHERE sequence_owner = 'WSBS'
+       AND sequence_name = 'SEQ_0073_RECRUIT_SITE_WARNING_RULE';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE SEQUENCE wsbs.SEQ_0073_RECRUIT_SITE_WARNING_RULE MINVALUE 1 MAXVALUE 999999999999 START WITH 1 INCREMENT BY 1 CACHE 20';
+    END IF;
+END;
+/
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_tables
+     WHERE owner = 'WSBS'
+       AND table_name = 'RECRUIT_SITE_WARNING_RULE';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE TABLE wsbs.RECRUIT_SITE_WARNING_RULE (rule_id NUMBER(12) NOT NULL, rule_code VARCHAR2(32) NOT NULL, rule_name VARCHAR2(128) NOT NULL, target_type NUMBER(2) NOT NULL, warning_level VARCHAR2(16) NOT NULL, condition_config CLOB NOT NULL, content_template VARCHAR2(500) NOT NULL, description VARCHAR2(500), enabled NUMBER(1) DEFAULT 1 NOT NULL, sort_no NUMBER(4) DEFAULT 0 NOT NULL, created_by VARCHAR2(100) NOT NULL, created_at DATE DEFAULT SYSDATE NOT NULL, updated_by VARCHAR2(100), updated_at DATE, PRIMARY KEY (rule_id), CONSTRAINT UK_RECRUIT_SITE_WARNING_RULE_CODE UNIQUE (rule_code))';
+    END IF;
+END;
+/
+
+COMMENT ON TABLE wsbs.RECRUIT_SITE_WARNING_RULE IS '高基地项目资产预警规则配置表';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING_RULE.rule_id IS '规则ID，SEQ_0073_RECRUIT_SITE_WARNING_RULE';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING_RULE.rule_code IS '规则编码，唯一，如 BASE_01';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING_RULE.rule_name IS '规则名称';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING_RULE.target_type IS '预警对象类型，1基地/2项目/3资产';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING_RULE.warning_level IS '预警级别，严重/一般';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING_RULE.condition_config IS '规则条件参数，JSON格式';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING_RULE.content_template IS '预警文案模板，占位符带入实际数据';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING_RULE.description IS '规则说明';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING_RULE.enabled IS '是否启用，1启用/0停用';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING_RULE.sort_no IS '排序号';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING_RULE.created_by IS '创建人';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING_RULE.created_at IS '创建时间';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING_RULE.updated_by IS '修改人';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING_RULE.updated_at IS '修改时间';
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_indexes
+     WHERE owner = 'WSBS'
+       AND index_name = 'IDX_RECRUIT_SITE_WARNING_RULE_ENABLED';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE INDEX idx_recruit_site_warning_rule_enabled ON wsbs.RECRUIT_SITE_WARNING_RULE (enabled, target_type)';
+    END IF;
+END;
+/
+
+-- 预警结果表
+-- 说明：保存规则触发产生的预警，规则与业务数据变化后仍保留触发快照
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_sequences
+     WHERE sequence_owner = 'WSBS'
+       AND sequence_name = 'SEQ_0073_RECRUIT_SITE_WARNING';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE SEQUENCE wsbs.SEQ_0073_RECRUIT_SITE_WARNING MINVALUE 1 MAXVALUE 999999999999 START WITH 1 INCREMENT BY 1 CACHE 20';
+    END IF;
+END;
+/
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_tables
+     WHERE owner = 'WSBS'
+       AND table_name = 'RECRUIT_SITE_WARNING';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE TABLE wsbs.RECRUIT_SITE_WARNING (warning_id NUMBER(12) NOT NULL, rule_id NUMBER(12) NOT NULL, rule_code VARCHAR2(32) NOT NULL, rule_name VARCHAR2(128) NOT NULL, target_type NUMBER(2) NOT NULL, target_id NUMBER(12) NOT NULL, site_id NUMBER(12) NOT NULL, project_id NUMBER(12), asset_id NUMBER(12), tyshxym VARCHAR2(18), district_code VARCHAR2(32) NOT NULL, warning_level VARCHAR2(16) NOT NULL, warning_status VARCHAR2(16) DEFAULT ''待处理'' NOT NULL, warning_content VARCHAR2(2000) NOT NULL, metric_value VARCHAR2(128), threshold_value VARCHAR2(128), first_trigger_time DATE DEFAULT SYSDATE NOT NULL, last_trigger_time DATE DEFAULT SYSDATE NOT NULL, trigger_count NUMBER(8) DEFAULT 1 NOT NULL, handle_by VARCHAR2(100), handle_time DATE, handle_remark VARCHAR2(500), created_at DATE DEFAULT SYSDATE NOT NULL, updated_at DATE DEFAULT SYSDATE NOT NULL, PRIMARY KEY (warning_id))';
+    END IF;
+END;
+/
+
+COMMENT ON TABLE wsbs.RECRUIT_SITE_WARNING IS '高基地项目资产预警结果表';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING.warning_id IS '预警ID，SEQ_0073_RECRUIT_SITE_WARNING';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING.rule_id IS '触发规则ID，对应RECRUIT_SITE_WARNING_RULE.rule_id';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING.rule_code IS '规则编码快照';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING.rule_name IS '规则名称快照';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING.target_type IS '预警对象类型，1基地/2项目/3资产';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING.target_id IS '预警对象主键，基地/项目/资产ID';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING.site_id IS '关联基地ID，冗余用于权限控制';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING.project_id IS '关联项目ID，基地类预警为空';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING.asset_id IS '关联资产ID，基地/项目类预警为空';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING.tyshxym IS '企业统一社会信用代码，冗余用于统计和搜索';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING.district_code IS '分管区县编码，冗余用于权限控制';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING.warning_level IS '预警级别快照，严重/一般';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING.warning_status IS '预警状态，待处理/已处理/已忽略';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING.warning_content IS '预警中文描述，含实际统计数字';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING.metric_value IS '触发时实际值，如135天、45%';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING.threshold_value IS '触发时阈值快照';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING.first_trigger_time IS '首次触发时间';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING.last_trigger_time IS '最近触发时间';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING.trigger_count IS '累计触发次数';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING.handle_by IS '处理人';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING.handle_time IS '处理时间';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING.handle_remark IS '处理说明';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING.created_at IS '创建时间';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_WARNING.updated_at IS '修改时间';
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_indexes
+     WHERE owner = 'WSBS'
+       AND index_name = 'IDX_RECRUIT_SITE_WARNING_STATUS';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE INDEX idx_recruit_site_warning_status ON wsbs.RECRUIT_SITE_WARNING (warning_status, last_trigger_time)';
+    END IF;
+END;
+/
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_indexes
+     WHERE owner = 'WSBS'
+       AND index_name = 'IDX_RECRUIT_SITE_WARNING_TARGET';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE INDEX idx_recruit_site_warning_target ON wsbs.RECRUIT_SITE_WARNING (target_type, target_id)';
+    END IF;
+END;
+/
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_indexes
+     WHERE owner = 'WSBS'
+       AND index_name = 'IDX_RECRUIT_SITE_WARNING_DISTRICT';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE INDEX idx_recruit_site_warning_district ON wsbs.RECRUIT_SITE_WARNING (district_code, warning_status)';
+    END IF;
+END;
+/
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_indexes
+     WHERE owner = 'WSBS'
+       AND index_name = 'IDX_RECRUIT_SITE_WARNING_SITE';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE INDEX idx_recruit_site_warning_site ON wsbs.RECRUIT_SITE_WARNING (site_id)';
+    END IF;
+END;
+/
