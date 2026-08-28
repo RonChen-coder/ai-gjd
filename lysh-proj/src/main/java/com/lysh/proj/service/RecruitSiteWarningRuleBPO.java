@@ -1,8 +1,8 @@
 package com.lysh.proj.service;
 
 import com.lysh.proj.model.RecruitSiteWarningRule;
-
-import java.util.List;
+import com.lysh.proj.model.RecruitSiteWarningRuleQueryReq;
+import com.wondersgroup.wdls.data.commons.PageResult;
 
 /**
  * 高基地预警规则配置业务处理接口。
@@ -43,11 +43,12 @@ public interface RecruitSiteWarningRuleBPO {
     RecruitSiteWarningRule updateEnabled(Long ruleId, Boolean enabled);
 
     /**
-     * 查询全部预警规则。
+     * 分页查询预警规则。
      *
-     * @return 规则列表
+     * @param req 查询条件
+     * @return 规则分页结果
      */
-    List<RecruitSiteWarningRule> list();
+    PageResult<RecruitSiteWarningRule> list(RecruitSiteWarningRuleQueryReq req);
 
     /**
      * 根据规则ID查询规则详情。

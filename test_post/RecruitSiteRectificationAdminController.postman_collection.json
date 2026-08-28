@@ -1,0 +1,82 @@
+{
+  "info": {
+    "_postman_id": "8b7c6d5e-4f3a-2b1c-0d9e-8f7a6b5c4d3e",
+    "name": "高基地预警整改结果管理端 RecruitSiteRectificationAdminController",
+    "description": "市区管理员分页查看整改记录及详情，整改记录由预警处理时选择需要企业整改生成。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "分页查询整改记录",
+      "description": "分页查询整改记录。字段说明：\n- siteId：关联基地ID\n- projectId：关联项目ID\n- assetId：关联资产ID\n- warningId：关联预警ID\n- rectificationStatus：整改状态，待整改/已整改\n- keyword：检索规则名称、基地/项目/资产名称",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-rectification/list",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-rectification",
+            "list"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"rectificationStatus\": \"待整改\",\n  \"keyword\": \"基地\",\n  \"pageParam\": {\n    \"pageNum\": 1,\n    \"pageSize\": 10\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "查询整改记录详情",
+      "description": "按整改ID查询整改记录详情，含基地/项目/资产名称。",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-rectification/detail?rectificationId={{rectificationId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-rectification",
+            "detail"
+          ],
+          "query": [
+            {
+              "key": "rectificationId",
+              "value": "{{rectificationId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/ggzp-ywjb-shrs",
+      "type": "string"
+    },
+    {
+      "key": "rectificationId",
+      "value": "1",
+      "type": "string"
+    }
+  ]
+}

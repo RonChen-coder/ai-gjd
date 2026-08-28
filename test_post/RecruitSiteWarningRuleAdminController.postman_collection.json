@@ -879,11 +879,16 @@
       "response": []
     },
     {
-      "name": "查询全部预警规则",
-      "description": "查询全部预警规则，按对象类型和排序号返回。",
+      "name": "分页查询预警规则",
+      "description": "分页查询预警规则。字段说明：\n- targetType：预警对象类型，1基地/2项目/3资产\n- warningLevel：预警级别\n- enabled：是否启用\n- keyword：检索规则编码、规则名称、说明\n- pageParam：分页参数",
       "request": {
-        "method": "GET",
-        "header": [],
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
         "url": {
           "raw": "{{baseUrl}}/admin/site-warning-rule/list",
           "host": [
@@ -894,6 +899,15 @@
             "site-warning-rule",
             "list"
           ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"targetType\": 1,\n  \"warningLevel\": \"严重\",\n  \"enabled\": true,\n  \"keyword\": \"基地\",\n  \"pageParam\": {\n    \"pageNum\": 1,\n    \"pageSize\": 10\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
         }
       },
       "response": []

@@ -2,14 +2,16 @@ package com.lysh.proj.service;
 
 import com.lysh.proj.entity.RecruitSiteWarningRuleEntity;
 import com.lysh.proj.model.RecruitSiteWarningRule;
+import com.lysh.proj.model.RecruitSiteWarningRuleQueryReq;
 import com.wondersgroup.shrs.common.ShrsContextUtils;
 import com.wondersgroup.wdls.core.exception.BusinessException;
 import com.wondersgroup.wdls.data.commons.DBUtils;
+import com.wondersgroup.wdls.data.commons.PageParam;
+import com.wondersgroup.wdls.data.commons.PageResult;
+import com.wondersgroup.wdls.data.sqlquery.QueryBuilder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * 高基地预警规则配置业务处理实现类。
@@ -95,12 +97,17 @@ public class RecruitSiteWarningRuleBPOImpl implements RecruitSiteWarningRuleBPO 
     }
 
     @Override
-    public List<RecruitSiteWarningRule> list() {
-        List<RecruitSiteWarningRuleEntity> entities = DBUtils.query(
-                "SELECT " + COLUMNS + " FROM wsbs.RECRUIT_SITE_WARNING_RULE " +
-                        "ORDER BY target_type, sort_no, rule_id",
-                RecruitSiteWarningRuleEntity.class);
-        return toModels(entities);
+    public PageResult<RecruitSiteWarningRule> list(RecruitSiteWarningRuleQueryReq req) {
+        if (req == null) {
+            req = new RecruitSiteWarningRuleQueryReq();
+        }
+        PageParam pageParam = req.getPageParam() == null ? new PageParam() : req.getPageParam();
+        QueryBuilder queryBuilder = new QueryBuilder("/gjd/querySiteWarningRuleList");
+        queryBuilder.parseFilter("targetType", req.getTargetType());
+        queryBuilder.parseFilter("warningLevel", req.getWarningLevel());
+        queryBuilder.parseFilter("enabled", req.getEnabled());
+        queryBuilder.parseFilter("keyword", req.getKeyword());
+        return queryBuilder.getPage(pageParam, RecruitSiteWarningRule.class);
     }
 
     @Override
@@ -213,14 +220,6 @@ public class RecruitSiteWarningRuleBPOImpl implements RecruitSiteWarningRuleBPO 
                 rule.getUpdatedBy(),
                 rule.getUpdatedAt(),
                 rule.getRuleId());
-    }
-
-    private List<RecruitSiteWarningRule> toModels(List<RecruitSiteWarningRuleEntity> entities) {
-        List<RecruitSiteWarningRule> models = new ArrayList<>();
-        for (RecruitSiteWarningRuleEntity entity : entities) {
-            models.add(toModel(entity));
-        }
-        return models;
     }
 
     private RecruitSiteWarningRule toModel(RecruitSiteWarningRuleEntity entity) {

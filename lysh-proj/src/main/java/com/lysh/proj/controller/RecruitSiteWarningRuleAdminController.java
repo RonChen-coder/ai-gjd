@@ -1,6 +1,7 @@
 package com.lysh.proj.controller;
 
 import com.lysh.proj.model.RecruitSiteWarningRule;
+import com.lysh.proj.model.RecruitSiteWarningRuleQueryReq;
 import com.lysh.proj.service.RecruitSiteWarningRuleBPO;
 import com.wondersgroup.wdls.core.exception.BusinessException;
 import com.wondersgroup.wdls.web.AjaxResult;
@@ -73,13 +74,15 @@ public class RecruitSiteWarningRuleAdminController {
     }
 
     /**
-     * 查询全部预警规则。
+     * 分页查询预警规则。
+     * 支持按对象类型、级别、启停状态和关键字检索。
      *
-     * @return 规则列表
+     * @param req 查询条件
+     * @return 规则分页结果
      */
-    @GetMapping("/list")
-    public AjaxResult list() {
-        return AjaxResult.SUCCESS(warningRuleBPO.list());
+    @PostMapping("/list")
+    public AjaxResult list(@RequestBody(required = false) RecruitSiteWarningRuleQueryReq req) {
+        return AjaxResult.PAGE(warningRuleBPO.list(req));
     }
 
     /**

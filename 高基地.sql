@@ -850,9 +850,105 @@ BEGIN
       INTO v_cnt
       FROM all_indexes
      WHERE owner = 'WSBS'
-       AND index_name = 'IDX_RECRUIT_SITE_WARNING_SITE';
+      AND index_name = 'IDX_RECRUIT_SITE_WARNING_SITE';
     IF v_cnt = 0 THEN
         EXECUTE IMMEDIATE 'CREATE INDEX idx_recruit_site_warning_site ON wsbs.RECRUIT_SITE_WARNING (site_id)';
+    END IF;
+END;
+/
+
+-- 整改结果表
+-- 说明：管理员处理预警时选择“需要企业整改”生成整改记录，企业上传整改报告文件key
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_sequences
+     WHERE sequence_owner = 'WSBS'
+       AND sequence_name = 'SEQ_0073_RECRUIT_SITE_RECTIFICATION';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE SEQUENCE wsbs.SEQ_0073_RECRUIT_SITE_RECTIFICATION MINVALUE 1 MAXVALUE 999999999999 START WITH 1 INCREMENT BY 1 CACHE 20';
+    END IF;
+END;
+/
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_tables
+     WHERE owner = 'WSBS'
+       AND table_name = 'RECRUIT_SITE_RECTIFICATION';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE TABLE wsbs.RECRUIT_SITE_RECTIFICATION (rectification_id NUMBER(12) NOT NULL, warning_id NUMBER(12) NOT NULL, rule_id NUMBER(12), rule_code VARCHAR2(32), rule_name VARCHAR2(128), target_type NUMBER(2), target_id NUMBER(12), site_id NUMBER(12) NOT NULL, project_id NUMBER(12), asset_id NUMBER(12), tyshxym VARCHAR2(18), district_code VARCHAR2(32) NOT NULL, rectification_status VARCHAR2(32) DEFAULT ''待整改'' NOT NULL, report_file_key VARCHAR2(500), report_file_name VARCHAR2(200), uploader_name VARCHAR2(100), uploader_id VARCHAR2(64), upload_time DATE, created_by VARCHAR2(100) NOT NULL, created_at DATE DEFAULT SYSDATE NOT NULL, updated_by VARCHAR2(100), updated_at DATE DEFAULT SYSDATE NOT NULL, PRIMARY KEY (rectification_id))';
+    END IF;
+END;
+/
+
+COMMENT ON TABLE wsbs.RECRUIT_SITE_RECTIFICATION IS '高基地预警整改结果表，关联预警结果并由企业上传整改报告';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_RECTIFICATION.rectification_id IS '整改ID，SEQ_0073_RECRUIT_SITE_RECTIFICATION';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_RECTIFICATION.warning_id IS '关联预警ID，对应RECRUIT_SITE_WARNING.warning_id';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_RECTIFICATION.rule_id IS '关联规则ID';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_RECTIFICATION.rule_code IS '规则编码快照';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_RECTIFICATION.rule_name IS '规则名称快照';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_RECTIFICATION.target_type IS '预警对象类型，1基地/2项目/3资产';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_RECTIFICATION.target_id IS '预警对象主键';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_RECTIFICATION.site_id IS '关联基地ID';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_RECTIFICATION.project_id IS '关联项目ID';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_RECTIFICATION.asset_id IS '关联资产ID';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_RECTIFICATION.tyshxym IS '企业统一社会信用代码，冗余用于企业端权限过滤';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_RECTIFICATION.district_code IS '分管区县编码，冗余用于区级权限过滤';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_RECTIFICATION.rectification_status IS '整改状态，待整改/已整改';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_RECTIFICATION.report_file_key IS '整改报告文件存储key';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_RECTIFICATION.report_file_name IS '整改报告文件名称';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_RECTIFICATION.uploader_name IS '上传人';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_RECTIFICATION.uploader_id IS '上传人编号';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_RECTIFICATION.upload_time IS '上传时间';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_RECTIFICATION.created_by IS '创建人';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_RECTIFICATION.created_at IS '创建时间';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_RECTIFICATION.updated_by IS '修改人';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_RECTIFICATION.updated_at IS '修改时间';
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_indexes
+     WHERE owner = 'WSBS'
+       AND index_name = 'IDX_RECRUIT_SITE_RECTIFICATION_WARNING';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE INDEX idx_recruit_site_rectification_warning ON wsbs.RECRUIT_SITE_RECTIFICATION (warning_id)';
+    END IF;
+END;
+/
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_indexes
+     WHERE owner = 'WSBS'
+       AND index_name = 'IDX_RECRUIT_SITE_RECTIFICATION_SITE';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE INDEX idx_recruit_site_rectification_site ON wsbs.RECRUIT_SITE_RECTIFICATION (site_id)';
+    END IF;
+END;
+/
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_indexes
+     WHERE owner = 'WSBS'
+       AND index_name = 'IDX_RECRUIT_SITE_RECTIFICATION_DISTRICT';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE INDEX idx_recruit_site_rectification_district ON wsbs.RECRUIT_SITE_RECTIFICATION (district_code, rectification_status)';
     END IF;
 END;
 /

@@ -32,7 +32,8 @@ public interface RecruitSiteWarningBPO {
      * @param warningId 预警主键ID
      * @param status 处理结果，已处理/已忽略
      * @param remark 处理说明
+     * @param needRectification 是否需要企业整改
      * @return 处理后的预警对象
      */
-    RecruitSiteWarning handle(Long warningId, String status, String remark);
+    RecruitSiteWarning handle(Long warningId, String status, String remark, Boolean needRectification);
 }

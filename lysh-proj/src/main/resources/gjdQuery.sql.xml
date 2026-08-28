@@ -65,4 +65,51 @@
         ORDER BY a.last_trigger_time DESC, a.warning_id DESC
         ]]>
     </sql>
+
+    <sql id="querySiteWarningRuleList" name="查询高基地预警规则列表">
+        <![CDATA[
+        SELECT
+            a.rule_id, a.rule_code, a.rule_name, a.target_type, a.warning_level,
+            a.condition_config, a.content_template, a.description, a.enabled, a.sort_no,
+            a.created_by, a.created_at, a.updated_by, a.updated_at
+        FROM wsbs.RECRUIT_SITE_WARNING_RULE a
+        WHERE 1=1
+        @targetType{and a.target_type = :targetType}
+        @warningLevel{and a.warning_level = :warningLevel}
+        @enabled{and a.enabled = :enabled}
+        @keyword{and (a.rule_code like '%' || :keyword || '%'
+            or a.rule_name like '%' || :keyword || '%'
+            or a.description like '%' || :keyword || '%')}
+        ORDER BY a.target_type, a.sort_no, a.rule_id
+        ]]>
+    </sql>
+
+    <sql id="querySiteRectificationList" name="查询高基地预警整改结果列表">
+        <![CDATA[
+        SELECT
+            a.rectification_id, a.warning_id, a.rule_id, a.rule_code, a.rule_name,
+            a.target_type, a.target_id, a.site_id, a.project_id, a.asset_id,
+            a.tyshxym, a.district_code, a.rectification_status,
+            a.report_file_key, a.report_file_name, a.uploader_name, a.uploader_id, a.upload_time,
+            a.created_by, a.created_at, a.updated_by, a.updated_at,
+            s.site_name, p.project_name, ast.asset_name
+        FROM wsbs.RECRUIT_SITE_RECTIFICATION a
+        LEFT JOIN wsbs.RECRUIT_SITE_INFO s ON s.site_id = a.site_id
+        LEFT JOIN wsbs.RECRUIT_SITE_PROJECT p ON p.project_id = a.project_id
+        LEFT JOIN wsbs.RECRUIT_SITE_ASSET ast ON ast.asset_id = a.asset_id
+        WHERE 1=1
+        @rectificationId{and a.rectification_id = :rectificationId}
+        @warningId{and a.warning_id = :warningId}
+        @siteId{and a.site_id = :siteId}
+        @projectId{and a.project_id = :projectId}
+        @assetId{and a.asset_id = :assetId}
+        @rectificationStatus{and a.rectification_status = :rectificationStatus}
+        @districtCode{and a.district_code = :districtCode}
+        @keyword{and (a.rule_name like '%' || :keyword || '%'
+            or s.site_name like '%' || :keyword || '%'
+            or p.project_name like '%' || :keyword || '%'
+            or ast.asset_name like '%' || :keyword || '%')}
+        ORDER BY a.created_at DESC, a.rectification_id DESC
+        ]]>
+    </sql>
 </sqls>

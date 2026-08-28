@@ -55,6 +55,7 @@ public class RecruitSiteWarningAdminController {
         if (req == null || req.getWarningId() == null) {
             throw new BusinessException("预警ID不能为空");
         }
-        return AjaxResult.SUCCESS(warningBPO.handle(req.getWarningId(), req.getStatus(), req.getRemark()));
+        return AjaxResult.SUCCESS(warningBPO.handle(req.getWarningId(), req.getStatus(), req.getRemark(),
+                req.getNeedRectification()));
     }
 }

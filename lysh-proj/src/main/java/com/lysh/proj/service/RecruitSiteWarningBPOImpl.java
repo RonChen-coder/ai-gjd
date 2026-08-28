@@ -28,6 +28,12 @@ public class RecruitSiteWarningBPOImpl implements RecruitSiteWarningBPO {
             "warning_content, metric_value, threshold_value, first_trigger_time, last_trigger_time, " +
             "trigger_count, handle_by, handle_time, handle_remark, created_at, updated_at";
 
+    private final RecruitSiteRectificationBPO rectificationBPO;
+
+    public RecruitSiteWarningBPOImpl(RecruitSiteRectificationBPO rectificationBPO) {
+        this.rectificationBPO = rectificationBPO;
+    }
+
     @Override
     public PageResult<RecruitSiteWarning> queryList(RecruitSiteWarningQueryReq req) {
         if (req == null) {
@@ -63,7 +69,7 @@ public class RecruitSiteWarningBPOImpl implements RecruitSiteWarningBPO {
     }
 
     @Override
-    public RecruitSiteWarning handle(Long warningId, String status, String remark) {
+    public RecruitSiteWarning handle(Long warningId, String status, String remark, Boolean needRectification) {
         if (warningId == null) {
             throw new BusinessException("预警ID不能为空");
         }
@@ -91,7 +97,11 @@ public class RecruitSiteWarningBPOImpl implements RecruitSiteWarningBPO {
                 entity.getHandleRemark(),
                 entity.getUpdatedAt(),
                 warningId);
-        return toModel(entity);
+        RecruitSiteWarning model = toModel(entity);
+        if (STATUS_HANDLED.equals(status) && Boolean.TRUE.equals(needRectification)) {
+            rectificationBPO.createByWarning(model, model.getHandleBy());
+        }
+        return model;
     }
 
     private void applyAdminDistrict(RecruitSiteWarningQueryReq req) {

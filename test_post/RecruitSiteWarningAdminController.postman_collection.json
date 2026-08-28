@@ -90,7 +90,7 @@
         },
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"warningId\": \"{{warningId}}\",\n  \"status\": \"已处理\",\n  \"remark\": \"基地信息已完善并通过审核\"\n}",
+          "raw": "{\n  \"warningId\": \"{{warningId}}\",\n  \"status\": \"已处理\",\n  \"remark\": \"要求企业整改并上传整改报告\",\n  \"needRectification\": true\n}",
           "options": {
             "raw": {
               "language": "json"

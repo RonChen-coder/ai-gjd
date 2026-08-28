@@ -1,0 +1,121 @@
+{
+  "info": {
+    "_postman_id": "0a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+    "name": "高基地预警整改结果企业端 RecruitSiteRectificationCorpController",
+    "description": "企业端查看本单位整改记录并上传整改报告文件key。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "分页查询本单位整改记录",
+      "description": "企业端自动限定为当前单位基地，无需传 siteId。字段说明：\n- rectificationStatus：整改状态，待整改/已整改\n- keyword：检索规则名称、基地/项目/资产名称",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/corp/site-rectification/list",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "corp",
+            "site-rectification",
+            "list"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"rectificationStatus\": \"待整改\",\n  \"pageParam\": {\n    \"pageNum\": 1,\n    \"pageSize\": 10\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "查询本单位整改记录详情",
+      "description": "按整改ID查询本单位整改记录详情。",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/corp/site-rectification/detail?rectificationId={{rectificationId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "corp",
+            "site-rectification",
+            "detail"
+          ],
+          "query": [
+            {
+              "key": "rectificationId",
+              "value": "{{rectificationId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "上传整改报告",
+      "description": "企业上传整改报告，仅维护文件存储key。字段说明：\n- rectificationId：整改ID\n- reportFileKey：文件存储key\n- reportFileName：文件名称",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/corp/site-rectification/upload",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "corp",
+            "site-rectification",
+            "upload"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"rectificationId\": \"{{rectificationId}}\",\n  \"reportFileKey\": \"{{reportFileKey}}\",\n  \"reportFileName\": \"整改报告.pdf\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/ggzp-ywjb-shrs",
+      "type": "string"
+    },
+    {
+      "key": "rectificationId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "reportFileKey",
+      "value": "upload-file-key",
+      "type": "string"
+    }
+  ]
+}

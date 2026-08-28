@@ -12,6 +12,8 @@ public class RecruitSiteWarningHandleReq implements ValueObject {
     private String status;
     /** 处理说明 */
     private String remark;
+    /** 是否需要企业整改，仅处理结果已处理时生效 */
+    private Boolean needRectification;
 
     public Long getWarningId() {
         return warningId;
@@ -35,5 +37,13 @@ public class RecruitSiteWarningHandleReq implements ValueObject {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public Boolean getNeedRectification() {
+        return needRectification;
+    }
+
+    public void setNeedRectification(Boolean needRectification) {
+        this.needRectification = needRectification;
     }
 }
