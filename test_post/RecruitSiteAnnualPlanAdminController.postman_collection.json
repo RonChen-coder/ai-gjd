@@ -1,0 +1,116 @@
+{
+  "info": {
+    "_postman_id": "2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e",
+    "name": "高基地年报计划管理端 RecruitSiteAnnualPlanAdminController",
+    "description": "市区管理员分页查看年报计划并进行审核。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "分页查询年报计划",
+      "description": "字段说明：\n- siteId：关联基地ID\n- annualYear：年度年份\n- status：审核状态\n- keyword：检索基地名称、年份",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-annual-plan/list",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-annual-plan",
+            "list"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"annualYear\": \"2026\",\n  \"status\": \"待审核\",\n  \"keyword\": \"基地\",\n  \"pageParam\": {\n    \"pageNum\": 1,\n    \"pageSize\": 10\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "查询年报计划详情",
+      "description": "按年报计划ID查询详情。",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-annual-plan/detail?planId={{planId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-annual-plan",
+            "detail"
+          ],
+          "query": [
+            {
+              "key": "planId",
+              "value": "{{planId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "审核年报计划",
+      "description": "字段说明：\n- planId：年报计划ID\n- status：审核结果，审核通过/待整改\n- reviewOpinion：审核说明",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-annual-plan/review",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-annual-plan",
+            "review"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"planId\": \"{{planId}}\",\n  \"status\": \"审核通过\",\n  \"reviewOpinion\": \"资料完整，审核通过\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/ggzp-ywjb-shrs",
+      "type": "string"
+    },
+    {
+      "key": "planId",
+      "value": "1",
+      "type": "string"
+    }
+  ]
+}

@@ -112,4 +112,47 @@
         ORDER BY a.created_at DESC, a.rectification_id DESC
         ]]>
     </sql>
+
+    <sql id="querySiteAnnualPlanList" name="查询高基地年报计划列表">
+        <![CDATA[
+        SELECT
+            a.plan_id, a.site_id, a.tyshxym, a.district_code, a.annual_year,
+            a.skill_service_count, a.open_service_count, a.service_ratio, a.situation_desc,
+            a.plan_file_key, a.plan_file_name, a.status, a.reviewer, a.review_time, a.review_opinion,
+            a.created_by, a.created_at, a.updated_by, a.updated_at, s.site_name
+        FROM wsbs.RECRUIT_SITE_ANNUAL_PLAN a
+        LEFT JOIN wsbs.RECRUIT_SITE_INFO s ON s.site_id = a.site_id
+        WHERE 1=1
+        @planId{and a.plan_id = :planId}
+        @siteId{and a.site_id = :siteId}
+        @districtCode{and a.district_code = :districtCode}
+        @annualYear{and a.annual_year = :annualYear}
+        @status{and a.status = :status}
+        @keyword{and (s.site_name like '%' || :keyword || '%'
+            or a.annual_year like '%' || :keyword || '%')}
+        ORDER BY a.updated_at DESC, a.plan_id DESC
+        ]]>
+    </sql>
+
+    <sql id="querySiteAnnualPerformanceList" name="查询高基地年度绩效列表">
+        <![CDATA[
+        SELECT
+            a.performance_id, a.site_id, a.tyshxym, a.district_code, a.annual_year,
+            a.skill_service_count, a.open_service_count, a.service_ratio, a.situation_desc,
+            a.performance_file_key, a.performance_file_name, a.status,
+            a.score, a.score_opinion, a.scorer, a.score_time,
+            a.created_by, a.created_at, a.updated_by, a.updated_at, s.site_name
+        FROM wsbs.RECRUIT_SITE_ANNUAL_PERFORMANCE a
+        LEFT JOIN wsbs.RECRUIT_SITE_INFO s ON s.site_id = a.site_id
+        WHERE 1=1
+        @performanceId{and a.performance_id = :performanceId}
+        @siteId{and a.site_id = :siteId}
+        @districtCode{and a.district_code = :districtCode}
+        @annualYear{and a.annual_year = :annualYear}
+        @status{and a.status = :status}
+        @keyword{and (s.site_name like '%' || :keyword || '%'
+            or a.annual_year like '%' || :keyword || '%')}
+        ORDER BY a.updated_at DESC, a.performance_id DESC
+        ]]>
+    </sql>
 </sqls>

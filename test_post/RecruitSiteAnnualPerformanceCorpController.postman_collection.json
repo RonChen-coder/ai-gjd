@@ -1,0 +1,121 @@
+{
+  "info": {
+    "_postman_id": "3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
+    "name": "高基地年度绩效企业端 RecruitSiteAnnualPerformanceCorpController",
+    "description": "企业填报年度绩效表单并上传情况说明，已评分后不能修改。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "新增或修改年度绩效",
+      "description": "字段说明：\n- annualYear：年度年份，必填\n- skillServiceCount：技能服务数，人次，必填\n- openServiceCount：面向社会开放服务数，人次，必填\n- situationDesc：上传情况说明，必填\n- performanceFileKey：年度绩效文件存储key，必填\n- performanceFileName：年度绩效文件名称\n- serviceRatio：由服务端自动计算",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/corp/site-annual-performance/save",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "corp",
+            "site-annual-performance",
+            "save"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"annualYear\": \"2026\",\n  \"skillServiceCount\": 800,\n  \"openServiceCount\": 200,\n  \"situationDesc\": \"年度绩效情况说明\",\n  \"performanceFileKey\": \"{{performanceFileKey}}\",\n  \"performanceFileName\": \"年度绩效.pdf\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "分页查询本单位年度绩效",
+      "description": "企业端自动限定当前单位基地，无需传 siteId。字段说明：\n- annualYear：年度年份\n- status：0待评分/1已评分\n- keyword：检索基地名称、年份",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/corp/site-annual-performance/list",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "corp",
+            "site-annual-performance",
+            "list"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"annualYear\": \"2026\",\n  \"status\": \"0\",\n  \"pageParam\": {\n    \"pageNum\": 1,\n    \"pageSize\": 10\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "查询本单位年度绩效详情",
+      "description": "按年度绩效ID查询详情。",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/corp/site-annual-performance/detail?performanceId={{performanceId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "corp",
+            "site-annual-performance",
+            "detail"
+          ],
+          "query": [
+            {
+              "key": "performanceId",
+              "value": "{{performanceId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/ggzp-ywjb-shrs",
+      "type": "string"
+    },
+    {
+      "key": "performanceId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "performanceFileKey",
+      "value": "upload-file-key",
+      "type": "string"
+    }
+  ]
+}

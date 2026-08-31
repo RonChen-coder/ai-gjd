@@ -15,6 +15,100 @@ BEGIN
 END;
 /
 
+-- 年报计划填报表
+-- 说明：对应答疑文档 7.失业人员全维度帮扶-年报计划填报，
+-- 企业按年度填报技能服务数、面向社会开放服务数并上传附件，区管理员审核
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_sequences
+     WHERE sequence_owner = 'WSBS'
+       AND sequence_name = 'SEQ_0073_RECRUIT_SITE_ANNUAL_PLAN';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE SEQUENCE wsbs.SEQ_0073_RECRUIT_SITE_ANNUAL_PLAN MINVALUE 1 MAXVALUE 999999999999 START WITH 1 INCREMENT BY 1 CACHE 20';
+    END IF;
+END;
+/
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_tables
+     WHERE owner = 'WSBS'
+       AND table_name = 'RECRUIT_SITE_ANNUAL_PLAN';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE TABLE wsbs.RECRUIT_SITE_ANNUAL_PLAN (plan_id NUMBER(12) NOT NULL, site_id NUMBER(12) NOT NULL, tyshxym VARCHAR2(18) NOT NULL, district_code VARCHAR2(32) NOT NULL, annual_year VARCHAR2(20) NOT NULL, skill_service_count NUMBER(12) NOT NULL, open_service_count NUMBER(12) NOT NULL, service_ratio NUMBER(10,4), situation_desc VARCHAR2(1000), plan_file_key VARCHAR2(500), plan_file_name VARCHAR2(200), status VARCHAR2(32) DEFAULT ''待审核'' NOT NULL, reviewer VARCHAR2(100), review_time DATE, review_opinion VARCHAR2(1000), created_by VARCHAR2(100) NOT NULL, created_at DATE DEFAULT SYSDATE NOT NULL, updated_by VARCHAR2(100), updated_at DATE DEFAULT SYSDATE NOT NULL, PRIMARY KEY (plan_id), CONSTRAINT UK_RECRUIT_SITE_ANNUAL_PLAN_YEAR UNIQUE (site_id, annual_year))';
+    END IF;
+END;
+/
+
+COMMENT ON TABLE wsbs.RECRUIT_SITE_ANNUAL_PLAN IS '高基地年报计划填报表，企业按年度填报并提交区管理员审核';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PLAN.plan_id IS '年报计划ID，SEQ_0073_RECRUIT_SITE_ANNUAL_PLAN';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PLAN.site_id IS '关联基地ID，对应RECRUIT_SITE_INFO.site_id';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PLAN.tyshxym IS '企业统一社会信用代码，继承所属基地，冗余用于统计和搜索';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PLAN.district_code IS '分管区县编码，继承所属基地属地区，用于权限控制';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PLAN.annual_year IS '年度年份，由企业端填写';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PLAN.skill_service_count IS '技能服务数，单位人次';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PLAN.open_service_count IS '面向社会开放服务数，单位人次';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PLAN.service_ratio IS '面向社会开放服务数/技能服务数占比，百分比值，提交时自动计算';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PLAN.situation_desc IS '上传情况说明';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PLAN.plan_file_key IS '年度计划文件存储key';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PLAN.plan_file_name IS '年度计划文件名称';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PLAN.status IS '审核状态，待审核/审核通过/待整改';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PLAN.reviewer IS '审核人';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PLAN.review_time IS '审核时间';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PLAN.review_opinion IS '审核说明';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PLAN.created_by IS '创建人';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PLAN.created_at IS '创建时间';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PLAN.updated_by IS '修改人';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PLAN.updated_at IS '修改时间';
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_indexes
+     WHERE owner = 'WSBS'
+       AND index_name = 'IDX_RECRUIT_SITE_ANNUAL_PLAN_SITE';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE INDEX idx_recruit_site_annual_plan_site ON wsbs.RECRUIT_SITE_ANNUAL_PLAN (site_id)';
+    END IF;
+END;
+/
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_indexes
+     WHERE owner = 'WSBS'
+       AND index_name = 'IDX_RECRUIT_SITE_ANNUAL_PLAN_DISTRICT';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE INDEX idx_recruit_site_annual_plan_district ON wsbs.RECRUIT_SITE_ANNUAL_PLAN (district_code, status)';
+    END IF;
+END;
+/
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_indexes
+     WHERE owner = 'WSBS'
+       AND index_name = 'IDX_RECRUIT_SITE_ANNUAL_PLAN_STATUS';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE INDEX idx_recruit_site_annual_plan_status ON wsbs.RECRUIT_SITE_ANNUAL_PLAN (status, annual_year)';
+    END IF;
+END;
+/
+
 DECLARE
     v_cnt NUMBER;
 BEGIN
@@ -946,9 +1040,119 @@ BEGIN
       INTO v_cnt
       FROM all_indexes
      WHERE owner = 'WSBS'
-       AND index_name = 'IDX_RECRUIT_SITE_RECTIFICATION_DISTRICT';
+      AND index_name = 'IDX_RECRUIT_SITE_RECTIFICATION_DISTRICT';
     IF v_cnt = 0 THEN
         EXECUTE IMMEDIATE 'CREATE INDEX idx_recruit_site_rectification_district ON wsbs.RECRUIT_SITE_RECTIFICATION (district_code, rectification_status)';
+    END IF;
+END;
+/
+
+-- 年度绩效管理表
+-- 说明：对应答疑文档 9.失业人员全维度帮扶-运行绩效管理，
+-- 企业按年度填报绩效表单并上传附件，区管理员进行评分和评分说明
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_sequences
+     WHERE sequence_owner = 'WSBS'
+       AND sequence_name = 'SEQ_0073_RECRUIT_SITE_ANNUAL_PERFORMANCE';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE SEQUENCE wsbs.SEQ_0073_RECRUIT_SITE_ANNUAL_PERFORMANCE MINVALUE 1 MAXVALUE 999999999999 START WITH 1 INCREMENT BY 1 CACHE 20';
+    END IF;
+END;
+/
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_tables
+     WHERE owner = 'WSBS'
+       AND table_name = 'RECRUIT_SITE_ANNUAL_PERFORMANCE';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE TABLE wsbs.RECRUIT_SITE_ANNUAL_PERFORMANCE (performance_id NUMBER(12) NOT NULL, site_id NUMBER(12) NOT NULL, tyshxym VARCHAR2(18) NOT NULL, district_code VARCHAR2(32) NOT NULL, annual_year VARCHAR2(20) NOT NULL, skill_service_count NUMBER(12) NOT NULL, open_service_count NUMBER(12) NOT NULL, service_ratio NUMBER(10,4), situation_desc VARCHAR2(1000), performance_file_key VARCHAR2(500), performance_file_name VARCHAR2(200), status VARCHAR2(32) DEFAULT ''0'' NOT NULL, score NUMBER(5,2), score_opinion VARCHAR2(1000), scorer VARCHAR2(100), score_time DATE, created_by VARCHAR2(100) NOT NULL, created_at DATE DEFAULT SYSDATE NOT NULL, updated_by VARCHAR2(100), updated_at DATE DEFAULT SYSDATE NOT NULL, PRIMARY KEY (performance_id), CONSTRAINT UK_RECRUIT_SITE_ANNUAL_PERFORMANCE_YEAR UNIQUE (site_id, annual_year))';
+    END IF;
+END;
+/
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_tab_columns
+     WHERE owner = 'WSBS'
+       AND table_name = 'RECRUIT_SITE_ANNUAL_PERFORMANCE'
+       AND column_name = 'STATUS';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'ALTER TABLE wsbs.RECRUIT_SITE_ANNUAL_PERFORMANCE ADD status VARCHAR2(32) DEFAULT ''0'' NOT NULL';
+    END IF;
+END;
+/
+
+COMMENT ON TABLE wsbs.RECRUIT_SITE_ANNUAL_PERFORMANCE IS '高基地年度绩效管理表，企业填报绩效表单，区管理员评分';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PERFORMANCE.performance_id IS '年度绩效ID，SEQ_0073_RECRUIT_SITE_ANNUAL_PERFORMANCE';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PERFORMANCE.site_id IS '关联基地ID，对应RECRUIT_SITE_INFO.site_id';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PERFORMANCE.tyshxym IS '企业统一社会信用代码，继承所属基地，冗余用于统计和搜索';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PERFORMANCE.district_code IS '分管区县编码，继承所属基地属地区，用于权限控制';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PERFORMANCE.annual_year IS '年度年份，由企业端填写';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PERFORMANCE.skill_service_count IS '技能服务数，单位人次';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PERFORMANCE.open_service_count IS '面向社会开放服务数，单位人次';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PERFORMANCE.service_ratio IS '面向社会开放服务数/技能服务数占比，百分比值，提交时自动计算';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PERFORMANCE.situation_desc IS '上传情况说明';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PERFORMANCE.performance_file_key IS '年度绩效文件存储key';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PERFORMANCE.performance_file_name IS '年度绩效文件名称';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PERFORMANCE.status IS '状态，0待评分/1已评分';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PERFORMANCE.score IS '评分';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PERFORMANCE.score_opinion IS '评分说明';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PERFORMANCE.scorer IS '评分人';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PERFORMANCE.score_time IS '评分时间';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PERFORMANCE.created_by IS '创建人';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PERFORMANCE.created_at IS '创建时间';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PERFORMANCE.updated_by IS '修改人';
+COMMENT ON COLUMN wsbs.RECRUIT_SITE_ANNUAL_PERFORMANCE.updated_at IS '修改时间';
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_indexes
+     WHERE owner = 'WSBS'
+       AND index_name = 'IDX_RECRUIT_SITE_ANNUAL_PERFORMANCE_SITE';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE INDEX idx_recruit_site_annual_performance_site ON wsbs.RECRUIT_SITE_ANNUAL_PERFORMANCE (site_id)';
+    END IF;
+END;
+/
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_indexes
+     WHERE owner = 'WSBS'
+       AND index_name = 'IDX_RECRUIT_SITE_ANNUAL_PERFORMANCE_DISTRICT';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE INDEX idx_recruit_site_annual_performance_district ON wsbs.RECRUIT_SITE_ANNUAL_PERFORMANCE (district_code, annual_year)';
+    END IF;
+END;
+/
+
+DECLARE
+    v_cnt NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_cnt
+      FROM all_indexes
+     WHERE owner = 'WSBS'
+       AND index_name = 'IDX_RECRUIT_SITE_ANNUAL_PERFORMANCE_SCORE';
+    IF v_cnt = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE INDEX idx_recruit_site_annual_performance_score ON wsbs.RECRUIT_SITE_ANNUAL_PERFORMANCE (score)';
     END IF;
 END;
 /

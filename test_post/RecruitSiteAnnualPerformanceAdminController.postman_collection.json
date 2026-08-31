@@ -1,0 +1,116 @@
+{
+  "info": {
+    "_postman_id": "4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a",
+    "name": "高基地年度绩效管理端 RecruitSiteAnnualPerformanceAdminController",
+    "description": "市区管理员分页查看年度绩效并进行评分。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "分页查询年度绩效",
+      "description": "字段说明：\n- siteId：关联基地ID\n- annualYear：年度年份\n- status：0待评分/1已评分\n- keyword：检索基地名称、年份",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-annual-performance/list",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-annual-performance",
+            "list"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"annualYear\": \"2026\",\n  \"status\": \"0\",\n  \"keyword\": \"基地\",\n  \"pageParam\": {\n    \"pageNum\": 1,\n    \"pageSize\": 10\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "查询年度绩效详情",
+      "description": "按年度绩效ID查询详情。",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-annual-performance/detail?performanceId={{performanceId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-annual-performance",
+            "detail"
+          ],
+          "query": [
+            {
+              "key": "performanceId",
+              "value": "{{performanceId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "评分",
+      "description": "字段说明：\n- performanceId：年度绩效ID\n- score：评分\n- scoreOpinion：评分说明",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-annual-performance/score",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-annual-performance",
+            "score"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"performanceId\": \"{{performanceId}}\",\n  \"score\": 90,\n  \"scoreOpinion\": \"绩效表现良好\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/ggzp-ywjb-shrs",
+      "type": "string"
+    },
+    {
+      "key": "performanceId",
+      "value": "1",
+      "type": "string"
+    }
+  ]
+}
