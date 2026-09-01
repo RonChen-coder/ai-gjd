@@ -13,7 +13,7 @@ public class RecruitSiteWarningQueryReq implements ValueObject {
     private Long projectId;
     /** 关联资产ID */
     private Long assetId;
-    /** 预警对象类型，1基地/2项目/3资产 */
+    /** 预警对象类型，1基地/2项目/3资产/4年报计划 */
     private Integer targetType;
     /** 预警级别 */
     private String warningLevel;

@@ -2,9 +2,12 @@ package com.lysh.proj.controller;
 
 import com.lysh.proj.model.RecruitSiteAnnualPlanQueryReq;
 import com.lysh.proj.model.RecruitSiteAnnualPlanReviewReq;
+import com.lysh.proj.model.RecruitGJDFileModel;
 import com.lysh.proj.service.RecruitSiteAnnualPlanBPO;
+import com.lysh.proj.common.RecruitFileDownloadUtils;
 import com.wondersgroup.wdls.core.exception.BusinessException;
 import com.wondersgroup.wdls.web.AjaxResult;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -36,5 +39,12 @@ public class RecruitSiteAnnualPlanAdminController {
             throw new BusinessException("年报计划ID不能为空");
         }
         return AjaxResult.SUCCESS(annualPlanBPO.review(req.getPlanId(), req.getStatus(), req.getReviewOpinion()));
+    }
+
+    @PostMapping("/export")
+    public AjaxResult export(@RequestBody(required = false) RecruitSiteAnnualPlanQueryReq req,
+                             HttpServletResponse response) {
+        RecruitGJDFileModel fileModel = annualPlanBPO.generatorAdminExportFile(req);
+        return RecruitFileDownloadUtils.download(response, fileModel.getBytes(), fileModel.getName(), fileModel.getContentType());
     }
 }

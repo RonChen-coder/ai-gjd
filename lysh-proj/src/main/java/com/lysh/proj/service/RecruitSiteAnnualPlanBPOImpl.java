@@ -2,9 +2,12 @@ package com.lysh.proj.service;
 
 import com.lysh.proj.entity.RecruitSiteAnnualPlanEntity;
 import com.lysh.proj.model.RecruitCorpDetailData;
+import com.lysh.proj.model.RecruitGJDFileModel;
 import com.lysh.proj.model.RecruitSiteAnnualPlan;
 import com.lysh.proj.model.RecruitSiteAnnualPlanQueryReq;
 import com.lysh.proj.model.RecruitSiteInfo;
+import com.lysh.proj.model.excel.RecruitSiteAnnualPlanExcel;
+import com.alibaba.excel.EasyExcel;
 import com.wondersgroup.shrs.common.ShrsContextUtils;
 import com.wondersgroup.wdls.core.exception.BusinessException;
 import com.wondersgroup.wdls.data.commons.DBUtils;
@@ -13,9 +16,18 @@ import com.wondersgroup.wdls.data.commons.PageResult;
 import com.wondersgroup.wdls.data.sqlquery.QueryBuilder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 高基地年报计划业务处理实现类。
@@ -23,6 +35,8 @@ import java.util.Date;
  */
 @Service
 public class RecruitSiteAnnualPlanBPOImpl implements RecruitSiteAnnualPlanBPO {
+
+    private static final Logger logger = LoggerFactory.getLogger(RecruitSiteAnnualPlanBPOImpl.class);
 
     private static final String STATUS_PENDING = "待审核";
     private static final String STATUS_PASSED = "审核通过";
@@ -129,6 +143,122 @@ public class RecruitSiteAnnualPlanBPOImpl implements RecruitSiteAnnualPlanBPO {
                 entity.getStatus(), entity.getReviewer(), entity.getReviewTime(), entity.getReviewOpinion(),
                 entity.getUpdatedAt(), planId);
         return toModel(entity);
+    }
+
+    @Override
+    public RecruitGJDFileModel generatorCorpExportFile(RecruitSiteAnnualPlanQueryReq req) {
+        RecruitSiteInfo siteInfo = findCorpSite();
+        if (req == null) {
+            req = new RecruitSiteAnnualPlanQueryReq();
+        }
+        req.setSiteId(siteInfo.getSiteId());
+        return generatorExportFile(req);
+    }
+
+    @Override
+    public RecruitGJDFileModel generatorAdminExportFile(RecruitSiteAnnualPlanQueryReq req) {
+        if (req == null) {
+            req = new RecruitSiteAnnualPlanQueryReq();
+        }
+        applyAdminDistrict(req);
+        return generatorExportFile(req);
+    }
+
+    private RecruitGJDFileModel generatorExportFile(RecruitSiteAnnualPlanQueryReq req) {
+        List<RecruitSiteAnnualPlanExcel> rows = buildExportList(req);
+        if (rows.isEmpty()) {
+            throw new BusinessException("查询列表为空，导出文件失败");
+        }
+        Path tempFile = null;
+        try {
+            tempFile = Files.createTempFile("export_annual_plan_", ".xlsx");
+            EasyExcel.write(Files.newOutputStream(tempFile))
+                    .head(RecruitSiteAnnualPlanExcel.class)
+                    .sheet("年报计划")
+                    .doWrite(rows);
+            String fileName = "年报计划.xlsx";
+            String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            return new RecruitGJDFileModel(fileName, Files.readAllBytes(tempFile), contentType);
+        } catch (Exception e) {
+            logger.error("导出年报计划文件失败", e);
+            throw new BusinessException("导出年报计划文件失败");
+        } finally {
+            if (tempFile != null) {
+                try {
+                    Files.deleteIfExists(tempFile);
+                } catch (IOException e) {
+                    logger.error("删除年报计划临时文件失败", e);
+                }
+            }
+        }
+    }
+
+    private List<RecruitSiteAnnualPlanExcel> buildExportList(RecruitSiteAnnualPlanQueryReq req) {
+        List<RecruitSiteAnnualPlanEntity> entities = queryPlanEntities(req);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        List<RecruitSiteAnnualPlanExcel> rows = new ArrayList<>();
+        for (RecruitSiteAnnualPlanEntity entity : entities) {
+            RecruitSiteInfo siteInfo = siteInfoBPO.findById(entity.getSiteId());
+            String siteName = siteInfo == null ? null : siteInfo.getSiteName();
+            if (isNotBlank(req.getKeyword())
+                    && !containsKeyword(siteName, req.getKeyword())
+                    && !containsKeyword(entity.getAnnualYear(), req.getKeyword())) {
+                continue;
+            }
+            RecruitSiteAnnualPlanExcel row = new RecruitSiteAnnualPlanExcel();
+            row.setAnnualYear(entity.getAnnualYear());
+            row.setSiteName(siteName);
+            row.setTyshxym(entity.getTyshxym());
+            row.setDistrictCode(entity.getDistrictCode());
+            row.setSkillServiceCount(entity.getSkillServiceCount());
+            row.setOpenServiceCount(entity.getOpenServiceCount());
+            row.setServiceRatio(entity.getServiceRatio());
+            row.setSituationDesc(entity.getSituationDesc());
+            row.setPlanFileKey(entity.getPlanFileKey());
+            row.setPlanFileName(entity.getPlanFileName());
+            row.setStatus(entity.getStatus());
+            row.setReviewer(entity.getReviewer());
+            row.setReviewTime(entity.getReviewTime() == null ? null : format.format(entity.getReviewTime()));
+            row.setReviewOpinion(entity.getReviewOpinion());
+            row.setCreatedBy(entity.getCreatedBy());
+            row.setCreatedAt(entity.getCreatedAt() == null ? null : format.format(entity.getCreatedAt()));
+            row.setUpdatedBy(entity.getUpdatedBy());
+            row.setUpdatedAt(entity.getUpdatedAt() == null ? null : format.format(entity.getUpdatedAt()));
+            rows.add(row);
+        }
+        return rows;
+    }
+
+    private List<RecruitSiteAnnualPlanEntity> queryPlanEntities(RecruitSiteAnnualPlanQueryReq req) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT " + COLUMNS + " FROM wsbs.RECRUIT_SITE_ANNUAL_PLAN WHERE 1=1");
+        List<Object> params = new ArrayList<>();
+        if (req.getSiteId() != null) {
+            sql.append(" AND site_id = ?");
+            params.add(req.getSiteId());
+        }
+        if (isNotBlank(req.getDistrictCode())) {
+            sql.append(" AND district_code = ?");
+            params.add(req.getDistrictCode());
+        }
+        if (isNotBlank(req.getAnnualYear())) {
+            sql.append(" AND annual_year = ?");
+            params.add(req.getAnnualYear());
+        }
+        if (isNotBlank(req.getStatus())) {
+            sql.append(" AND status = ?");
+            params.add(req.getStatus());
+        }
+        sql.append(" ORDER BY updated_at DESC, plan_id DESC");
+        return DBUtils.query(sql.toString(), RecruitSiteAnnualPlanEntity.class, params.toArray());
+    }
+
+    private boolean containsKeyword(String value, String keyword) {
+        return value != null && value.contains(keyword);
+    }
+
+    private boolean isNotBlank(String value) {
+        return value != null && !value.isBlank();
     }
 
     private PageResult<RecruitSiteAnnualPlan> doQueryList(RecruitSiteAnnualPlanQueryReq req) {

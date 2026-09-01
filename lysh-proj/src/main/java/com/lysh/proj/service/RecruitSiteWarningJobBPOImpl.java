@@ -3,6 +3,7 @@ package com.lysh.proj.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lysh.proj.entity.RecruitSiteAssetEntity;
+import com.lysh.proj.entity.RecruitSiteAnnualPlanEntity;
 import com.lysh.proj.entity.RecruitSiteInfoEntity;
 import com.lysh.proj.entity.RecruitSiteProjectEntity;
 import com.lysh.proj.entity.RecruitSiteWarningRuleEntity;
@@ -32,6 +33,7 @@ public class RecruitSiteWarningJobBPOImpl implements RecruitSiteWarningJobBPO {
     private static final int TARGET_BASE = 1;
     private static final int TARGET_PROJECT = 2;
     private static final int TARGET_ASSET = 3;
+    private static final int TARGET_ANNUAL_PLAN = 4;
 
     /**
      * 基地审核状态-待审核
@@ -97,6 +99,7 @@ public class RecruitSiteWarningJobBPOImpl implements RecruitSiteWarningJobBPO {
      * 预警处理状态-待处理
      */
     private static final String WARNING_STATUS_PENDING = "待处理";
+    private static final String PLAN_STATUS_PENDING = "待审核";
 
     private static final String ASSET_STATUS_NORMAL = "1";
     private static final String ASSET_STATUS_NOT_RUNNING = "2";
@@ -119,6 +122,10 @@ public class RecruitSiteWarningJobBPOImpl implements RecruitSiteWarningJobBPO {
     private static final String ASSET_COLUMNS = "asset_id, project_id, site_id, tyshxym, district_code, " +
             "asset_name, quantity, unit, brand_model, storage_location, asset_status, usage_frequency, " +
             "asset_photo, created_by, created_at, updated_by, updated_at";
+
+    private static final String PLAN_COLUMNS = "plan_id, site_id, tyshxym, district_code, annual_year, " +
+            "skill_service_count, open_service_count, service_ratio, situation_desc, plan_file_key, plan_file_name, " +
+            "status, reviewer, review_time, review_opinion, created_by, created_at, updated_by, updated_at";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ObjectMapper objectMapper;
@@ -205,6 +212,10 @@ public class RecruitSiteWarningJobBPOImpl implements RecruitSiteWarningJobBPO {
                 return evaluateAsset07(rule, config);
             case "ASSET_08":
                 return evaluateAsset08(rule, config);
+            case "PLAN_01":
+                return evaluatePlan01(rule, config);
+            case "PLAN_02":
+                return evaluatePlan02(rule, config);
             default:
                 logger.warn("预警规则[{}]暂未实现校验逻辑", rule.getRuleCode());
                 return 0;
@@ -957,6 +968,73 @@ public class RecruitSiteWarningJobBPOImpl implements RecruitSiteWarningJobBPO {
         return count;
     }
 
+    /**
+     * 年报计划超过配置天数未审批预警生成。
+     * <p>
+     * 数据来源：审核状态为“待审核”的年报计划；
+     * 生成条件：最近更新或创建时间距今超过配置天数 days（默认 30 天）；
+     * 实际值：待审核至今的天数；阈值：配置天数；
+     * 生成方式：命中后组装 WarningTarget，调用 upsertWarning 写入或更新 RECRUIT_SITE_WARNING。
+     */
+    private int evaluatePlan01(RecruitSiteWarningRuleEntity rule, JsonNode config) {
+        long days = config.path("days").asLong(30L);
+        List<RecruitSiteAnnualPlanEntity> plans = DBUtils.query(
+                "SELECT " + PLAN_COLUMNS + " FROM wsbs.RECRUIT_SITE_ANNUAL_PLAN " +
+                        "WHERE status = '" + PLAN_STATUS_PENDING + "'",
+                RecruitSiteAnnualPlanEntity.class);
+        int count = 0;
+        for (RecruitSiteAnnualPlanEntity plan : plans) {
+            long actualDays = daysSince(lastUpdate(plan.getUpdatedAt(), plan.getCreatedAt()));
+            if (actualDays > days) {
+                WarningTarget target = planTarget(plan);
+                target.setMetricValue(actualDays + "天");
+                target.setThresholdValue(days + "天");
+                target.setWarningContent(renderTemplate(rule, target));
+                count += upsertWarning(rule, target);
+            }
+        }
+        return count;
+    }
+
+    /**
+     * 年报计划占比低于阈值预警生成。
+     * <p>
+     * 数据来源：占比非空的年报计划；
+     * 生成条件：面向社会开放服务数/技能服务数占比低于配置比例 ratio（默认 20%）；
+     * 实际值：当前占比；阈值：配置占比；
+     * 生成方式：命中后组装 WarningTarget，调用 upsertWarning 写入或更新 RECRUIT_SITE_WARNING。
+     */
+    private int evaluatePlan02(RecruitSiteWarningRuleEntity rule, JsonNode config) {
+        double ratioThreshold = config.path("ratio").asDouble(20.0);
+        List<RecruitSiteAnnualPlanEntity> plans = DBUtils.query(
+                "SELECT " + PLAN_COLUMNS + " FROM wsbs.RECRUIT_SITE_ANNUAL_PLAN " +
+                        "WHERE service_ratio IS NOT NULL",
+                RecruitSiteAnnualPlanEntity.class);
+        int count = 0;
+        for (RecruitSiteAnnualPlanEntity plan : plans) {
+            BigDecimal ratio = plan.getServiceRatio();
+            if (ratio.compareTo(BigDecimal.valueOf(ratioThreshold)) < 0) {
+                WarningTarget target = planTarget(plan);
+                target.setMetricValue(ratio.stripTrailingZeros().toPlainString() + "%");
+                target.setThresholdValue(BigDecimal.valueOf(ratioThreshold).stripTrailingZeros().toPlainString() + "%");
+                target.setWarningContent(renderTemplate(rule, target));
+                count += upsertWarning(rule, target);
+            }
+        }
+        return count;
+    }
+
+    private WarningTarget planTarget(RecruitSiteAnnualPlanEntity plan) {
+        WarningTarget target = new WarningTarget();
+        target.setTargetType(TARGET_ANNUAL_PLAN);
+        target.setTargetId(plan.getPlanId());
+        target.setSiteId(plan.getSiteId());
+        target.setTyshxym(plan.getTyshxym());
+        target.setDistrictCode(plan.getDistrictCode());
+        target.setAnnualYear(plan.getAnnualYear());
+        return target;
+    }
+
     private List<RecruitSiteWarningRuleEntity> queryEnabledRules() {
         return DBUtils.query(
                 "SELECT rule_id, rule_code, rule_name, target_type, warning_level, condition_config, " +
@@ -1087,6 +1165,7 @@ public class RecruitSiteWarningJobBPOImpl implements RecruitSiteWarningJobBPO {
         content = replaceLiteral(content, "{siteName}", target.getSiteName());
         content = replaceLiteral(content, "{projectName}", target.getProjectName());
         content = replaceLiteral(content, "{assetName}", target.getAssetName());
+        content = replaceLiteral(content, "{annualYear}", target.getAnnualYear());
         content = replaceLiteral(content, "{projectStatus}", target.getProjectStatus());
         content = replaceLiteral(content, "{assetStatus}", target.getAssetStatus());
         content = replaceLiteral(content, "{usageFrequency}", target.getUsageFrequency());
@@ -1150,6 +1229,7 @@ public class RecruitSiteWarningJobBPOImpl implements RecruitSiteWarningJobBPO {
         private String siteName;
         private String projectName;
         private String assetName;
+        private String annualYear;
         private String projectStatus;
         private String assetStatus;
         private Long usageFrequency;
@@ -1238,6 +1318,14 @@ public class RecruitSiteWarningJobBPOImpl implements RecruitSiteWarningJobBPO {
 
         public void setAssetName(String assetName) {
             this.assetName = assetName;
+        }
+
+        public String getAnnualYear() {
+            return annualYear;
+        }
+
+        public void setAnnualYear(String annualYear) {
+            this.annualYear = annualYear;
         }
 
         public String getProjectStatus() {

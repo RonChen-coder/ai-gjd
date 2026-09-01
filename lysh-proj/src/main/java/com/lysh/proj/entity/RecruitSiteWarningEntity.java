@@ -37,7 +37,7 @@ public class RecruitSiteWarningEntity implements ValueObject {
 
     @Basic
     @Column(name = "target_type")
-    /** 预警对象类型，1基地/2项目/3资产 */
+    /** 预警对象类型，1基地/2项目/3资产/4年报计划 */
     private Integer targetType;
 
     @Basic

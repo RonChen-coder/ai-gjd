@@ -99,12 +99,46 @@
         }
       },
       "response": []
+    },
+    {
+      "name": "导出本单位年报计划",
+      "description": "企业端导出年报计划Excel，自动限定当前单位基地。字段说明：\n- annualYear：年度年份\n- status：审核状态\n- keyword：检索基地名称、年份",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/corp/site-annual-plan/export",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "corp",
+            "site-annual-plan",
+            "export"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"annualYear\": \"2026\",\n  \"status\": \"待审核\",\n  \"keyword\": \"基地\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
     }
   ],
   "variable": [
     {
       "key": "baseUrl",
-      "value": "http://localhost:8080/ggzp-ywjb-shrs",
+      "value": "http://localhost:8080/ggzp-zzjb-shrs",
       "type": "string"
     },
     {

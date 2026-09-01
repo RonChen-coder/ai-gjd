@@ -135,8 +135,9 @@ public class RecruitSiteWarningRuleBPOImpl implements RecruitSiteWarningRuleBPO 
             throw new BusinessException("规则名称不能为空");
         }
         if (rule.getTargetType() == null
-                || (rule.getTargetType() != 1 && rule.getTargetType() != 2 && rule.getTargetType() != 3)) {
-            throw new BusinessException("预警对象类型只能为1基地/2项目/3资产");
+                || (rule.getTargetType() != 1 && rule.getTargetType() != 2 && rule.getTargetType() != 3
+                && rule.getTargetType() != 4)) {
+            throw new BusinessException("预警对象类型只能为1基地/2项目/3资产/4年报计划");
         }
         if (isBlank(rule.getWarningLevel())) {
             throw new BusinessException("预警级别不能为空");

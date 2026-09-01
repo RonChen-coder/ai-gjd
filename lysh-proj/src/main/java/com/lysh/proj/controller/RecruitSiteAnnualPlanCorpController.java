@@ -2,9 +2,12 @@ package com.lysh.proj.controller;
 
 import com.lysh.proj.model.RecruitSiteAnnualPlan;
 import com.lysh.proj.model.RecruitSiteAnnualPlanQueryReq;
+import com.lysh.proj.model.RecruitGJDFileModel;
 import com.lysh.proj.service.RecruitSiteAnnualPlanBPO;
+import com.lysh.proj.common.RecruitFileDownloadUtils;
 import com.wondersgroup.wdls.core.exception.BusinessException;
 import com.wondersgroup.wdls.web.AjaxResult;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -36,5 +39,12 @@ public class RecruitSiteAnnualPlanCorpController {
     @GetMapping("/detail")
     public AjaxResult detail(@RequestParam Long planId) {
         return AjaxResult.SUCCESS(annualPlanBPO.findCorpById(planId));
+    }
+
+    @PostMapping("/export")
+    public AjaxResult export(@RequestBody(required = false) RecruitSiteAnnualPlanQueryReq req,
+                             HttpServletResponse response) {
+        RecruitGJDFileModel fileModel = annualPlanBPO.generatorCorpExportFile(req);
+        return RecruitFileDownloadUtils.download(response, fileModel.getBytes(), fileModel.getName(), fileModel.getContentType());
     }
 }

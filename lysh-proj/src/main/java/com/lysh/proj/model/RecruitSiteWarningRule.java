@@ -15,7 +15,7 @@ public class RecruitSiteWarningRule implements ValueObject {
     private String ruleCode;
     /** 规则名称 */
     private String ruleName;
-    /** 预警对象类型，1基地/2项目/3资产 */
+    /** 预警对象类型，1基地/2项目/3资产/4年报计划 */
     private Integer targetType;
     /** 预警级别，严重/一般 */
     private String warningLevel;

@@ -99,6 +99,40 @@
         }
       },
       "response": []
+    },
+    {
+      "name": "导出年报计划",
+      "description": "管理端导出年报计划Excel。字段说明：\n- siteId：关联基地ID\n- annualYear：年度年份\n- status：审核状态\n- keyword：检索基地名称、年份",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-annual-plan/export",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-annual-plan",
+            "export"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"siteId\": \"{{siteId}}\",\n  \"annualYear\": \"2026\",\n  \"status\": \"待审核\",\n  \"keyword\": \"基地\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
     }
   ],
   "variable": [
@@ -109,6 +143,11 @@
     },
     {
       "key": "planId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "siteId",
       "value": "1",
       "type": "string"
     }

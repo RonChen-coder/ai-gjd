@@ -7,7 +7,7 @@ import com.wondersgroup.wdls.data.commons.PageParam;
  * 高基地预警规则列表查询请求模型。
  */
 public class RecruitSiteWarningRuleQueryReq implements ValueObject {
-    /** 预警对象类型，1基地/2项目/3资产 */
+    /** 预警对象类型，1基地/2项目/3资产/4年报计划 */
     private Integer targetType;
     /** 预警级别，严重/一般 */
     private String warningLevel;

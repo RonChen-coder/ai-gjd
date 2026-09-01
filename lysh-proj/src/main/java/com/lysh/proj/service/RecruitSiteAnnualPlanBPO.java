@@ -2,6 +2,7 @@ package com.lysh.proj.service;
 
 import com.lysh.proj.model.RecruitSiteAnnualPlan;
 import com.lysh.proj.model.RecruitSiteAnnualPlanQueryReq;
+import com.lysh.proj.model.RecruitGJDFileModel;
 import com.wondersgroup.wdls.data.commons.PageResult;
 
 /**
@@ -59,4 +60,20 @@ public interface RecruitSiteAnnualPlanBPO {
      * @return 审核后的年报计划
      */
     RecruitSiteAnnualPlan review(Long planId, String status, String reviewOpinion);
+
+    /**
+     * 企业端生成年报计划导出文件。
+     *
+     * @param req 查询条件
+     * @return 导出文件模型
+     */
+    RecruitGJDFileModel generatorCorpExportFile(RecruitSiteAnnualPlanQueryReq req);
+
+    /**
+     * 管理端生成年报计划导出文件。
+     *
+     * @param req 查询条件
+     * @return 导出文件模型
+     */
+    RecruitGJDFileModel generatorAdminExportFile(RecruitSiteAnnualPlanQueryReq req);
 }
