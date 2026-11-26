@@ -1,0 +1,155 @@
+{
+  "info": {
+    "_postman_id": "9a8b7c6d-5e4f-3a2b-1c0d-9e8f7a6b5c4d",
+    "name": "高基地运行状况看板管理端 RecruitSiteDashboardAdminController",
+    "description": "为管理端大屏提供看板聚合数据、基地列表和项目详情下钻接口。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "获取看板聚合数据",
+      "description": "字段说明：\n- districtCode：区县编码\n- industryCategory：行业分类",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-dashboard/overview",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-dashboard",
+            "overview"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"districtCode\": \"01\",\n  \"industryCategory\": \"1\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "查询符合条件的基地列表",
+      "description": "字段说明：\n- districtCode：区县编码\n- industryCategory：行业分类\n- minProjectCount：基地至少包含项目数",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-dashboard/base-list",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-dashboard",
+            "base-list"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"districtCode\": \"01\",\n  \"industryCategory\": \"1\",\n  \"minProjectCount\": 3\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "查询基地下钻项目列表",
+      "description": "复用项目分页查询，字段说明：\n- siteId：关联基地ID\n- pageParam：分页参数",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-dashboard/project-list",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-dashboard",
+            "project-list"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"siteId\": \"{{siteId}}\",\n  \"pageParam\": {\n    \"pageNum\": 1,\n    \"pageSize\": 10\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "查询项目详情下钻数据",
+      "description": "返回项目基本信息、项目资产列表和项目文档列表。字段说明：\n- projectId：项目ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/site-dashboard/project-detail?projectId={{projectId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "site-dashboard",
+            "project-detail"
+          ],
+          "query": [
+            {
+              "key": "projectId",
+              "value": "{{projectId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/ggzp-ywjb-shrs",
+      "type": "string"
+    },
+    {
+      "key": "siteId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "projectId",
+      "value": "1",
+      "type": "string"
+    }
+  ]
+}

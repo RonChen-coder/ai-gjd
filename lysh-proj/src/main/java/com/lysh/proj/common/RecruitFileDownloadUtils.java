@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.util.UriUtils;
 
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -30,13 +31,18 @@ public final class RecruitFileDownloadUtils {
      */
     public static AjaxResult download(HttpServletResponse response, byte[] bytes, String filename, String contentType) {
         try {
-            String encodedName = UriUtils.encode(filename, StandardCharsets.UTF_8.name());
-            response.setContentType(contentType);
-            response.setCharacterEncoding("UTF-8");
-            String resultFileName = new String(encodedName.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
-            response.addHeader("Content-Disposition", "attachment;filename=" + resultFileName);
-            response.getOutputStream().write(bytes);
-            response.getOutputStream().flush();
+            String downloadName = filename == null || filename.trim().isEmpty() ? "download" : filename;
+            String encodedName = UriUtils.encode(downloadName, StandardCharsets.UTF_8);
+
+            response.setContentType(contentType == null || contentType.trim().isEmpty()
+                    ? "application/octet-stream" : contentType);
+            response.setContentLength(bytes.length);
+            response.setHeader("Content-Disposition",
+                    "attachment; filename=\"" + encodedName + "\"; filename*=UTF-8''" + encodedName);
+
+            OutputStream outputStream = response.getOutputStream();
+            outputStream.write(bytes);
+            outputStream.flush();
         } catch (Exception e) {
             logger.error("下载文件失败", e);
             response.addHeader("Err-Msg", e.getMessage());
